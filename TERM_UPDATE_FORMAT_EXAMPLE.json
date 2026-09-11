@@ -1,0 +1,34 @@
+{
+  "packType": "adaptive-term-update",
+  "packId": "EXAMPLE_TERM2_DO_NOT_IMPORT",
+  "date": "2026-09-11",
+  "term": 2,
+  "note": "قالب توضيحي فقط. عند إعداد التحديث الحقيقي تضاف الأسئلة الفعلية.",
+  "questions": [
+    {
+      "id": "M3_T2_MATH_U1_L1_Q001",
+      "track": "m3",
+      "subject": "الرياضيات",
+      "skill": "اسم المهارة",
+      "difficulty": 2,
+      "targetSec": 60,
+      "text": "نص السؤال الفعلي",
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "answer": 0,
+      "explanation": "شرح مختصر",
+      "family": "اسم المهارة",
+      "meta": {
+        "term": 2,
+        "unitOrder": 1,
+        "unitTitle": "اسم الوحدة",
+        "lessonOrder": 1,
+        "lesson": "اسم الدرس"
+      }
+    }
+  ]
+}
