@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#102235">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="تحدي القدرات">
+  <title>تحدي القدرات و STEP</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="../icon-192.png">
+  <link rel="apple-touch-icon" href="../icon-192.png">
+  <style>
+    :root{--bg:#07131e;--panel:#0d1d2b;--card:#122638;--line:#284156;--text:#f4f7fa;--muted:#a8b5c1;--accent:#4dc3ff;--good:#3ddc97;--bad:#ff6b78;--gold:#ffc857}
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#07131e,#0b1824);color:var(--text);font-family:Tahoma,Arial,sans-serif;min-height:100vh}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    .app{max-width:820px;margin:auto;padding:14px 14px 90px}
+    .hero{padding:12px 2px 4px}
+    .hero h1{font-size:24px;margin:0 0 5px}
+    .hero p{margin:0;color:var(--muted);font-size:14px;line-height:1.7}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+    .stat{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:10px;text-align:center}
+    .stat small{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}
+    .stat b{font-size:19px}
+    .section-title{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:18px 0 9px}
+    .section-title h2{font-size:17px;margin:0}
+    .section-title span{font-size:12px;color:var(--muted)}
+    .modes{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .mode-card{min-height:108px;background:var(--card);border:1px solid var(--line);border-radius:18px;color:var(--text);padding:14px;text-align:right}
+    .mode-card strong{display:block;font-size:18px;margin-bottom:6px}
+    .mode-card span{font-size:12px;color:var(--muted);line-height:1.5}
+    .mode-card.active{outline:2px solid var(--accent)}
+    .panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px}
+    .weak-row{padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+    .weak-row:last-child{border-bottom:0}
+    .weak-line{display:flex;justify-content:space-between;gap:10px;font-size:13px}
+    .weak-meta{font-size:10px;color:var(--muted);margin-top:4px}
+    .meter{height:7px;background:#1a3143;border-radius:99px;overflow:hidden;margin-top:7px}
+    .meter span{display:block;height:100%;background:var(--accent);border-radius:99px}
+    .empty{color:var(--muted);font-size:13px;padding:10px 2px}
+    .nav{position:fixed;left:0;right:0;bottom:0;background:rgba(7,19,30,.96);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:7px max(10px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));z-index:20}
+    .nav-btn{border:0;background:transparent;color:var(--muted);min-height:50px;border-radius:12px;font-size:12px}
+    .nav-btn.active{background:#173047;color:white;font-weight:bold}
+    .quiz-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}
+    .badge{background:#173047;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px}
+    .progress-track{height:8px;background:#1a3143;border-radius:99px;overflow:hidden;margin-bottom:16px}
+    .progress-track span{display:block;height:100%;background:var(--accent)}
+    #questionText{font-size:20px;line-height:1.8;margin:8px 0 14px}
+    .answers{display:grid;gap:9px}
+    .answer-btn{min-height:52px;border-radius:14px;border:1px solid var(--line);background:#0d2030;color:var(--text);padding:10px 13px;text-align:right}
+    .answer-btn.correct{outline:2px solid var(--good);background:rgba(61,220,151,.1)}
+    .answer-btn.wrong{outline:2px solid var(--bad);background:rgba(255,107,120,.1)}
+    .feedback-good,.feedback-bad,.rule-box,.finish{margin-top:12px;padding:11px;border-radius:12px;line-height:1.7;font-size:13px}
+    .feedback-good{background:rgba(61,220,151,.10);border:1px solid rgba(61,220,151,.35)}
+    .feedback-bad{background:rgba(255,107,120,.10);border:1px solid rgba(255,107,120,.35)}
+    .rule-box{background:#112b3f;border:1px solid var(--line)}
+    .finish{background:rgba(255,200,87,.12);border:1px solid rgba(255,200,87,.35)}
+    .quiz-actions{display:flex;gap:8px;margin-top:12px}
+    .primary,.secondary,.danger{min-height:46px;border-radius:13px;padding:0 15px;font-weight:bold}
+    .primary{flex:1;background:var(--accent);border:0;color:#022034}
+    .secondary{background:transparent;border:1px solid var(--line);color:var(--text)}
+    .danger{background:transparent;border:1px solid rgba(255,107,120,.5);color:#ff98a2}
+    button:disabled{opacity:.45;cursor:default}
+    .chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px}
+    .chip{background:transparent;border:1px solid var(--line);color:var(--text);min-height:39px;border-radius:999px;padding:0 12px;font-size:12px}
+    .chip.active{background:#173047;outline:1px solid var(--accent)}
+    .hint{font-size:12px;color:var(--muted);padding:5px 0}
+    .word-tools{display:grid;grid-template-columns:1fr 130px;gap:8px;margin-bottom:10px}
+    .word-tools input,.word-tools select{width:100%;min-height:46px;border-radius:12px;border:1px solid var(--line);background:#0a1a27;color:var(--text);padding:0 12px;font-size:16px}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+    table{width:100%;border-collapse:collapse;min-width:570px}
+    th,td{padding:10px;border-bottom:1px solid var(--line);text-align:right;font-size:12px}
+    th{position:sticky;top:0;background:#102638;color:#dbe8f1}
+    tr:last-child td{border-bottom:0}
+    .ltr{direction:ltr;text-align:left}
+    .mistake-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:9px;line-height:1.7;font-size:13px}
+    .mistake-card small{display:block;color:var(--muted);margin-top:4px}
+    .mini-label{color:var(--accent);font-size:11px;margin-bottom:5px}
+    [hidden]{display:none!important}
+    @media(max-width:520px){
+      .app{padding:10px 10px 86px}.hero h1{font-size:21px}.stats{grid-template-columns:repeat(2,1fr)}.modes{grid-template-columns:1fr}.mode-card{min-height:82px}.word-tools{grid-template-columns:1fr}.quiz-actions{flex-wrap:wrap}.secondary{flex:1}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <h1>تحدي القدرات و STEP</h1>
+      <p>تدريب يومي ذكي على STEP واللفظي والكمي، مع إعادة المهارات الأضعف تلقائيًا.</p>
+    </header>
+
+    <section class="stats">
+      <div class="stat"><small>النقاط</small><b id="scoreValue">0</b></div>
+      <div class="stat"><small>السلسلة</small><b id="streakValue">0</b></div>
+      <div class="stat"><small>الدقة</small><b id="accuracyValue">0٪</b></div>
+      <div class="stat"><small>تدريب اليوم</small><b id="dailyValue">0 / 20</b></div>
+    </section>
+
+    <section id="homeView" class="view">
+      <div class="section-title"><h2>ابدئي التدريب</h2><span>اختاري مسارًا أو التدريب الذكي</span></div>
+      <div class="modes">
+        <button class="mode-card" data-mode="daily"><strong>🎯 تدريب اليوم</strong><span>20 سؤالًا تتغير نسبها تلقائيًا حسب الأخطاء ونقاط الضعف.</span></button>
+        <button class="mode-card" data-mode="step"><strong>🇬🇧 STEP</strong><span>الأزمنة، since/for، اختيار الزمن، والمبني للمجهول.</span></button>
+        <button class="mode-card" data-mode="verbal"><strong>🧠 اللفظي</strong><span>معاني ومرادفات وأضداد باللغة الإنجليزية والعربية.</span></button>
+        <button class="mode-card" data-mode="quant"><strong>🔢 الكمي</strong><span>النسب، الخصم، الربح، الإحصاء، المعادلات، الكسور والسرعة.</span></button>
+      </div>
+
+      <div class="section-title"><h2>بنك الكلمات</h2><span><b id="wordCount">0</b> كلمة</span></div>
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;gap:10px"><span>كلمات شوهدت أثناء التدريب</span><b id="seenWords">0</b></div>
+      </div>
+
+      <div class="section-title"><h2>أضعف المهارات</h2><span>تتحدث بعد كل إجابة</span></div>
+      <div class="panel" id="weakList"></div>
+    </section>
+
+    <section id="quizView" class="view" hidden>
+      <div id="skillButtons" class="chips"></div>
+      <div class="panel">
+        <div class="quiz-head">
+          <div style="display:flex;gap:6px;flex-wrap:wrap"><span id="questionCategory" class="badge"></span><span id="questionSkill" class="badge"></span></div>
+          <b id="progressText">1 / 20</b>
+        </div>
+        <div class="progress-track"><span id="progressBar" style="width:5%"></span></div>
+        <div id="questionText"></div>
+        <div id="answers" class="answers"></div>
+        <div id="feedback" aria-live="polite"></div>
+        <div class="quiz-actions">
+          <button id="nextBtn" class="primary" disabled>السؤال التالي</button>
+          <button id="ruleBtn" class="secondary" disabled>اشرح القاعدة</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="wordsView" class="view" hidden>
+      <div class="section-title"><h2>بنك الكلمات</h2><span id="bankCount"></span></div>
+      <div class="word-tools">
+        <input id="wordSearch" type="search" placeholder="ابحثي عن كلمة أو معنى أو مرادف...">
+        <select id="wordLang" aria-label="لغة الكلمات">
+          <option value="all">العربي + English</option>
+          <option value="en">English</option>
+          <option value="ar">العربي</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>الكلمة</th><th>المعنى</th><th>المرادف</th><th>الضد</th></tr></thead>
+          <tbody id="wordRows"></tbody>
+        </table>
+      </div>
+      <div id="bankLimitNote" class="hint"></div>
+    </section>
+
+    <section id="mistakesView" class="view" hidden>
+      <div class="section-title"><h2>دفتر الأخطاء</h2><span>آخر 30 خطأ</span></div>
+      <div id="mistakeList"></div>
+    </section>
+
+    <section id="settingsView" class="view" hidden>
+      <div class="section-title"><h2>البيانات</h2><span>محفوظة على هذا الجهاز</span></div>
+      <div class="panel">
+        <p class="hint">النقاط ونقاط الضعف والأخطاء تحفظ تلقائيًا في المتصفح، وتبقى عند فتح الموقع لاحقًا على نفس الجهاز.</p>
+        <button id="resetBtn" class="danger">مسح التقدم من هذا الجهاز</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav" aria-label="التنقل">
+    <button class="nav-btn active" data-view="home">الرئيسية</button>
+    <button class="nav-btn" data-view="words">الكلمات</button>
+    <button class="nav-btn" data-view="mistakes">الأخطاء</button>
+    <button class="nav-btn" data-view="settings">الإعدادات</button>
+  </nav>
+
+  <script src="./data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
