@@ -1,0 +1,16 @@
+{
+  "name": "تحدي القدرات و STEP",
+  "short_name": "قدرات STEP",
+  "description": "لعبة تدريب تكيفية للكمي واللفظي وSTEP",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#07131e",
+  "theme_color": "#102235",
+  "icons": [
+    {"src":"../icon-192.png","sizes":"192x192","type":"image/png"},
+    {"src":"../icon-512.png","sizes":"512x512","type":"image/png"}
+  ]
+}
