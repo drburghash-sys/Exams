@@ -63,7 +63,7 @@ function normalize(){const d=def();state={...d,...state};state.profiles=Array.is
 function load(){try{state=JSON.parse(localStorage.getItem(KEY)||"null")||def();normalize();save();window.STORE_ERR=null}catch(e){state=def();normalize();window.STORE_ERR=e}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));window.STORE_ERR=null}catch(e){window.STORE_ERR=e}}
 function page(h){$("app").innerHTML=h;window.scrollTo(0,0)}
-function top(title,back="home()") {return `<div class="top"><div><div class="brand">${esc(title)}</div><div class="sub">V10.1 • ثلاث طالبات • تركيز تلقائي على آخر درس محدد</div></div><button class="btn light sm" onclick="${back}">رجوع</button></div>`}
+function top(title,back="home()") {return `<div class="top"><div><div class="brand">${esc(title)}</div><div class="sub">V10.2 • ثلاث طالبات • تركيز مباشر على درس خامس الحالي</div></div><button class="btn light sm" onclick="${back}">رجوع</button></div>`}
 function warn(){return window.STORE_ERR?`<div class="card warning"><b>الحفظ المحلي غير متاح في طريقة الفتح الحالية.</b><div>استخدم رابط GitHub Pages عبر https حتى تُحفظ النتائج.</div></div>`:""}
 function name(t){return T[t]?.name||t}
 function profile(pid){return state.profiles.find(p=>p.id===pid)}
@@ -88,6 +88,9 @@ function currentFocus(track,subject,b=null){
 function schoolSubjectSelect(pid,t,s,n,mode){
  const b=eligible(t,s);if(!b.length)return[];
  const focus=currentFocus(t,s,b);
+ // خامس رياضيات: إذا وُجدت أسئلة مرتبطة بآخر درس محدد، نستخدمها فقط.
+ // هذا يمنع رجوع الاختبار إلى الأعداد الصحيحة عند الوصول إلى الكسور العشرية وجمعها وطرحها.
+ if(t==="g5"&&s==="الرياضيات"&&focus.length)return weightedSelect(pid,t,n,mode,focus).slice(0,n);
  if(!focus.length||focus.length===b.length)return weightedSelect(pid,t,n,mode,b);
  const focusN=Math.max(1,Math.min(n,Math.round(n*.75))),reviewN=Math.max(0,n-focusN);
  const focused=weightedSelect(pid,t,focusN,mode,focus);
@@ -99,7 +102,7 @@ function schoolSubjectSelect(pid,t,s,n,mode){
 }
 const AR_NUM="٠١٢٣٤٥٦٧٨٩";
 function arabicIndic(v){return String(v??"").replace(/[0-9]/g,d=>AR_NUM[Number(d)]).replace(/\.(?=\d)/g,"٫")}
-function questionDisplay(q,v){return q?.track==="m3"&&q?.subject==="الرياضيات"?arabicIndic(v):String(v??"")}
+function questionDisplay(q,v){return (q?.track==="m3"||q?.track==="g5")&&q?.subject==="الرياضيات"?arabicIndic(v):String(v??"")}
 function stats(pid,track,subject=null){const m={};state.history.filter(h=>h.profileId===pid).forEach(h=>(h.answers||[]).forEach(a=>{if(a.track!==track)return;if(subject&&a.subject!==subject)return;const k=a.skill||"غير مصنف";if(!m[k])m[k]={skill:k,n:0,c:0,csec:0,cn:0,target:0};const x=m[k];x.n++;x.target+=a.targetSec||60;if(a.correct){x.c++;x.cn++;x.csec+=a.sec||0}}));return Object.values(m).map(x=>{const acc=(x.c+2)/(x.n+4),tar=x.target/Math.max(1,x.n),avg=x.cn?x.csec/x.cn:tar*1.4,sp=Math.max(0,Math.min(1,tar/Math.max(1,avg)));return {...x,accuracy:Math.round(acc*100),avgSec:Math.round(avg),mastery:Math.round(100*(.85*acc+.15*sp))}})}
 function mastery(pid,t,s){return stats(pid,t).find(x=>x.skill===s)?.mastery??50}
 function trackMastery(pid,t,subject=null){const a=stats(pid,t,subject);return a.length?Math.round(a.reduce((z,x)=>z+x.mastery,0)/a.length):50}
