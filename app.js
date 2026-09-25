@@ -1,6 +1,7 @@
 "use strict";
 (function(){
 const KEY="adaptive_learning_v9_3_students";
+const APP_VERSION="10.4";
 const BANK=window.ALL_BANK||[];
 const CURRICULUM=window.CURRICULUM_CATALOG||[];
 const $=id=>document.getElementById(id);
@@ -59,11 +60,11 @@ function catalogOrder(x){return Number(x.term||1)*1000000+Number(x.unitOrder||1)
 function sections(track,subject){const m=new Map();CURRICULUM.filter(x=>x.track===track&&x.subject===subject).forEach(x=>{const a=catalogOrder(x);m.set(a,{order:a,term:Number(x.term||1),unitOrder:Number(x.unitOrder||1),unit:x.unitTitle||"",lessonOrder:Number(x.lessonOrder||1),lesson:x.lesson||("القسم "+a),catalog:true})});allBank().filter(q=>q.track===track&&q.subject===subject).forEach(q=>{const a=academicOrder(q),mm=q.meta||{};if(!m.has(a))m.set(a,{order:a,term:Number(mm.term||mm.semester||1),unitOrder:Number(mm.unitOrder||1),unit:mm.unitTitle||"",lessonOrder:Number(mm.lessonOrder||mm.sectionOrder||1),lesson:mm.lesson||q.skill||("القسم "+a),catalog:false})});return [...m.values()].sort((a,b)=>a.order-b.order)}
 function scopeOptions(a,cur){let out='<option value="0">لم يبدأ بعد</option>',last='';for(const x of a){const key=x.term+'|'+x.unitOrder+'|'+x.unit;if(key!==last){if(last)out+='</optgroup>';out+=`<optgroup label="الفصل الدراسي ${x.term} • ${esc(x.unit)}">`;last=key}out+=`<option value="${x.order}" ${x.order===cur?'selected':''}>${esc(x.lesson)}</option>`}if(last)out+='</optgroup>';return out}
 function catalogCount(t,s=null){return CURRICULUM.filter(x=>x.track===t&&(!s||x.subject===s)).length}
-function normalize(){const d=def();state={...d,...state};state.profiles=Array.isArray(state.profiles)&&state.profiles.length===3?state.profiles:d.profiles;state.history=Array.isArray(state.history)?state.history:[];state.externalQuestions=Array.isArray(state.externalQuestions)?state.externalQuestions:[];state.appliedPacks=Array.isArray(state.appliedPacks)?state.appliedPacks:[];state.remedialPlans=Array.isArray(state.remedialPlans)?state.remedialPlans:[];state.remedialProgress=state.remedialProgress||{};state.scope={m3:{...(state.scope?.m3||{})},g5:{...(state.scope?.g5||{})}};for(const t of ["m3","g5"]){for(const s of T[t].subjects){const a=sections(t,s);if(a.length&&!(s in state.scope[t]))state.scope[t][s]=a[0].order}}state.version=10}
+function normalize(){const d=def(),prevAppVersion=state?.appVersion||"";state={...d,...state};state.profiles=Array.isArray(state.profiles)&&state.profiles.length===3?state.profiles:d.profiles;state.history=Array.isArray(state.history)?state.history:[];state.externalQuestions=Array.isArray(state.externalQuestions)?state.externalQuestions:[];state.appliedPacks=Array.isArray(state.appliedPacks)?state.appliedPacks:[];state.remedialPlans=Array.isArray(state.remedialPlans)?state.remedialPlans:[];state.remedialProgress=state.remedialProgress||{};state.scope={m3:{...(state.scope?.m3||{})},g5:{...(state.scope?.g5||{})}};for(const t of ["m3","g5"]){for(const s of T[t].subjects){const a=sections(t,s);if(a.length&&!(s in state.scope[t]))state.scope[t][s]=a[0].order}}if(prevAppVersion!==APP_VERSION&&state.currentExam){const qs=state.currentExam.questions||[];if(qs.some(q=>q.track==="g5"))state.currentExam=null}state.appVersion=APP_VERSION;state.version=10}
 function load(){try{state=JSON.parse(localStorage.getItem(KEY)||"null")||def();normalize();save();window.STORE_ERR=null}catch(e){state=def();normalize();window.STORE_ERR=e}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));window.STORE_ERR=null}catch(e){window.STORE_ERR=e}}
 function page(h){$("app").innerHTML=h;window.scrollTo(0,0)}
-function top(title,back="home()") {return `<div class="top"><div><div class="brand">${esc(title)}</div><div class="sub">V10.3 • ثلاث طالبات • تركيز مباشر على درس خامس الحالي</div></div><button class="btn light sm" onclick="${back}">رجوع</button></div>`}
+function top(title,back="home()") {return `<div class="top"><div><div class="brand">${esc(title)}</div><div class="sub">V10.4 • ثلاث طالبات • تركيز مباشر على درس خامس الحالي</div></div><button class="btn light sm" onclick="${back}">رجوع</button></div>`}
 function warn(){return window.STORE_ERR?`<div class="card warning"><b>الحفظ المحلي غير متاح في طريقة الفتح الحالية.</b><div>استخدم رابط GitHub Pages عبر https حتى تُحفظ النتائج.</div></div>`:""}
 function name(t){return T[t]?.name||t}
 function profile(pid){return state.profiles.find(p=>p.id===pid)}
@@ -95,11 +96,27 @@ function currentFocus(track,subject,b=null){
  if(previous.length){const latest=Math.max(...previous.map(academicOrder));return previous.filter(q=>academicOrder(q)===latest)}
  return[]
 }
+function isG5DecimalStage(){
+ const cur=Number(state.scope?.g5?.["الرياضيات"]||0);
+ const sec=sections("g5","الرياضيات").find(x=>x.order===cur);
+ return !!(sec&&sec.term===1&&sec.unitOrder===2&&sec.lessonOrder>=4&&sec.lessonOrder<=7)
+}
+function g5DecimalOnly(pool){
+ if(!isG5DecimalStage())return pool;
+ return pool.filter(q=>{
+   if(q.track!=="g5"||q.subject!=="الرياضيات")return true;
+   if(q.skill==="الأعداد العشرية")return true;
+   const txt=String(q.text||"");
+   return /[٫.]/.test(txt);
+ });
+}
 function schoolSubjectSelect(pid,t,s,n,mode){
- const b=eligible(t,s);if(!b.length)return[];
+ let b=eligible(t,s);if(!b.length)return[];
+ if(t==="g5"&&s==="الرياضيات"&&isG5DecimalStage()){
+  const decimal=g5DecimalOnly(b);
+  if(decimal.length)return weightedSelect(pid,t,n,mode,decimal).slice(0,n);
+ }
  const focus=currentFocus(t,s,b);
- // خامس رياضيات: إذا وُجدت أسئلة مرتبطة بآخر درس محدد، نستخدمها فقط.
- // هذا يمنع رجوع الاختبار إلى الأعداد الصحيحة عند الوصول إلى الكسور العشرية وجمعها وطرحها.
  if(t==="g5"&&s==="الرياضيات"&&focus.length)return weightedSelect(pid,t,n,mode,focus).slice(0,n);
  if(!focus.length||focus.length===b.length)return weightedSelect(pid,t,n,mode,b);
  const focusN=Math.max(1,Math.min(n,Math.round(n*.75))),reviewN=Math.max(0,n-focusN);
