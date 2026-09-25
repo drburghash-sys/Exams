@@ -63,7 +63,7 @@ function normalize(){const d=def();state={...d,...state};state.profiles=Array.is
 function load(){try{state=JSON.parse(localStorage.getItem(KEY)||"null")||def();normalize();save();window.STORE_ERR=null}catch(e){state=def();normalize();window.STORE_ERR=e}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));window.STORE_ERR=null}catch(e){window.STORE_ERR=e}}
 function page(h){$("app").innerHTML=h;window.scrollTo(0,0)}
-function top(title,back="home()") {return `<div class="top"><div><div class="brand">${esc(title)}</div><div class="sub">V10.2 • ثلاث طالبات • تركيز مباشر على درس خامس الحالي</div></div><button class="btn light sm" onclick="${back}">رجوع</button></div>`}
+function top(title,back="home()") {return `<div class="top"><div><div class="brand">${esc(title)}</div><div class="sub">V10.3 • ثلاث طالبات • تركيز مباشر على درس خامس الحالي</div></div><button class="btn light sm" onclick="${back}">رجوع</button></div>`}
 function warn(){return window.STORE_ERR?`<div class="card warning"><b>الحفظ المحلي غير متاح في طريقة الفتح الحالية.</b><div>استخدم رابط GitHub Pages عبر https حتى تُحفظ النتائج.</div></div>`:""}
 function name(t){return T[t]?.name||t}
 function profile(pid){return state.profiles.find(p=>p.id===pid)}
@@ -71,9 +71,19 @@ function eligible(track,subject=null){let a=allBank().filter(q=>q.track===track)
 function currentFocus(track,subject,b=null){
  const pool=b||eligible(track,subject),cur=Number(state.scope?.[track]?.[subject]||0);
  if(!cur||!pool.length)return[];
+ const sec=sections(track,subject).find(x=>x.order===cur);
+
+ // خامس رياضيات - الفصل الثاني (الجمع والطرح):
+ // ابتداءً من درس جمع الكسور العشرية وطرحها وحتى نهاية الفصل،
+ // لا نستخدم أسئلة "الجمع والطرح" القديمة الخاصة بالأعداد الصحيحة.
+ // نُبقي التركيز على بنك الأعداد العشرية لأنه المطابق للمنهج الحالي.
+ if(track==="g5"&&subject==="الرياضيات"&&sec?.term===1&&sec?.unitOrder===2&&sec?.lessonOrder>=5){
+  const decimalPool=pool.filter(q=>q.skill==="الأعداد العشرية");
+  if(decimalPool.length)return decimalPool;
+ }
+
  let exact=pool.filter(q=>academicOrder(q)===cur);
  if(exact.length)return exact;
- const sec=sections(track,subject).find(x=>x.order===cur);
  if(sec){
   const sameUnit=pool.filter(q=>{const o=academicOrder(q);return Math.floor(o/1000000)===sec.term&&Math.floor((o%1000000)/1000)===sec.unitOrder&&o<=cur});
   if(sameUnit.length){
