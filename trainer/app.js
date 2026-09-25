@@ -231,9 +231,12 @@
     session.answered=true;
     const q=session.current;
     const ok=i===q.answer;
-    const skillKey=(q.category==='step'?'STEP: ':q.category==='verbal'?'لفظي: ':'كمي: ')+q.skill;
+    const skillKey=q.skill;
+    const categoryKey=q.category==='step'?'STEP':q.category==='verbal'?'لفظي':'كمي';
     const st=ensureStat(skillKey);
+    const cat=ensureStat(categoryKey);
     st.last=Date.now();
+    cat.last=Date.now();
 
     const buttons=[...document.querySelectorAll('.answer-btn')];
     buttons.forEach((b,idx)=>{
@@ -242,13 +245,13 @@
     });
 
     if(ok){
-      state.correct++; state.score+=10+Math.min(state.streak*2,20); state.streak++; st.c++;
+      state.correct++; state.score+=10+Math.min(state.streak*2,20); state.streak++; st.c++; cat.c++;
       state.bestStreak=Math.max(state.bestStreak,state.streak);
       $('feedback').innerHTML='<div class="feedback-good"><b>✓ صحيح</b><br>'+escapeHtml(q.explanation)+'</div>';
     } else {
-      state.wrong++; state.streak=0; st.w++;
+      state.wrong++; state.streak=0; st.w++; cat.w++;
       button.classList.add('wrong');
-      state.mistakes.unshift({time:Date.now(),skill:skillKey,q:q.q,answer:q.options[q.answer],explanation:q.explanation});
+      state.mistakes.unshift({time:Date.now(),skill:categoryKey+': '+skillKey,q:q.q,answer:q.options[q.answer],explanation:q.explanation});
       state.mistakes=state.mistakes.slice(0,100);
       $('feedback').innerHTML='<div class="feedback-bad"><b>✗ الإجابة الصحيحة: '+escapeHtml(q.options[q.answer])+'</b><br>'+escapeHtml(q.explanation)+'</div>';
     }
