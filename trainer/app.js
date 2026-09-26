@@ -18,6 +18,7 @@
   const defaultState = {
     score:0, correct:0, wrong:0, streak:0, bestStreak:0,
     stats:{}, mistakes:[], seenWords:{}, daily:{date:'',done:0,total:20},
+    wordStudy:{currentEn:[],currentAr:[],mastered:{},batches:0},
     settings:{dailyTotal:20}
   };
   let state = loadState();
@@ -26,7 +27,7 @@
   function loadState(){
     try {
       const saved=JSON.parse(localStorage.getItem(STORE)||'null');
-      return saved ? Object.assign({},defaultState,saved,{stats:saved.stats||{},mistakes:saved.mistakes||[],seenWords:saved.seenWords||{},daily:saved.daily||{date:'',done:0,total:20},settings:saved.settings||{dailyTotal:20}}) : JSON.parse(JSON.stringify(defaultState));
+      return saved ? Object.assign({},defaultState,saved,{stats:saved.stats||{},mistakes:saved.mistakes||[],seenWords:saved.seenWords||{},daily:saved.daily||{date:'',done:0,total:20},wordStudy:saved.wordStudy||{currentEn:[],currentAr:[],mastered:{},batches:0},settings:saved.settings||{dailyTotal:20}}) : JSON.parse(JSON.stringify(defaultState));
     } catch(e){ return JSON.parse(JSON.stringify(defaultState)); }
   }
   function saveState(){ localStorage.setItem(STORE,JSON.stringify(state)); }
@@ -321,6 +322,94 @@
     });
   }
 
+  function getWordById(id){
+    return DATA.englishWords.concat(DATA.arabicWords).find(x=>x.id===id);
+  }
+
+  function chooseStudyWords(bank,count){
+    const mastered=state.wordStudy.mastered||{};
+    let pool=bank.filter(x=>!mastered[x.id]);
+    if(pool.length<count){
+      state.wordStudy.mastered={};
+      pool=bank.slice();
+    }
+    return shuffle(pool).slice(0,count);
+  }
+
+  function ensureStudyBatch(){
+    if(!state.wordStudy) state.wordStudy={currentEn:[],currentAr:[],mastered:{},batches:0};
+    const enValid=(state.wordStudy.currentEn||[]).map(getWordById).filter(Boolean);
+    const arValid=(state.wordStudy.currentAr||[]).map(getWordById).filter(Boolean);
+    if(enValid.length!==3 || arValid.length!==3){
+      state.wordStudy.currentEn=chooseStudyWords(DATA.englishWords,3).map(x=>x.id);
+      state.wordStudy.currentAr=chooseStudyWords(DATA.arabicWords,3).map(x=>x.id);
+      saveState();
+    }
+  }
+
+  function wordStudyCard(x){
+    const en=x.lang==='en';
+    return '<article class="study-card">'
+      +'<div class="word '+(en?'ltr':'')+'">'+escapeHtml(x.word)+'</div>'
+      +'<div class="meaning">'+escapeHtml(x.meaning)+'</div>'
+      +'<div class="meta">'+(en?'Synonym: ':'المرادف: ')+escapeHtml(x.synonym)+'<br>'+(en?'Antonym: ':'الضد: ')+escapeHtml(x.antonym)+'</div>'
+      +'</article>';
+  }
+
+  function renderStudy(){
+    ensureStudyBatch();
+    const en=(state.wordStudy.currentEn||[]).map(getWordById).filter(Boolean);
+    const ar=(state.wordStudy.currentAr||[]).map(getWordById).filter(Boolean);
+    $('studyEnglish').innerHTML=en.map(wordStudyCard).join('');
+    $('studyArabic').innerHTML=ar.map(wordStudyCard).join('');
+    $('masteredBatchCount').textContent=String(state.wordStudy.batches||0);
+  }
+
+  function masterCurrentWords(){
+    ensureStudyBatch();
+    const all=(state.wordStudy.currentEn||[]).concat(state.wordStudy.currentAr||[]);
+    all.forEach(id=>state.wordStudy.mastered[id]=true);
+    state.wordStudy.batches=(state.wordStudy.batches||0)+1;
+    state.wordStudy.currentEn=chooseStudyWords(DATA.englishWords,3).map(x=>x.id);
+    state.wordStudy.currentAr=chooseStudyWords(DATA.arabicWords,3).map(x=>x.id);
+    saveState();
+    renderStudy();
+  }
+
+  let activeRuleGroup='english';
+
+  function renderRules(){
+    const source=(window.TRAINER_RULES&&window.TRAINER_RULES[activeRuleGroup])||[];
+    $('englishRulesTab').classList.toggle('active',activeRuleGroup==='english');
+    $('quantRulesTab').classList.toggle('active',activeRuleGroup==='quant');
+    const box=$('rulesList');
+    box.innerHTML='';
+    source.forEach((r,idx)=>{
+      const item=document.createElement('article');
+      item.className='rule-item';
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='rule-toggle';
+      btn.setAttribute('aria-expanded','false');
+      btn.innerHTML='<span>'+escapeHtml(r.title)+'</span><span>＋</span>';
+      const body=document.createElement('div');
+      body.className='rule-body';
+      body.hidden=true;
+      let html='<div class="rule-summary">'+escapeHtml(r.summary||'')+'</div>';
+      if(r.formula) html+='<div class="formula">'+escapeHtml(r.formula)+'</div>';
+      if(r.details&&r.details.length) html+='<ul>'+r.details.map(x=>'<li>'+escapeHtml(x)+'</li>').join('')+'</ul>';
+      html+='<b>3 أمثلة:</b><div class="examples">'+(r.examples||[]).slice(0,3).map((x,i)=>'<div class="example"><b>مثال '+(i+1)+':</b> '+escapeHtml(x)+'</div>').join('')+'</div>';
+      body.innerHTML=html;
+      btn.addEventListener('click',()=>{
+        const open=body.hidden;
+        body.hidden=!open;
+        btn.setAttribute('aria-expanded',open?'true':'false');
+        btn.lastElementChild.textContent=open?'−':'＋';
+      });
+      item.appendChild(btn); item.appendChild(body); box.appendChild(item);
+    });
+  }
+
   function renderWordBank(){
     const q=$('wordSearch').value.trim().toLowerCase();
     const lang=$('wordLang').value;
@@ -341,6 +430,8 @@
     $(name+'View').hidden=false;
     document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
     if(name==='words')renderWordBank();
+    if(name==='study')renderStudy();
+    if(name==='rules')renderRules();
     if(name==='mistakes')renderMistakes();
     if(name==='home')renderWeakness();
   }
@@ -367,12 +458,15 @@
   document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
   $('wordSearch').addEventListener('input',renderWordBank);
   $('wordLang').addEventListener('change',renderWordBank);
+  $('masterWordsBtn').addEventListener('click',masterCurrentWords);
+  $('englishRulesTab').addEventListener('click',()=>{activeRuleGroup='english';renderRules();});
+  $('quantRulesTab').addEventListener('click',()=>{activeRuleGroup='quant';renderRules();});
   $('resetBtn').addEventListener('click',()=>{
     if(confirm('سيتم حذف سجل النقاط والأخطاء ونقاط الضعف من هذا الجهاز فقط. هل تريد المتابعة؟')){
       state=JSON.parse(JSON.stringify(defaultState));ensureDaily();saveState();updateHeader();renderWeakness();renderMistakes();
     }
   });
 
-  ensureDaily(); saveState(); updateHeader(); renderWeakness(); renderWordBank(); showView('home');
+  ensureDaily(); ensureStudyBatch(); saveState(); updateHeader(); renderWeakness(); renderWordBank(); renderStudy(); showView('home');
   if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{})); }
 })();
