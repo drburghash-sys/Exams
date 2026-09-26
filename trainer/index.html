@@ -79,9 +79,28 @@
     .mistake-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:9px;line-height:1.7;font-size:13px}
     .mistake-card small{display:block;color:var(--muted);margin-top:4px}
     .mini-label{color:var(--accent);font-size:11px;margin-bottom:5px}
+    .study-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .study-column h3{margin:0 0 9px;font-size:15px}
+    .study-card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:12px;margin-bottom:8px}
+    .study-card .word{font-size:20px;font-weight:bold;margin-bottom:5px}
+    .study-card .meaning{font-size:13px;line-height:1.7}
+    .study-card .meta{font-size:11px;color:var(--muted);line-height:1.6;margin-top:5px}
+    .study-actions{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+    .rule-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+    .rule-tab{min-height:44px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--text);font-weight:bold}
+    .rule-tab.active{background:#173047;outline:1px solid var(--accent)}
+    .rule-item{border:1px solid var(--line);border-radius:14px;background:var(--panel);margin-bottom:9px;overflow:hidden}
+    .rule-toggle{width:100%;min-height:52px;border:0;background:transparent;color:var(--text);padding:12px 14px;display:flex;justify-content:space-between;gap:10px;text-align:right;font-weight:bold}
+    .rule-toggle span:last-child{color:var(--accent)}
+    .rule-body{padding:0 14px 14px;border-top:1px solid rgba(255,255,255,.05);line-height:1.8;font-size:13px}
+    .rule-body .rule-summary{font-weight:bold;margin:10px 0}
+    .formula{background:#0a1a27;border:1px solid var(--line);border-radius:10px;padding:9px;margin:9px 0;color:#dcebf5}
+    .rule-body ul{margin:8px 0;padding-right:20px}
+    .examples{display:grid;gap:7px;margin-top:10px}
+    .example{background:#102638;border-radius:10px;padding:9px}
     [hidden]{display:none!important}
     @media(max-width:520px){
-      .app{padding:10px 10px 86px}.hero h1{font-size:21px}.stats{grid-template-columns:repeat(2,1fr)}.modes{grid-template-columns:1fr}.mode-card{min-height:82px}.word-tools{grid-template-columns:1fr}.quiz-actions{flex-wrap:wrap}.secondary{flex:1}
+      .app{padding:10px 10px 86px}.hero h1{font-size:21px}.stats{grid-template-columns:repeat(2,1fr)}.modes{grid-template-columns:1fr}.mode-card{min-height:82px}.word-tools{grid-template-columns:1fr}.quiz-actions{flex-wrap:wrap}.secondary{flex:1}.study-grid{grid-template-columns:1fr}.nav-btn{font-size:10px;padding:2px}.nav{grid-template-columns:repeat(6,1fr)}
     }
   </style>
 </head>
@@ -154,6 +173,34 @@
       <div id="bankLimitNote" class="hint"></div>
     </section>
 
+
+    <section id="studyView" class="view" hidden>
+      <div class="section-title"><h2>6 كلمات للحفظ</h2><span>3 عربي + 3 English</span></div>
+      <div class="study-grid">
+        <div class="study-column">
+          <h3>العربية</h3>
+          <div id="studyArabic"></div>
+        </div>
+        <div class="study-column">
+          <h3>English</h3>
+          <div id="studyEnglish"></div>
+        </div>
+      </div>
+      <div class="study-actions">
+        <button id="masterWordsBtn" class="primary">✓ حفظت هذه الكلمات — أعطني غيرها</button>
+        <span class="hint">المجموعات المنجزة: <b id="masteredBatchCount">0</b></span>
+      </div>
+    </section>
+
+    <section id="rulesView" class="view" hidden>
+      <div class="section-title"><h2>شرح القواعد</h2><span>اضغطي اسم القاعدة لفتح الشرح</span></div>
+      <div class="rule-tabs">
+        <button id="englishRulesTab" class="rule-tab active">قواعد الإنجليزية</button>
+        <button id="quantRulesTab" class="rule-tab">قواعد الكمي</button>
+      </div>
+      <div id="rulesList"></div>
+    </section>
+
     <section id="mistakesView" class="view" hidden>
       <div class="section-title"><h2>دفتر الأخطاء</h2><span>آخر 30 خطأ</span></div>
       <div id="mistakeList"></div>
@@ -170,12 +217,15 @@
 
   <nav class="nav" aria-label="التنقل">
     <button class="nav-btn active" data-view="home">الرئيسية</button>
-    <button class="nav-btn" data-view="words">الكلمات</button>
+    <button class="nav-btn" data-view="study">حفظ كلمات</button>
+    <button class="nav-btn" data-view="rules">القواعد</button>
+    <button class="nav-btn" data-view="words">البنك</button>
     <button class="nav-btn" data-view="mistakes">الأخطاء</button>
     <button class="nav-btn" data-view="settings">الإعدادات</button>
   </nav>
 
   <script src="./data.js"></script>
+  <script src="./rules.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
