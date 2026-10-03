@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>أسئلة الكتاب — ثالث متوسط</title>
+<style>
+:root{--bg:#f7faf8;--card:#fff;--text:#15352f;--muted:#6b7f7a;--line:#dfe8e4;--accent:#2f6d61;--ok:#e8f7ee;--bad:#fff0ed}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}
+main{max-width:760px;margin:auto;padding:14px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+h1{font-size:22px;margin:0}h2,h3{margin:0 0 10px}.muted{color:var(--muted);font-size:13px}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 8px 24px rgba(20,60,50,.06)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}
+button,select{font:inherit}button{border:0;border-radius:13px;padding:11px 14px;background:var(--accent);color:white;font-weight:800;cursor:pointer}.secondary{background:white;color:var(--text);border:1px solid var(--line)}
+.subject button{width:100%;margin-top:8px}.badge{display:inline-block;background:#edf5f2;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800}.big{font-size:28px;font-weight:900}
+.answers{display:grid;gap:9px;margin-top:14px}.answer{background:white;color:var(--text);border:1px solid var(--line);text-align:right;padding:14px}.answer.correct{background:var(--ok);border-color:#5da777}.answer.wrong{background:var(--bad);border-color:#c77b6d}
+.qtext{font-size:21px;font-weight:800;line-height:1.8;margin:16px 0}.progress{height:9px;background:#e8efec;border-radius:99px;overflow:hidden;margin-bottom:12px}.progress span{display:block;height:100%;background:var(--accent)}
+.note{border-right:4px solid #8ab5aa}.feedback{margin-top:12px;padding:12px;border-radius:12px}.ok{background:var(--ok)}.bad{background:var(--bad)}
+@media(max-width:600px){.grid{grid-template-columns:1fr}main{padding:10px}.qtext{font-size:19px}}
+</style>
+</head>
+<body><main id="app"></main>
+<script src="../bridge.js"></script>
+<script>
+'use strict';
+if(STUDY_CONTEXT.pid!=='p2'){studyHome();throw new Error('هذا القسم خاص بجمانة');}
+const app=document.getElementById('app');
+const SUBJECTS=['الرياضيات','الإنجليزي','العلوم','لغتي'];
+const Q=(STUDY_CONTEXT.bank||[]).filter(q=>q.track==='m3'&&Array.isArray(q.options)&&Number.isInteger(q.answer));
+const KEY='third_book_practice_v1';
+let st={seen:[],history:[]},session=null;
+try{st={...st,...JSON.parse(StudyStore.getItem(KEY)||'{}')}}catch{}
+const save=()=>StudyStore.setItem(KEY,JSON.stringify(st));
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const order=q=>STUDY_CONTEXT.order(q);
+const scope=s=>Number(STUDY_CONTEXT.scope?.[s]||0);
+const catalog=subject=>(STUDY_CONTEXT.catalog||[]).filter(x=>x.track==='m3'&&x.subject===subject);
+const curLesson=subject=>{const c=scope(subject),x=catalog(subject).find(x=>Number(x.term||1)*1000000+Number(x.unitOrder||1)*1000+Number(x.lessonOrder||1)===c);return x?.lesson||'لم يبدأ'};
+function eligible(subject){const lim=scope(subject);return Q.filter(q=>q.subject===subject&&order(q)<=lim)}
+function latestPool(subject){
+ const pool=eligible(subject);if(!pool.length)return[];
+ const lim=scope(subject),exact=pool.filter(q=>order(q)===lim);if(exact.length)return exact;
+ const max=Math.max(...pool.map(order));return pool.filter(q=>order(q)===max);
+}
+function shuffle(a){const x=a.slice();for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
+function randomize(q){const pairs=shuffle(q.options.map((value,index)=>({value,index})));return {...q,options:pairs.map(x=>x.value),answer:pairs.findIndex(x=>x.index===q.answer)}}
+function pick(subject,n){
+ const all=eligible(subject),latest=latestPool(subject),seen=new Set(st.seen||[]);
+ const rank=a=>shuffle(a).sort((a,b)=>(seen.has(a.id)?1:0)-(seen.has(b.id)?1:0));
+ const k=Math.min(n,Math.max(1,Math.round(n*.7)));
+ let out=rank(latest).slice(0,k);out.push(...rank(all.filter(q=>!out.includes(q))).slice(0,n-out.length));
+ return shuffle(out).slice(0,n).map(randomize)
+}
+function shell(body,title='أسئلة الكتاب — ثالث متوسط'){
+ app.innerHTML=`<div class="top"><div><h1>${esc(title)}</h1><div class="muted">جمانة • حسب موضع المنهج المحدد</div></div><button class="secondary" onclick="studyHome()">ملفي</button></div>${body}`;scrollTo(0,0)
+}
+window.home=function(){
+ const cards=SUBJECTS.map(s=>{const n=eligible(s).length;return `<article class="card subject"><span class="badge">${esc(curLesson(s))}</span><h2>${esc(s)}</h2><div class="big">${n}</div><div class="muted">سؤال مرتبط بالدروس التي وصلتِ إليها</div><button ${n?'':'disabled'} onclick='setup(${JSON.stringify(s)})'>أسئلة الكتاب</button></article>`}).join('');
+ shell(`<div class="grid">${cards}</div><section class="card note"><b>ملاحظة المصدر</b><p class="muted">أسئلة ثالث متوسط الحالية مرتبطة بدروس الكتاب والمنهج، لكن البنك القديم لا يحفظ رقم الصفحة ورقم السؤال. لذلك لا أعرض أرقام صفحات غير موثقة. عند إضافة بنك صفحات موثّق سيظهر هنا تلقائيًا.</p></section>`)
+};
+window.setup=function(subject){
+ const n=eligible(subject).length;if(!n)return;
+ shell(`<section class="card"><span class="badge">${esc(curLesson(subject))}</span><h2>${esc(subject)}</h2><label>عدد الأسئلة</label><select id="cnt"><option>5</option><option selected>10</option><option>15</option><option>20</option></select><div style="height:10px"></div><button onclick='start(${JSON.stringify(subject)},+document.getElementById("cnt").value)'>ابدئي</button></section>`,'إعداد أسئلة الكتاب')
+};
+window.start=function(subject,n){
+ const qs=pick(subject,n);if(!qs.length)return alert('لا توجد أسئلة في نطاقك الحالي.');
+ session={subject,questions:qs,index:0,score:0,selected:null,locked:false};render()
+};
+function render(){
+ const q=session.questions[session.index],total=session.questions.length;
+ shell(`<div class="progress"><span style="width:${100*session.index/total}%"></span></div><section class="card"><div class="row between"><span class="badge">${esc(q.meta?.lesson||q.skill)}</span><span>${session.index+1}/${total}</span></div><div class="qtext">${esc(q.text)}</div><div class="answers">${q.options.map((o,i)=>`<button id="a${i}" class="answer" onclick="choose(${i})"><b>${['أ','ب','ج','د'][i]||i+1}</b> — ${esc(o)}</button>`).join('')}</div><div id="fb"></div></section>`,session.subject)
+}
+window.choose=function(i){
+ if(session.locked)return;session.locked=true;session.selected=i;
+ const q=session.questions[session.index],ok=i===q.answer;if(ok)session.score++;
+ document.querySelectorAll('.answer').forEach((b,j)=>{b.disabled=true;if(j===q.answer)b.classList.add('correct');if(j===i&&!ok)b.classList.add('wrong')});
+ studyRecord({module:'book3',track:'m3',subject:q.subject,skill:q.skill,text:q.text,selected:q.options[i],correctText:q.options[q.answer],correct:ok,explanation:q.explanation,question:q});
+ st.seen=[...(st.seen||[]),q.id].slice(-250);save();
+ document.getElementById('fb').innerHTML=`<div class="feedback ${ok?'ok':'bad'}"><b>${ok?'صحيح ✓':'الإجابة الصحيحة: '+esc(q.options[q.answer])}</b><div class="muted">${esc(q.explanation||'')}</div></div><button onclick="next()">${session.index===session.questions.length-1?'النتيجة':'التالي'}</button>`
+};
+window.next=function(){session.index++;if(session.index>=session.questions.length)return finish();session.selected=null;session.locked=false;render()};
+function finish(){
+ const total=session.questions.length,p=Math.round(100*session.score/Math.max(1,total));
+ st.history.push({date:Date.now(),subject:session.subject,score:session.score,total});save();
+ shell(`<section class="card"><h2>النتيجة</h2><div class="big">${session.score} / ${total}</div><p>${p}٪</p><button onclick="home()">العودة لأسئلة الكتاب</button></section>`,'النتيجة')
+}
+const mode=new URLSearchParams(location.search).get('mode');
+if(mode&&SUBJECTS.includes(mode))setup(mode);else home();
+</script></body></html>
