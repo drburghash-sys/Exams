@@ -12,7 +12,7 @@ const T={
  g5:{name:"خامس ابتدائي",short:"خامس",subjects:["الرياضيات","الإنجليزي"],weekly:20}
 };
 let state,session=null,timer=null;
-function def(){return {version:9,parentPin:"1234",profiles:[
+function def(){return {version:10,profiles:[
  {id:"p1",name:"جنى",tracks:["quant","verbal","step"],kind:"aptitude"},
  {id:"p2",name:"جمانة",tracks:["m3"],kind:"school"},
  {id:"p3",name:"حكمة",tracks:["g5"],kind:"school"}
