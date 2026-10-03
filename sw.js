@@ -1,17 +1,1 @@
-const CACHE='adaptive-v10-5-20260926';
-const STATIC=['./icon-192.png','./icon-512.png'];
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(STATIC)).then(()=>self.skipWaiting())));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',e=>{
-  if(e.request.method!=='GET')return;
-  const u=new URL(e.request.url);
-  if(u.origin!==self.location.origin)return;
-  const codeOrData=e.request.mode==='navigate'||e.request.destination==='script'||e.request.destination==='manifest'||/\.(?:js|json|webmanifest|html)$/.test(u.pathname);
-  if(codeOrData){
-    e.respondWith(fetch(e.request,{cache:'no-store'}).then(r=>r).catch(()=>caches.match(e.request)));
-    return;
-  }
-  e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(resp=>{
-    const copy=resp.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return resp;
-  })));
-});
+const TARGET="https://drburghash-sys.github.io/Exams/study/";const OLD="/Exams/";self.addEventListener('install',()=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(self.clients.claim().then(()=>self.clients.matchAll({type:'window',includeUncontrolled:true})).then(cs=>Promise.all(cs.filter(c=>{const p=new URL(c.url).pathname;return p.startsWith(OLD)&&!p.startsWith('/Exams/study/')}).map(c=>c.navigate(TARGET))))));self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(e.request.mode==='navigate'&&u.pathname.startsWith(OLD)&&!u.pathname.startsWith('/Exams/study/'))e.respondWith(Response.redirect(TARGET,302));});
