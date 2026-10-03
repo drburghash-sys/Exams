@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#16324f">
+
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=0.1.4"><link rel="apple-touch-icon" sizes="192x192" href="apple-touch-icon.png?v=0.1.4">
+<title>خامس من الكتاب</title>
+<style>
+:root{--bg:#f3f6fa;--card:#fff;--ink:#132238;--muted:#64748b;--brand:#16324f;--accent:#276fbf;--line:#dbe3ec;--ok:#166534;--bad:#991b1b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}
+#app{max-width:900px;margin:auto;padding:14px;min-height:100vh}header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:4px 0 14px}h1{font-size:21px;margin:0}h2,h3{margin-top:0}
+.card,.hero{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 8px 24px rgba(15,35,60,.06)}
+.hero{background:linear-gradient(145deg,#fff,#eef5ff)}.app-logo{width:96px;height:96px;border-radius:24px;display:block;margin:0 0 12px auto;box-shadow:0 8px 22px rgba(15,35,60,.18)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.between{justify-content:space-between}
+button{border:0;border-radius:13px;padding:11px 15px;background:var(--brand);color:white;font-weight:800;font-size:15px}button.secondary,.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.big{font-size:34px;font-weight:900}.muted,.source{color:var(--muted);font-size:12px}.scope{font-weight:800;color:#1d4ed8}.badge{display:inline-block;padding:6px 9px;border-radius:999px;background:#e8f1ff;color:#194f90;font-size:12px;font-weight:800}
+label{display:block;font-weight:800;margin:12px 0 6px}select,input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:12px;background:#fff;font:inherit}.question .qtext{font-size:23px;font-weight:850;line-height:1.8;margin:22px 0;white-space:pre-wrap}.ltr{direction:ltr;text-align:left}
+.answers{display:grid;gap:10px}.answer{background:#fff;color:var(--ink);border:1px solid var(--line);text-align:start}.inputrow{display:grid;grid-template-columns:1fr auto;gap:8px}.ok,.bad,.reference{padding:12px;border-radius:12px;margin:12px 0}.ok{background:#ecfdf3;color:var(--ok)}.bad{background:#fff1f2;color:var(--bad)}.reference{background:#f8fafc;border:1px solid var(--line)}.hidden{display:none}.progress{height:9px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin:8px 0 14px}.progress span{display:block;height:100%;background:var(--accent)}.score{font-size:24px;font-weight:900}.bankrow{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}.note{border-right:5px solid #f59e0b}
+@media(max-width:650px){.grid2{grid-template-columns:1fr}.question .qtext{font-size:20px}.inputrow{grid-template-columns:1fr}header .ghost{padding:8px 10px}}
+</style>
+<script src="../bridge.js"></script></head>
+<body><main id="app"></main>
+<script>
+"use strict";
+const V="0.1.4", KEY="grade5_book_only_quiz_v013", AR="٠١٢٣٤٥٦٧٨٩";
+const mathScope=[
+[20,"استكشاف الكسور الاعتيادية والكسور العشرية"],[22,"تمثيل الكسور العشرية"],[25,"القيمة المنزلية ضمن أجزاء الألف"],[30,"مقارنة الكسور العشرية"],[33,"ترتيب الأعداد والكسور العشرية"],
+[47,"تقريب الأعداد والكسور العشرية"],[50,"تقدير نواتج الجمع والطرح"],[57,"استكشاف جمع الكسور العشرية وطرحها"],[59,"جمع الكسور العشرية وطرحها"],[64,"خصائص الجمع"],[67,"الجمع والطرح ذهنيًا"],
+[77,"أنماط الضرب"],[82,"خاصية التوزيع"],[86,"تقدير نواتج الضرب"],[90,"الضرب في عدد من رقم واحد"],[97,"الضرب في عدد من رقمين"],
+[111,"أنماط القسمة"],[114,"تقدير نواتج القسمة"],[120,"القسمة على عدد من رقم واحد"],[124,"القسمة على عدد من رقمين"],
+[143,"عبارات الجمع والطرح الجبرية"],[148,"عبارات الضرب والقسمة الجبرية"],[158,"جداول الدوال"],[162,"ترتيب العمليات"],[168,"معادلات الجمع والطرح"],[174,"معادلات الضرب"],
+[183,"القسمة والكسور الاعتيادية"],[188,"الكسور غير الفعلية"],[194,"الأعداد الكسرية"],[198,"مقارنة الكسور الاعتيادية والأعداد الكسرية"],[201,"تقريب الكسور"]
+];
+const englishScope=[[4,"Welcome!"],[9,"Unit 1: Personal Interests"],[12,"Unit 1: Grammar - Simple Present / Simple Past"],[14,"Unit 1: Story"],[17,"Unit 1: Grammar - Action and state verbs"],[18,"Unit 1: Reading"],[21,"Unit 1: Review"],[22,"Unit 2: House Designs"],[34,"Unit 3: Job Paths"],[46,"Unit 4: Glorious Food"],[58,"Unit 5: Storylines"],[70,"Unit 6: Outdoor Activities"],[82,"Unit 7: Trips"],[94,"Unit 8: Outfits"],[106,"Goodbye!"]];
+const Q=[];
+const mq=(id,ord,lesson,page,no,type,text,answer,options,accepted)=>Q.push({id,subject:"math",ord,lesson,page,no,type,text,answer,options,accepted});
+const eq=(id,ord,lesson,page,no,type,text,answer,options)=>Q.push({id,subject:"english",ord,lesson,page,no,type,text,answer,options});
+
+// تمثيل الكسور العشرية - ص23
+[
+["M23_1",1,"اكتب الكسر 4/10 على صورة كسر عشري.","0.4"],["M23_2",2,"اكتب الكسر 2/10 على صورة كسر عشري.","0.2"],["M23_3",3,"اكتب الكسر 58/100 على صورة كسر عشري.","0.58"],
+["M23_4",4,"اكتب الكسر 74/100 على صورة كسر عشري.","0.74"],["M23_5",5,"اكتب الكسر 6/100 على صورة كسر عشري.","0.06"],["M23_6",6,"اكتب الكسر 5/100 على صورة كسر عشري.","0.05"],
+["M23_7",7,"اكتب الكسر 795/1000 على صورة كسر عشري.","0.795"],["M23_8",8,"اكتب الكسر 9/1000 على صورة كسر عشري.","0.009"],
+["M23_9",9,"أظهرت نتائج مسح أُجري على عدد من الطلاب أن 60/100 منهم يحبون مشاهدة البرامج الوثائقية. اكتب هذه النتيجة على صورة كسر عشري.","0.6"]
+].forEach(x=>mq(x[0],22,"تمثيل الكسور العشرية",23,x[1],"numeric",x[2],x[3]));
+
+// مقارنة الكسور العشرية - ص31
+[["0.7","0.5",">"],["0.26","0.62","<"],["3.70","3.7","="],["4.44","4.40",">"],["0.102","0.300","<"],["9.618","9.624","<"],["8.001","8.001","="],["0.42","0.375",">"],["6.5","6.500","="]]
+.forEach((x,i)=>mq("M31_"+(i+1),30,"مقارنة الكسور العشرية",31,i+1,"choice","قارن بين العددين مستعملًا (> ، < ، =): "+x[0]+" ○ "+x[1],x[2],[">","<","="]));
+
+// جمع وطرح الكسور العشرية - ص60
+[[1,"6.32 + 1.46","7.78"],[2,"0.89 - 0.03","0.86"],[3,"0.54 + 7.8","8.34"],[4,"14.8 - 10.26","4.54"],[5,"25 + 8.46","33.46"],[6,"6.75 - 1.2","5.55"],[7,"19.21 - 11.03","8.18"],[8,"3.008 + 1.64","4.648"],[9,"8.9 - 0.15","8.75"],[10,"42.2 + 7.169","49.369"]]
+.forEach(x=>mq("M60_"+x[0],59,"جمع الكسور العشرية وطرحها",60,x[0],"numeric",x[1],x[2]));
+mq("M60_11",59,"جمع الكسور العشرية وطرحها",60,11,"numeric","اشترت أسماء مقلمة ولعبة إلكترونية وبطارية للعبة. أسعارها: اللعبة 14.95 ريال، البطارية 10.50 ريال، المقلمة 12.75 ريال. أوجد مجموع ما دفعته.","38.2");
+
+// ص61-62
+[[13,"35.08 + 11.9","46.98"],[14,"0.8 - 0.22","0.58"],[15,"9.14 - 2.075","7.065"],[16,"5.603 + 1.22","6.823"],[17,"26.768 + 2.991","29.759"],[18,"12.03 - 0.145","11.885"]]
+.forEach(x=>mq("M61_"+x[0],59,"جمع الكسور العشرية وطرحها",61,x[0],"numeric",x[1],x[2]));
+[
+[19,"عند فاطمة 6.4 م قماشًا، إذا استعملت منها 2.8 م لخياطة ثوب لابنها، فكم يبقى من القماش؟","3.6"],
+[20,"يقود طلال دراجته على طريق طوله 35 كيلومترًا. إذا قطع 12.6 كيلومترًا، ثم تابع 10.7 كيلومترات، فكم كيلومترًا يبقى حتى نهاية الطريق؟","11.7"],
+[21,"يباع السماد في أكياس كبيرة كتلة الواحد 48.5 كجم، وصغيرة 24.6 كجم. يحتاج مزارع إلى 75 كجم. إذا اشترى كيسًا كبيرًا وكيسًا صغيرًا، فما الكمية التي ستنقصه؟","1.9"],
+[22,"معدل طول عظم الفخذ 45.312 سم، والساق 37.85 سم. ما الفرق بين طولهما؟","7.462"],
+[23,"معدل طول عظم الساق 37.85 سم، والساعد 25.27 سم. كم يزيد طول الساق على الساعد؟","12.58"]
+].forEach(x=>mq("M61_"+x[0],59,"جمع الكسور العشرية وطرحها",61,x[0],"numeric",x[1],x[2]));
+[[30,"13.7 + 5.08","18.78"],[31,"12.01 - 0.23","11.78"],[32,"24.8 - 16.095","8.705"]].forEach(x=>mq("M62_"+x[0],59,"جمع الكسور العشرية وطرحها",62,x[0],"numeric",x[1],x[2]));
+
+// الضرب في رقم واحد - ص91
+[[1,42,2],[2,61,5],[3,314,9],[4,18,8],[5,31,5],[6,208,3],[7,47,6],[8,624,7],[11,21,3],[12,32,6],[13,52,9],[14,401,7],[15,143,9],[16,72,4],[17,64,5],[18,712,3],[19,211,7],[20,82,5],[21,16,8],[22,67,8],[23,341,4],[24,182,5],[25,806,7],[26,97,6]]
+.forEach(x=>mq("M91_"+x[0],90,"الضرب في عدد من رقم واحد",91,x[0],"numeric",x[1]+" × "+x[2],String(x[1]*x[2])));
+
+// الضرب في رقمين - ص98
+[[1,32,13],[2,26,45],[3,104,12],[4,102,56],[5,42,21],[6,14,69],[7,367,83],[8,67,534],[11,24,21],[12,13,54],[13,141,25],[14,470,56],[15,65,43],[16,36,72],[17,20,441],[18,89,347]]
+.forEach(x=>mq("M98_"+x[0],97,"الضرب في عدد من رقمين",98,x[0],"numeric",x[1]+" × "+x[2],String(x[1]*x[2])));
+mq("M98_19",97,"الضرب في عدد من رقمين",98,19,"numeric","تقطع شاحنة لتوصيل البضائع 278 كيلومترًا في اليوم الواحد، فما المسافة التي تقطعها في 25 يومًا؟","6950");
+mq("M98_20",97,"الضرب في عدد من رقمين",98,20,"numeric","في مسرح مدرسة رتبت الكراسي في 21 صفًا، في كل صف 15 كرسيًا، ما عدد الكراسي؟","315");
+mq("M98_22",97,"الضرب في عدد من رقمين",98,22,"numeric","بمناسبة اليوم الوطني، اشترت مدرسة 17 راية، ثمن الواحدة 28 ريالًا. كم دفعت؟","476");
+
+// القسمة على عدد من رقمين - ص125
+mq("M125_1",124,"القسمة على عدد من رقمين",125,1,"numeric","176 ÷ 16","11");
+mq("M125_2",124,"القسمة على عدد من رقمين",125,2,"numeric","192 ÷ 24","8");
+mq("M125_3",124,"القسمة على عدد من رقمين",125,3,"text","أوجد ناتج القسمة في 375 ÷ 46.","8 والباقي 7",null,["8 والباقي 7","8 باقي 7","8 r 7","8 remainder 7"]);
+mq("M125_4",124,"القسمة على عدد من رقمين",125,4,"text","أوجد ناتج القسمة في 289 ÷ 31.","9 والباقي 10",null,["9 والباقي 10","9 باقي 10","9 r 10","9 remainder 10"]);
+mq("M125_5",124,"القسمة على عدد من رقمين",125,5,"numeric","قسمت أرض حديقة عامة مساحتها 988 مترًا مربعًا إلى 13 منطقة متساوية. أوجد مساحة المنطقة الواحدة.","76");
+
+// معادلات الجمع والطرح - ص169
+[[1,"س + 5 = 11","6"],[2,"9 + ك = 17","8"],[3,"ن + 13 = 20","7"],[4,"هـ - 8 = 4","12"],[5,"ف - 14 = 9","23"],[6,"م - 12 = 12","24"]]
+.forEach(x=>mq("M169_"+x[0],168,"معادلات الجمع والطرح",169,x[0],"numeric","حل المعادلة: "+x[1],x[2]));
+mq("M169_7",168,"معادلات الجمع والطرح",169,7,"numeric","في النصف الأول من مباراة كرة سلة أحرز ناصر 14 نقطة، وفي نهاية المباراة كان مجموع نقاطه 36. كم نقطة أحرز في النصف الثاني؟","22");
+
+// English Unit 1
+[
+[1,"We ___ fun things every day!","do",["do","did"]],[2,"On Mondays, we ___ football!","play",["played","play"]],[3,"Last Monday, my team ___.","won",["win","won"]],
+[4,"On Tuesdays, we ___ to music.","dance",["dance","danced"]],[5,"Last Tuesday, we ___ lots of fun!","had",["have","had"]],[6,"On Wednesdays, we ___ how to have debates.","learn",["learn","learned"]],
+[7,"This Wednesday, we ___ the issues.","debated",["debate","debated"]],[8,"On Thursdays, they ___ us how to cook!","teach",["teach","taught"]],[9,"Last week I ___ my favorite dishes!","cooked",["cook","cooked"]],
+[10,"Friday ___ movie night.","is",["is","was"]],[11,"We ___ a movie that was frightening!","watched",["watch","watched"]],[12,"On Saturdays, we ___ games!","play",["play","played"]],[13,"I won! I ___ as fast as lightning!","ran",["run","ran"]]
+].forEach(x=>eq("E13_"+x[0],12,"Unit 1: Grammar - Simple Present / Simple Past",13,x[0],"choice",x[1],x[2],x[3]));
+eq("E14_1",14,"Unit 1: Story",14,1,"choice","Listen and read the story. Choose a title.","Making New Friends",["Losing a Friend","Making New Friends","The Video Game Tournament"]);
+[
+[2,"Why was Lia upset?","Because Chloe met a new friend at school and invited her to play video games with them."],
+[3,"Why did Lia think that meeting Ava was frightening?","She always has trouble meeting new people."],
+[4,"How was Chloe’s house different from normal?","It was tidy; it is usually a mess."],
+[5,"How did Ava react when she met Lia?","She shook her hand and smiled."],
+[6,"Who is more confident meeting new people, Lia or Ava?","Ava."],
+[7,"What do Lia and Ava both like?","Video games."]
+].forEach(x=>eq("E14_"+x[0],14,"Unit 1: Story",14,x[0],"manual",x[1],x[2]));
+eq("E17_1",17,"Unit 1: Grammar - Action and state verbs",17,1,"choice","_____ is talking about actions.","Ethan",["Ethan","Jenny"]);
+eq("E17_2",17,"Unit 1: Grammar - Action and state verbs",17,2,"choice","_____ is talking about feelings or states.","Jenny",["Ethan","Jenny"]);
+[
+[1,"What is Rose’s special interest?","Rose’s special interest is origami."],
+[2,"What is origami?","It is an amazing art form. You can make models with paper."],
+[3,"How did Rose’s interest start?","She found a book about origami on the sidewalk three years ago."],
+[4,"What are two benefits of origami?","It makes her happy and she thinks it is very relaxing."],
+[5,"What can Rose do at the origami club?","She can make different shapes with friends and watch videos about origami."]
+].forEach(x=>eq("E18_"+x[0],18,"Unit 1: Reading",18,x[0],"manual",x[1],x[2]));
+
+const $=s=>document.querySelector(s), esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const toAr=s=>String(s??"").replace(/[0-9]/g,d=>AR[+d]).replace(/\.(?=\d)/g,"٫");
+const toWest=s=>String(s??"").replace(/[٠-٩]/g,d=>String(AR.indexOf(d))).replace(/[٫،]/g,".").trim();
+let state={mathScope:59,englishScope:17,history:[],seen:[]}, session=null;
+try{state={...state,...JSON.parse(StudyStore.getItem(KEY)||"{}")}}catch{}
+const save=()=>StudyStore.setItem(KEY,JSON.stringify(state));
+const scopeTitle=subj=>{const a=subj==="math"?mathScope:englishScope,v=state[subj+"Scope"];return a.find(x=>x[0]===v)?.[1]||"غير محدد"};
+const eligible=subj=>Q.filter(q=>q.subject===subj&&q.ord<=state[subj+"Scope"]);
+function shuffle(a){return a.map(x=>({x,r:Math.random()})).sort((a,b)=>b.r-a.r).map(z=>z.x)}
+function pick(subj,n){const pool=eligible(subj);if(!pool.length)return[];const latest=Math.max(...pool.map(q=>q.ord)), recent=pool.filter(q=>q.ord===latest), older=pool.filter(q=>q.ord!==latest), seen=new Set(state.seen||[]);const rank=a=>shuffle(a).sort((a,b)=>(seen.has(a.id)?1:0)-(seen.has(b.id)?1:0));const k=Math.min(n,Math.max(1,Math.round(n*.7)));let out=rank(recent).slice(0,k);out.push(...rank(older.filter(q=>!out.includes(q))).slice(0,n-out.length));if(out.length<n)out.push(...rank(pool.filter(q=>!out.includes(q))).slice(0,n-out.length));return shuffle(out).slice(0,n)}
+function shell(body,title="خامس ابتدائي - من الكتاب فقط"){$("#app").innerHTML=`<header><div><h1>${esc(title)}</h1><div class="muted">أسئلة الكتابين • ضمن منهجك المحدد</div></div><button class="ghost" onclick="studyHome()">ملفي</button></header>${body}`;window.scrollTo(0,0)}
+window.home=function(){session=null;const mc=eligible("math").length,ec=eligible("english").length;shell(`
+<section class="hero"><img class="app-logo" src="icon.svg?v=0.1.4" alt="أيقونة خامس"><div class="badge">📚 من الكتاب نفسه</div><h2>تدريب خامس ابتدائي</h2><p>لا يولّد البرنامج أسئلة جديدة. كل سؤال مرتبط بالدرس ورقم الصفحة ورقم السؤال الأصلي.</p></section>
+<section class="grid2">
+<article class="card"><h3>الرياضيات</h3><p class="scope">${esc(scopeTitle("math"))}</p><div class="big">${toAr(mc)}</div><div class="muted">سؤال متاح ضمن النطاق</div><div class="row"><button onclick="setup('math')">تدريب الرياضيات</button><button class="secondary" onclick="bank('math')">المصدر</button></div></article>
+<article class="card"><h3>English</h3><p class="scope" dir="ltr">${esc(scopeTitle("english"))}</p><div class="big">${ec}</div><div class="muted">book questions indexed in current scope</div><div class="row"><button onclick="setup('english')">English Practice</button><button class="secondary" onclick="bank('english')">Source</button></div></article>
+</section>
+<section class="card"><h3>اختبار الأسبوع</h3><p>١٠ رياضيات + ١٠ English من النطاق الحالي.</p><button onclick="startWeekly()">ابدأ الاختبار</button></section>
+<section class="card"><h3>نطاق المنهج</h3><p>اختر آخر درس وصلوا إليه. لا توجد أسئلة من درس منزلة البلايين.</p><button class="secondary" onclick="scopePage()">تعديل النطاق</button></section>
+<section class="card note"><b>الفهرسة الحالية</b><p>بدأت من الكسور العشرية ثم جمعها وطرحها والضرب والقسمة والمعادلات. English يبدأ من Unit 1. ستُضاف بقية أسئلة الكتابين بنفس الطريقة.</p></section>`)}
+window.scopePage=function(){studyScope();return;const mo=mathScope.map(x=>`<option value="${x[0]}" ${x[0]===state.mathScope?"selected":""}>ص ${toAr(x[0])} — ${esc(x[1])}</option>`).join(""),eo=englishScope.map(x=>`<option value="${x[0]}" ${x[0]===state.englishScope?"selected":""}>p. ${x[0]} — ${esc(x[1])}</option>`).join("");shell(`<section class="card"><h3>آخر درس وصل إليه المنهج</h3><label>الرياضيات</label><select id="ms">${mo}</select><label>English</label><select id="es" dir="ltr">${eo}</select><button onclick="saveScope()">حفظ النطاق</button></section>`,"نطاق المنهج")}
+window.saveScope=function(){studyScope();return;state.mathScope=+$("#ms").value;state.englishScope=+$("#es").value;save();home()}
+window.setup=function(subj){shell(`<section class="card"><h3>${subj==="math"?"تدريب الرياضيات":"English Practice"}</h3><div class="scope">${esc(scopeTitle(subj))}</div><label>عدد الأسئلة</label><select id="count"><option>5</option><option selected>10</option><option>15</option><option>20</option></select><button onclick="start('${subj}',+document.querySelector('#count').value)">ابدأ</button></section>`,"إعداد التدريب")}
+window.start=function(subj,n){const qs=pick(subj,n);if(!qs.length)return alert("لا توجد أسئلة مفهرسة ضمن هذا النطاق بعد.");begin(qs,subj==="math"?"رياضيات":"English")}
+window.startWeekly=function(){const qs=[...pick("math",10),...pick("english",10)].sort(()=>Math.random()-.5);if(qs.length<2)return alert("لا توجد أسئلة كافية.");begin(qs,"اختبار الأسبوع")}
+function begin(qs,title){session={title,questions:qs,index:0,score:0,graded:0};renderQ()}
+function source(q){return q.subject==="math"?`كتاب الرياضيات • ص ${toAr(q.page)} • سؤال ${toAr(q.no)}`:`Top Goal 2 • p. ${q.page} • Exercise ${q.no}`}
+function display(q){return q.subject==="math"?toAr(q.text):q.text}
+function renderQ(){const q=session.questions[session.index],total=session.questions.length;let input="";if(q.type==="choice")input=`<div class="answers">${q.options.map(o=>`<button class="answer" onclick='gradeChoice(${JSON.stringify(o)})'>${q.subject==="math"?toAr(o):esc(o)}</button>`).join("")}</div>`;else if(q.type==="manual")input=`<div class="manual"><p>اكتبي إجابتك قبل مقارنتها بالمرجع. هذا السؤال ذاتي التصحيح.</p><textarea id="writtenReference" placeholder="إجابتك" dir="auto"></textarea><button onclick="showReference()">عرض الإجابة المرجعية</button><div id="ref" class="reference hidden"></div></div>`;else input=`<div class="inputrow"><input id="ans" inputmode="${q.subject==="math"?"decimal":"text"}" autocomplete="off" placeholder="اكتب الإجابة"><button onclick="gradeInput()">تحقق</button></div>`;shell(`<section class="progress"><span style="width:${100*session.index/total}%"></span></section><section class="card question"><div class="row between"><span class="badge">${esc(q.lesson)}</span><span>${toAr(session.index+1)}/${toAr(total)}</span></div><div class="source">${source(q)}</div><div class="qtext ${q.subject==="english"?"ltr":""}">${esc(display(q))}</div>${input}<div id="feedback"></div></section>`,session.title);if($("#ans"))$("#ans").focus()}
+function norm(v){let s=toWest(v).replace(/\s+/g,"");let n=Number(s);return Number.isFinite(n)?String(n):s.toLowerCase()}
+function rec(q,ok,selected="تقييم ذاتي"){studyRecord({module:"book",subject:q.subject==="math"?"الرياضيات":"الإنجليزي",skill:q.lesson,text:q.text,selected:String(selected),correctText:String(q.answer),correct:ok,manual:q.type==="manual",explanation:source(q)});session.graded++;if(ok)session.score++;state.seen=[...(state.seen||[]),q.id].slice(-120);save()}
+window.gradeChoice=function(v){const q=session.questions[session.index],ok=String(v)===String(q.answer);rec(q,ok,v);feedback(ok,q.answer)}
+window.gradeInput=function(){const q=session.questions[session.index],raw=$("#ans").value;let ok=q.type==="numeric"?norm(raw)===norm(q.answer):(q.accepted||[q.answer]).map(norm).includes(norm(raw));rec(q,ok,raw);feedback(ok,q.answer)}
+function feedback(ok,answer){$("#feedback").innerHTML=`<div class="${ok?"ok":"bad"}"><b>${ok?"صحيح ✓":"الإجابة الصحيحة:"}</b> ${ok?"":esc(toAr(answer))}</div><button onclick="nextQ()">التالي</button>`;document.querySelectorAll(".answer,#ans,.inputrow button").forEach(x=>x.disabled=true)}
+window.showReference=function(){const q=session.questions[session.index];$("#ref").classList.remove("hidden");$("#ref").innerHTML=`<b>إجابة مرجعية:</b><p>${esc(q.answer)}</p><div class="row"><button onclick="selfGrade(true)">أجبت بشكل صحيح</button><button class="secondary" onclick="selfGrade(false)">أحتاج مراجعة</button></div>`}
+window.selfGrade=function(ok){const q=session.questions[session.index];rec(q,ok,document.querySelector("#writtenReference")?.value||"لم تُكتب إجابة؛ تقييم ذاتي");nextQ()}
+window.nextQ=function(){session.index++;if(session.index>=session.questions.length)return finish();renderQ()}
+function finish(){const p=Math.round(100*session.score/Math.max(1,session.graded));state.history.push({date:Date.now(),title:session.title,score:session.score,total:session.graded});save();shell(`<section class="card result"><h2>النتيجة</h2><div class="big">${toAr(session.score)} / ${toAr(session.graded)}</div><div class="score">${toAr(p)}٪</div><button onclick="home()">العودة للرئيسية</button></section>`,"النتيجة")}
+window.bank=function(subj){const a=eligible(subj),g={};a.forEach(q=>g[q.lesson]=(g[q.lesson]||0)+1);shell(`<section class="card"><h3>${subj==="math"?"مصادر أسئلة الرياضيات":"English Question Sources"}</h3>${Object.entries(g).map(([k,v])=>`<div class="bankrow"><span>${esc(k)}</span><b>${subj==="math"?toAr(v):v}</b></div>`).join("")||"<p>لا توجد أسئلة مفهرسة.</p>"}<p class="muted">كل سؤال يعرض رقم الصفحة ورقم السؤال الأصلي.</p></section>`,"بنك المصدر")}
+
+function syncUnifiedBookScope(){
+ const cat=STUDY_CONTEXT.catalog.filter(x=>x.track==='g5');
+ const order=x=>x.term*1000000+x.unitOrder*1000+x.lessonOrder;
+ const aliases={'القسمة والكسور الاعتيادية':'القسمة والكسور الاعتيادية','الكسور غير الفعلية':'الكسور غير الفعلية والأعداد الكسرية'};
+ const permitted=mathScope.filter(([page,title])=>{const x=cat.find(x=>x.subject==='الرياضيات'&&(x.lesson===title||x.lesson===aliases[title]));return x&&order(x)<=Number(STUDY_CONTEXT.scope['الرياضيات']||0)});
+ state.mathScope=permitted.length?Math.max(...permitted.map(x=>x[0])):0;
+ const eng=Number(STUDY_CONTEXT.scope['الإنجليزي']||0);
+ const pageOrders={4:1001001,9:1001001,12:1001002,14:1001003,17:1001005,18:1001006,21:1001007};
+ state.englishScope=Math.max(0,...englishScope.filter(([p])=>{const ix=englishScope.findIndex(x=>x[0]===p);const ord=pageOrders[p]||(p<=46?1000000:2000000)+(Math.floor((p-22)/12)+2)*1000+1;return ord<=eng}).map(x=>x[0]));
+ save();
+}
+const originalBookHome=window.home;
+window.home=function(){const mode=new URLSearchParams(location.search).get('mode');if(mode==='math'||mode==='english'){setup(mode);return}originalBookHome()};
+syncUnifiedBookScope();home();
+</script>
+</body></html>

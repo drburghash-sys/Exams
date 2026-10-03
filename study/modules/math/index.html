@@ -1,0 +1,1640 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>مغامرة الرياضيات V5</title>
+
+<style>
+:root{
+  --bg:#f7f8fb;--card:#fff;--text:#172033;--muted:#697386;--line:#e4e8f0;
+  --accent:#2563eb;--accentSoft:#eef2ff;--good:#15803d;--bad:#b91c1c;
+  --warn:#f59e0b;--shadow:0 12px 28px rgba(25,35,55,.08);--r:22px
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+button,input{font-family:inherit}
+.app{max-width:1000px;margin:auto;padding:14px 14px 94px}
+.header{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+.brand{font-size:clamp(25px,5vw,38px);font-weight:900}
+.sub{color:var(--muted);line-height:1.7;margin-top:3px}
+.badges{display:flex;gap:7px;flex-wrap:wrap}
+.pill{background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 12px;font-weight:900}
+.progressWrap{height:10px;background:#e9edf4;border-radius:999px;overflow:hidden;margin-bottom:16px}
+.progress{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#3b82f6);transition:.3s}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px;margin-bottom:14px}
+.screen{display:none}.screen.active{display:block}
+.hero{text-align:center;padding:28px 18px}.heroIcon{font-size:64px}
+h1,h2,h3{margin:8px 0 12px}.lead{font-size:18px;line-height:1.85}
+.grid{display:grid;gap:12px}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:760px){.g3,.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.g3,.g4{grid-template-columns:1fr}}
+.tile{border:2px solid transparent;background:#fff;border-radius:20px;padding:18px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,.055);cursor:pointer;transition:.15s}
+.tile:hover{transform:translateY(-2px);border-color:#c7d2fe}.tile .ico{font-size:40px}
+.btn{border:none;border-radius:15px;padding:12px 17px;min-height:49px;background:#111827;color:#fff;font-size:17px;font-weight:900;cursor:pointer}
+.btn.secondary{background:#eef2ff;color:#3730a3}.btn.soft{background:#f1f5f9;color:#172033}.btn.good{background:#16a34a}.btn.warn{background:#f59e0b}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-top:15px}
+.center{text-align:center}.mini{font-size:14px;color:var(--muted);line-height:1.7}
+.badge{display:inline-block;background:#eef2ff;color:#3730a3;padding:6px 10px;border-radius:999px;font-size:13px;font-weight:900}
+.numberBox{direction:ltr;text-align:center;font-size:clamp(42px,11vw,78px);font-weight:900;letter-spacing:2px;margin:10px 0}
+.q{font-size:21px;line-height:1.7;text-align:center;font-weight:900}
+.feedback{display:none;margin-top:14px;padding:13px;border-radius:15px;font-size:17px;font-weight:800;line-height:1.7}
+.feedback.show{display:block}.feedback.ok{background:#ecfdf5;color:#166534}.feedback.bad{background:#fff1f2;color:#9f1239}
+.hidden{display:none!important}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:15px}
+@media(max-width:620px){.choices{grid-template-columns:1fr}}
+.choice{border:2px solid var(--line);background:#fff;border-radius:16px;padding:14px;font-size:18px;font-weight:900;cursor:pointer}
+.choice.correct{border-color:#16a34a;background:#f0fdf4}.choice.wrong{border-color:#dc2626;background:#fff1f2}
+
+/* Place value */
+.placeScroll{overflow-x:auto;padding-bottom:5px}
+.placeTable{min-width:620px;width:100%;border-collapse:separate;border-spacing:5px}
+.placeTable th,.placeTable td{text-align:center;padding:10px 5px;border:1px solid var(--line);border-radius:12px;background:#fafbfc}
+.placeTable th{font-size:13px}.placeTable td{font-size:28px;font-weight:900}
+.markedNumber{display:inline-flex;direction:ltr;unicode-bidi:isolate;align-items:baseline;justify-content:center}
+.markedNumber span{display:inline-block;direction:ltr;unicode-bidi:isolate}
+.markedDigit{text-decoration:underline;text-decoration-thickness:6px;text-underline-offset:8px;text-decoration-color:#2563eb;background:rgba(37,99,235,.08);border-radius:6px;padding:0 2px}
+.dragArea{display:flex;justify-content:center;margin:18px 0}
+.dragDigit{width:72px;height:72px;border-radius:18px;border:2px solid #c7d2fe;background:#eef2ff;display:grid;place-items:center;font-size:38px;font-weight:900;cursor:pointer}
+.dragDigit.selected{outline:4px solid var(--warn)}
+.targets{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+@media(max-width:700px){.targets{grid-template-columns:repeat(2,1fr)}}
+.target{min-height:92px;border:2px dashed #9ca3af;border-radius:17px;background:#fafafa;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px;text-align:center;cursor:pointer}
+.target b{font-size:16px}.target small{color:var(--muted);margin-top:4px}.target.correct{background:#f0fdf4;border-color:#16a34a}.target.wrong{background:#fff1f2;border-color:#dc2626}
+.exp{direction:ltr;text-align:center;background:#f9fafb;border:1px dashed #9ca3af;border-radius:16px;padding:15px;font-size:clamp(21px,5vw,30px);font-weight:900}
+.wordAnswer{width:100%;min-height:115px;border:2px solid #cbd5e1;border-radius:16px;padding:14px;font-size:20px;line-height:1.8;resize:vertical;background:#fff;direction:rtl;text-align:right}
+.wordExample{background:#f8fafc;border:1px dashed #94a3b8;border-radius:16px;padding:15px;font-size:19px;line-height:1.9;margin-top:12px}
+
+
+/* Multiplication */
+.mulLayout{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+@media(max-width:760px){.mulLayout{grid-template-columns:1fr}}
+.tables{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+@media(max-width:380px){.tables{grid-template-columns:repeat(5,1fr)}}
+.tableBtn,.ans{min-height:46px;border:1px solid var(--line);background:#fff;border-radius:12px;font-size:1rem;cursor:pointer;font-weight:800}
+.tableBtn.active{border-color:var(--accent);background:#dbeafe}
+.work{margin-top:16px;background:#f3f4f6;border-radius:16px;padding:20px;text-align:center}
+.mulQ{font-size:2.4rem;font-weight:900;margin:20px 0}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ans{font-size:1.3rem}.stats{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;gap:8px}
+.stat strong{display:block;font-size:1.7rem}.stat span{font-size:.8rem;color:var(--muted)}
+.bar{height:8px;background:#f3f4f6;border-radius:999px;overflow:hidden;margin-top:14px}.bar i{display:block;height:100%;background:var(--accent);width:0}
+
+/* Decimal operations */
+.stageBtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.stageBtns .btn.active{background:#2563eb;color:#fff}
+.verticalMath{direction:ltr;width:min(360px,100%);margin:18px auto;background:#fafafa;border:1px solid var(--line);border-radius:18px;padding:18px}
+.mathRow{display:grid;grid-template-columns:42px 1fr;align-items:center;font-size:clamp(30px,8vw,48px);font-weight:900;letter-spacing:2px}
+.mathRow .op{text-align:center}.mathNum{text-align:right;white-space:pre;font-family:Tahoma,Arial,sans-serif}
+.mathLine{height:3px;background:#111827;margin:7px 0 10px 42px;border-radius:2px}
+.mathInput{width:100%;font-size:34px;font-weight:900;text-align:center;direction:ltr;padding:11px;border:2px solid #cbd5e1;border-radius:14px;background:#fff}
+.tip{background:#fff7ed;border:1px solid #fed7aa;border-radius:15px;padding:12px;line-height:1.8;margin-top:12px}
+.horizontalProblem{direction:ltr;text-align:center;font-size:clamp(34px,8vw,54px);font-weight:900;letter-spacing:2px;margin:18px 0;padding:18px;background:#f8fafc;border:1px solid var(--line);border-radius:18px}
+.arrangeTitle{text-align:center;font-size:18px;font-weight:900;margin:16px 0 10px}
+.alignBoard{overflow-x:auto;padding-bottom:6px}
+.alignGrid{min-width:620px;display:grid;grid-template-columns:repeat(7,1fr);gap:5px;direction:ltr}
+.alignHead,.alignCell{border:1px solid var(--line);border-radius:11px;text-align:center;min-height:54px;display:flex;align-items:center;justify-content:center;background:#fff}
+.alignHead{font-size:12px;color:var(--muted);direction:rtl;padding:5px}
+.alignCell{font-size:28px;font-weight:900;cursor:pointer}
+.alignCell.comma{background:#f8fafc}
+.alignCell.activeTarget{outline:3px solid #2563eb;background:#eff6ff}
+.alignCell.filled{background:#f0fdf4;border-color:#86efac}
+.arrangeStatus{text-align:center;font-weight:800;line-height:1.7;margin-top:10px}
+.calcArea.locked{opacity:.45;pointer-events:none}
+
+.keyboard{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;max-width:420px;margin:12px auto}
+.key{min-height:48px;border:1px solid #cbd5e1;background:#fff;border-radius:13px;font-size:24px;font-weight:900;cursor:pointer}
+
+
+/* Mental addition/subtraction */
+.mentalRules{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media(max-width:720px){.mentalRules{grid-template-columns:1fr}}
+.ruleCard{border:1px solid var(--line);border-radius:18px;padding:17px;background:#fff}
+.ruleCard h3{margin-top:0}.ruleFormula{direction:ltr;text-align:center;font-size:clamp(22px,5vw,32px);font-weight:900;padding:12px;border-radius:14px;background:#f8fafc;margin:10px 0}
+.ruleExample{direction:ltr;text-align:center;font-size:clamp(19px,4.5vw,27px);font-weight:900;padding:12px;border:1px dashed #94a3b8;border-radius:14px;margin-top:10px;background:#fff}
+.mentalSetup{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:680px){.mentalSetup{grid-template-columns:1fr}}
+.mentalStep{margin-top:14px;padding:16px;border:1px solid var(--line);border-radius:17px;background:#fafafa}
+.mentalStep.locked{opacity:.42;pointer-events:none}
+.mentalStep.done{background:#f0fdf4;border-color:#86efac}
+.mentalMethods,.mentalChoices{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+.mentalChoices{grid-template-columns:repeat(4,1fr)}
+@media(max-width:650px){.mentalMethods{grid-template-columns:1fr}.mentalChoices{grid-template-columns:1fr 1fr}}
+.mentalChoice{min-height:56px;border:1px solid #cbd5e1;background:#fff;border-radius:14px;padding:10px;font-weight:900;cursor:pointer;font-size:16px}
+.mentalChoice:hover{border-color:var(--accent)}
+.mentalChoice.correct{background:#f0fdf4;border-color:#16a34a}
+.mentalChoice.wrong{background:#fff1f2;border-color:#dc2626}
+.mentalProblem{direction:ltr;text-align:center;font-size:clamp(34px,8vw,54px);font-weight:950;margin:18px 0}
+.mentalTransform{direction:ltr;text-align:center;font-size:clamp(25px,6vw,38px);font-weight:900;background:#eff6ff;border:1px solid #bfdbfe;border-radius:16px;padding:14px;margin:12px 0}
+.mentalHint{line-height:1.9;background:#fffbeb;border:1px solid #fde68a;border-radius:15px;padding:12px;margin-top:10px}
+.mentalStatus{text-align:center;font-weight:900;line-height:1.8;margin-top:10px}
+
+/* footer */
+.footer{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:9px;z-index:20}
+.footerIn{max-width:1000px;margin:auto;display:flex;gap:7px}.footerIn button{flex:1;min-height:44px;font-size:14px;padding:9px}
+</style>
+<script src="../bridge.js"></script></head>
+<body>
+<div class="app">
+  <div class="header">
+    <div>
+      <div class="brand">🎮 مغامرة الرياضيات</div>
+      <div class="sub">المنازل • جدول الضرب والقسمة • جمع وطرح الأعداد العشرية • الحساب الذهني</div>
+    </div>
+    <div>
+      <div class="badges">
+        <div class="pill">⭐ <span id="globalStars">٠</span></div>
+        <div class="pill">🪙 <span id="globalCoins">٠</span></div>
+        <div class="pill">🏆 <span id="globalCups">٠</span></div>
+      </div>
+      <div class="mini center" style="margin-top:7px">⭐ لكل إجابة صحيحة • 🪙 كل ٣ صحيحة متتالية • 🏆 جولة كاملة بلا خطأ</div>
+    </div>
+  </div>
+  <div class="progressWrap"><div id="progress" class="progress"></div></div>
+
+  <section id="home" class="screen active">
+    <div class="card hero">
+      <div class="heroIcon">🧠✨</div>
+      <h1>اختاري مغامرتك</h1>
+      <p class="lead">أربعة أقسام مستقلة، وكلها تستخدم الأرقام العربية الهندية وتحفظ التقدم على الجهاز.</p>
+    </div>
+    <div class="grid g4">
+      <div class="tile" onclick="openPlaces()"><div class="ico">🔢</div><h3>المنازل</h3><div class="mini">حتى المئات، والعشري حتى جزء من ألف</div></div>
+      <div class="tile" onclick="openMultiplication()"><div class="ico">✖️➗</div><h3>جدول الضرب والقسمة</h3><div class="mini">تعلّم، اختبار، ومراجعة الأخطاء</div></div>
+      <div class="tile" onclick="openDecimals()"><div class="ico">➕➖</div><h3>جمع وطرح عشري</h3><div class="mini">من جزء من عشرة حتى جزء من ألف</div></div>
+      <div class="tile" onclick="openMental()"><div class="ico">⚡🧠</div><h3>جمع وطرح ذهني</h3><div class="mini">تعويض ذكي للأعداد الصحيحة والعشرية</div></div>
+    </div>
+  </section>
+
+  <!-- PLACE VALUE -->
+  <section id="placesHome" class="screen">
+    <div class="card center">
+      <span class="badge">القسم الأول</span>
+      <h2>المنازل والقيمة المنزلية</h2>
+      <div class="mini">الآحاد ← العشرات ← المئات ← جزء من عشرة ← جزء من مئة ← جزء من ألف</div>
+    </div>
+    <div class="grid g4">
+      <div class="tile" onclick="showPlaceLesson()"><div class="ico">📘</div><h3>شرح</h3><div>جدول المنازل والصيغ</div></div>
+      <div class="tile" onclick="startPlaceDrag()"><div class="ico">🖐️</div><h3>اسحبي الرقم</h3><div>اختاري منزلة الرقم المسطّر</div></div>
+      <div class="tile" onclick="startPlaceAnalysis()"><div class="ico">🧩</div><h3>الصيغة التحليلية</h3><div>اختاري التحليل الصحيح</div></div>
+      <div class="tile" onclick="startPlaceWords()"><div class="ico">✍️</div><h3>الصيغة اللفظية</h3><div>اكتبي العدد بالكلمات</div></div>
+    </div>
+  </section>
+
+  <section id="placeLesson" class="screen">
+    <div class="card">
+      <h2>ترتيب المنازل</h2>
+      <div class="placeScroll">
+        <table class="placeTable">
+          <tr><th>المئات</th><th>العشرات</th><th>الآحاد</th><th>الفاصلة</th><th>جزء من عشرة</th><th>جزء من مئة</th><th>جزء من ألف</th></tr>
+          <tr><td>٣</td><td>٢</td><td>٧</td><td>,</td><td>٤</td><td>٦</td><td>٥</td></tr>
+        </table>
+      </div>
+      <div class="numberBox">٣٢٧,٤٦٥</div>
+      <h3>الصيغة التحليلية المعتمدة</h3>
+      <div class="exp">٧ + ٢٠ + ٣٠٠ + ٠,٤ + ٠,٠٦ + ٠,٠٠٥</div>
+      <div class="tip"><b>قاعدة التطبيق:</b> نبدأ دائمًا بالآحاد، ثم العشرات، ثم المئات، ثم جزء من عشرة، ثم جزء من مئة، ثم جزء من ألف.</div>
+      <h3 style="margin-top:18px">الصيغة اللفظية</h3>
+      <div class="wordExample"><b>٣٢٧,٤٦٥</b><br>ثلاثمئة وسبعة وعشرون وأربعمئة وخمسة وستون جزءًا من ألف</div>
+      <div class="actions"><button class="btn" onclick="startPlaceDrag()">ابدئي اللعب</button></div>
+    </div>
+  </section>
+
+  <section id="placeDrag" class="screen">
+    <div class="card">
+      <div class="center"><span id="placeDragBadge" class="badge"></span></div>
+      <div class="q">اسحبي الرقم الذي تحته خط إلى منزلته الصحيحة</div>
+      <div id="placeDragNumber" class="numberBox"></div>
+      <div class="dragArea"><div id="placeDragDigit" class="dragDigit"></div></div>
+      <div id="placeTargets" class="targets"></div>
+      <div id="placeDragFb" class="feedback"></div>
+      <div class="actions"><button id="placeDragNext" class="btn hidden" onclick="nextPlaceDrag()">السؤال التالي</button></div>
+      <div class="mini center">على الجوال: اضغطي الرقم ثم اضغطي المنزلة.</div>
+    </div>
+  </section>
+
+  <section id="placeAnalysis" class="screen">
+    <div class="card">
+      <div class="center"><span id="analysisBadge" class="badge"></span></div>
+      <div class="q">اختاري الصيغة التحليلية الصحيحة</div>
+      <div id="analysisNumber" class="numberBox"></div>
+      <div id="analysisChoices" class="choices"></div>
+      <div id="analysisFb" class="feedback"></div>
+      <div class="actions"><button id="analysisNext" class="btn hidden" onclick="nextAnalysis()">السؤال التالي</button></div>
+    </div>
+  </section>
+  
+  <section id="placeWords" class="screen">
+    <div class="card">
+      <div class="center"><span id="wordsBadge" class="badge"></span></div>
+      <div id="wordsQuestion" class="q"></div>
+      <div id="wordsPromptNumber" class="numberBox"></div>
+      <div id="wordsPromptText" class="wordExample hidden"></div>
+
+      <div id="wordsChoiceArea">
+        <div id="wordsChoices" class="choices"></div>
+      </div>
+
+      <div id="wordsWriteArea" class="hidden">
+        <textarea id="wordsInput" class="wordAnswer" placeholder="اكتبي العدد بالكلمات هنا..." autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
+        <div class="actions">
+          <button class="btn soft" onclick="clearWordsInput()">مسح</button>
+          <button class="btn soft" onclick="revealWordsAnswer()">إظهار الإجابة</button>
+          <button class="btn" onclick="checkWordsAnswer()">تحقق</button>
+        </div>
+      </div>
+
+      <div id="wordsFb" class="feedback"></div>
+      <div class="actions">
+        <button id="wordsNext" class="btn good hidden" onclick="nextWordsQuestion()">التالي</button>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- MULTIPLICATION -->
+  <section id="multiplication" class="screen">
+    <div class="card center">
+      <span class="badge">القسم الثاني</span>
+      <h2>مدرّب جدول الضرب والقسمة</h2>
+      <div class="mini">حفظ، اختبار، ومراجعة الأخطاء بطريقة متكررة ذكية</div>
+    </div>
+    <div class="mulLayout">
+      <main class="card">
+        <h3>اختاري الجداول</h3>
+        <div id="mulTables" class="tables"></div>
+
+        <h3 style="margin-top:16px">نوع التدريب</h3>
+        <div class="actions" style="justify-content:flex-start">
+          <button id="mulModeBtn" class="btn secondary" onclick="setMulOperation('mul')">✖️ ضرب</button>
+          <button id="divModeBtn" class="btn secondary" onclick="setMulOperation('div')">➗ قسمة</button>
+          <button id="mixModeBtn" class="btn secondary" onclick="setMulOperation('mix')">🔀 مختلط</button>
+        </div>
+
+        <div class="actions">
+          <button class="btn soft" onclick="setMulMode('learn')">تعلّم</button>
+          <button class="btn" onclick="setMulMode('quiz')">اختبار</button>
+          <button class="btn soft" onclick="reviewMulWeak()">راجع أخطائي <span id="mulWeakCount">(٠)</span></button>
+        </div>
+
+        <div class="work">
+          <div id="mulModeLabel" class="mini">اختبار</div>
+          <div id="mulQuestion" class="mulQ">٢ × ٤ = ؟</div>
+          <div id="mulAnswers" class="answers"></div>
+          <button id="mulRevealBtn" class="btn hidden" style="width:100%;margin-top:10px" onclick="revealMul()">إظهار الإجابة</button>
+          <div id="mulFeedback" class="feedback"></div>
+        </div>
+      </main>
+      <aside>
+        <div class="card">
+          <h3>التقدم في هذه الجلسة</h3>
+          <div class="stats">
+            <div class="stat"><strong id="mulCorrect">٠</strong><span>صحيح</span></div>
+            <div class="stat"><strong id="mulWrong">٠</strong><span>خطأ</span></div>
+            <div class="stat"><strong id="mulAccuracy">—</strong><span>الدقة</span></div>
+          </div>
+          <div class="bar"><i id="mulProgress"></i></div>
+        </div>
+        <div class="card">
+          <h3>تثبيت الحفظ بالقسمة</h3>
+          <div class="mini">إذا أتقنت الطالبة ٧ × ٨ = ٥٦، يختبرها التطبيق أيضًا في ٥٦ ÷ ٧ = ٨ و٥٦ ÷ ٨ = ٧. والمسائل التي تخطئ فيها تُعاد أكثر.</div>
+        </div>
+        <button class="btn soft" style="width:100%" onclick="resetMulSession()">بدء جلسة جديدة</button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- DECIMAL ADD/SUB -->
+  <section id="decimalsHome" class="screen">
+    <div class="card center">
+      <span class="badge">القسم الثالث</span>
+      <h2>جمع وطرح الأعداد العشرية</h2>
+      <div class="mini">المهم أولًا: الفاصلة تحت الفاصلة، ثم الحساب منزلة منزلة.</div>
+    </div>
+    <div class="card">
+      <div class="stageBtns">
+        <button id="stage1" class="btn secondary" onclick="setDecimalStage(1)">جزء من عشرة</button>
+        <button id="stage2" class="btn secondary" onclick="setDecimalStage(2)">جزء من مئة</button>
+        <button id="stage3" class="btn secondary" onclick="setDecimalStage(3)">جزء من ألف</button>
+        <button id="stage4" class="btn secondary" onclick="setDecimalStage(4)">مختلط</button>
+      </div>
+      <div class="actions">
+        <button id="addMode" class="btn secondary" onclick="setDecimalOp('add')">➕ جمع</button>
+        <button id="subMode" class="btn secondary" onclick="setDecimalOp('sub')">➖ طرح</button>
+        <button id="mixDecimalMode" class="btn secondary" onclick="setDecimalOp('mix')">🔀 مختلط</button>
+      </div>
+      <div class="actions">
+        <button class="btn" onclick="startDecimalQuiz()">ابدئي التدريب</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="decimalQuiz" class="screen">
+    <div class="card">
+      <div class="center"><span id="decimalBadge" class="badge"></span></div>
+
+      <div class="q">رتّبي العملية أولًا، ثم احسبي الناتج</div>
+
+      <div id="horizontalProblem" class="horizontalProblem"></div>
+
+      <div id="arrangeTitle" class="arrangeTitle">الخطوة ١: ضعي الفاصلة في العدد الأول</div>
+      <div class="alignBoard">
+        <div id="alignGrid" class="alignGrid"></div>
+      </div>
+      <div id="arrangeStatus" class="arrangeStatus">اضغطي خانة الفاصلة في السطر الأول.</div>
+
+      <div id="calcArea" class="calcArea locked">
+        <div class="verticalMath">
+          <div class="mathRow"><div class="op"></div><div id="decA" class="mathNum"></div></div>
+          <div class="mathRow"><div id="decOp" class="op">+</div><div id="decB" class="mathNum"></div></div>
+          <div class="mathLine"></div>
+          <input id="decimalInput" class="mathInput" inputmode="decimal" readonly placeholder="اكتبي الناتج">
+        </div>
+
+        <div id="decimalTip" class="tip">بعد ترتيب العددين تصبح الفاصلة فوق الفاصلة تمامًا.</div>
+        <div class="keyboard" id="decimalKeyboard"></div>
+        <div class="actions">
+          <button class="btn soft" onclick="backspaceDecimal()">⌫ حذف</button>
+          <button class="btn soft" onclick="clearDecimalInput()">مسح</button>
+          <button class="btn" onclick="checkDecimalAnswer()">تحقق</button>
+          <button id="decimalNext" class="btn good hidden" onclick="nextDecimalQuestion()">التالي</button>
+        </div>
+        <div id="decimalFb" class="feedback"></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- MENTAL ADD/SUB -->
+  <section id="mentalHome" class="screen">
+    <div class="card center">
+      <span class="badge">القسم الرابع</span>
+      <h2>الجمع والطرح ذهنيًا</h2>
+      <div class="mini">مستوى خامس ابتدائي: أعداد مختارة بعناية بحيث يصبح الحساب بعد التعويض بسيطًا وواضحًا.</div>
+    </div>
+
+    <div class="card">
+      <h3>أنواع الأسئلة في كل جولة</h3>
+      <div class="mentalRules">
+        <div class="ruleCard">
+          <b>🔢 أعداد صحيحة</b>
+          <p>من رقمين أو ثلاثة أرقام في الطرفين.</p>
+          <div class="tip">رقمان: نجعل الآحاد صفرًا.<br>ثلاثة أرقام: نجعل العشرات والآحاد صفرين.</div>
+        </div>
+        <div class="ruleCard">
+          <b>🔹 أعداد عشرية</b>
+          <p>أعشار أو أجزاء من مئة في الطرفين.</p>
+          <div class="tip">أعشار: نجعل جزء العشرة صفرًا.<br>أجزاء من مئة: نجعل جزء العشرة وجزء المئة صفرين معًا.</div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:18px">نوع العملية</h3>
+      <div class="actions">
+        <button id="mentalAddBtn" class="btn secondary" onclick="setMentalOpMode('add')">➕ جمع</button>
+        <button id="mentalSubBtn" class="btn secondary" onclick="setMentalOpMode('sub')">➖ طرح</button>
+        <button id="mentalMixedOpBtn" class="btn secondary" onclick="setMentalOpMode('mixed')">🔀 جمع وطرح</button>
+      </div>
+
+      <div class="tip" style="margin-top:14px">
+        <b>في مسائل الطرح:</b> يجب حل المسألة بطريقتين قبل الانتقال:
+        <b>إضافة نفس المقدار للعددين</b> ثم <b>طرح نفس المقدار من العددين</b>، أو بالعكس.
+      </div>
+    </div>
+
+    <div class="grid g2">
+      <div class="tile" onclick="show('mentalLesson')"><div class="ico">📘</div><h3>الشرح المفصل</h3><div class="mini">قواعد التعويض والتصفير حسب نوع العدد.</div></div>
+      <div class="tile" onclick="startMentalQuiz()"><div class="ico">⚡</div><h3>ابدئي اللعبة</h3><div class="mini">اختاري الطريقة، ثم مقدار التعويض، ثم الناتج.</div></div>
+    </div>
+  </section>
+
+  <section id="mentalLesson" class="screen">
+    <div class="card">
+      <div class="center">
+        <span class="badge">شرح الحساب الذهني</span>
+        <h2>التعويض الذكي = نصنع عددًا مستديرًا ثم نحسب بسهولة</h2>
+      </div>
+
+      <div class="mentalRules">
+        <div class="ruleCard">
+          <h3>➕ في الجمع</h3>
+          <p>نضيف مقدارًا إلى أحد العددين ونطرح <b>المقدار نفسه</b> من العدد الآخر، حتى يبقى المجموع ثابتًا.</p>
+          <div class="ruleFormula">(أ + س) + (ب − س) = أ + ب</div>
+          <div class="ruleExample">٤٨ + ٣٢ ← ٥٠ + ٣٠ = ٨٠</div>
+          <div class="ruleExample">٣٩٨ + ٢٠٢ ← ٤٠٠ + ٢٠٠ = ٦٠٠</div>
+        </div>
+
+        <div class="ruleCard">
+          <h3>➖ في الطرح</h3>
+          <p>الفرق لا يتغير إذا أضفنا المقدار نفسه إلى العددين، كما لا يتغير إذا طرحنا المقدار نفسه من العددين.</p>
+          <div class="ruleFormula">(أ + س) − (ب + س) = أ − ب</div>
+          <div class="ruleFormula">(أ − س) − (ب − س) = أ − ب</div>
+          <div class="tip"><b>في اللعبة:</b> ستجربين الطريقتين على نفس المسألة قبل الانتقال.</div>
+        </div>
+      </div>
+
+      <div class="mentalRules">
+        <div class="ruleCard">
+          <h3>الأعداد الصحيحة</h3>
+          <div class="ruleExample">٤٧ + ٣٨ ← نُصفّر الآحاد في أحد العددين</div>
+          <p><b>إذا كان العدد من رقمين:</b> الحل المقبول يجب أن يحوّل أحد العددين إلى مضاعف للعشرة، مثل ٤٠ أو ٥٠ أو ٧٠.</p>
+          <div class="ruleExample">٣٤٧ − ١٨٢ ← نُصفّر العشرات والآحاد معًا</div>
+          <p><b>إذا كان العدد من ثلاثة أرقام:</b> الحل المقبول يجب أن يحوّل أحد العددين إلى مضاعف للمئة، مثل ٣٠٠ أو ٤٠٠ أو ٥٠٠.</p>
+        </div>
+
+        <div class="ruleCard">
+          <h3>الأعداد العشرية</h3>
+          <div class="ruleExample">٦,٨ + ٣,٢ ← ٧,٠ + ٣,٠ = ١٠,٠</div>
+          <p><b>إذا كان حتى جزء من عشرة:</b> يجب أن يصبح جزء العشرة صفرًا.</p>
+          <div class="ruleExample">٤,٩٦ + ٢,٠٤ ← ٥,٠٠ + ٢,٠٠ = ٧,٠٠</div>
+          <p><b>إذا كان حتى جزء من مئة:</b> يجب أن يصبح <b>جزء العشرة وجزء المئة صفرين معًا</b>، وليس فقط جزء المئة.</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn soft" onclick="openMental()">رجوع</button>
+        <button class="btn" onclick="startMentalQuiz()">ابدئي اللعبة ⚡</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="mentalQuiz" class="screen">
+    <div class="card">
+      <div class="center">
+        <span id="mentalBadge" class="badge"></span>
+        <div id="mentalProblem" class="mentalProblem"></div>
+        <div id="mentalRoundRule" class="mentalHint"></div>
+      </div>
+
+      <div id="mentalStep1" class="mentalStep">
+        <h3>الخطوة ١: اختاري طريقة التعويض</h3>
+        <div id="mentalMethods" class="mentalMethods"></div>
+        <div id="mentalMethodFb" class="feedback"></div>
+      </div>
+
+      <div id="mentalStep2" class="mentalStep locked">
+        <h3>الخطوة ٢: اختاري مقدار التعويض</h3>
+        <div id="mentalAmountHint" class="mentalHint"></div>
+        <div id="mentalAmounts" class="mentalChoices"></div>
+        <div id="mentalAmountFb" class="feedback"></div>
+      </div>
+
+      <div id="mentalStep3" class="mentalStep locked">
+        <h3>الخطوة ٣: احسبي العملية بعد التصفير</h3>
+        <div id="mentalTransform" class="mentalTransform"></div>
+        <div id="mentalResults" class="mentalChoices"></div>
+        <div id="mentalAnswerFb" class="feedback"></div>
+        <div class="actions">
+          <button id="mentalNext" class="btn good hidden" onclick="nextMentalQuestion()">السؤال التالي</button>
+        </div>
+      </div>
+
+      <div id="mentalStatus" class="mentalStatus"></div>
+    </div>
+  </section>
+
+  <section id="finish" class="screen">
+    <div class="card hero">
+      <div class="heroIcon">🏆</div>
+      <h2 id="finishTitle">أحسنتِ!</h2>
+      <p id="finishText" class="lead"></p>
+      <div class="actions"><button class="btn secondary" onclick="show('home')">العودة للرئيسية</button></div>
+    </div>
+  </section>
+</div>
+
+<div class="footer">
+  <div class="footerIn">
+    <button class="btn soft" onclick="show('home')">🏠 الرئيسية</button>
+    <button class="btn soft" onclick="openPlaces()">🔢 المنازل</button>
+    <button class="btn soft" onclick="openMultiplication()">✖️ الضرب</button>
+    <button class="btn soft" onclick="openDecimals()">➕➖ العشري</button>
+    <button class="btn soft" onclick="openMental()">⚡ ذهني</button>
+  </div>
+</div>
+
+<script>
+/* ---------- shared ---------- */
+const AR={'0':'٠','1':'١','2':'٢','3':'٣','4':'٤','5':'٥','6':'٦','7':'٧','8':'٨','9':'٩'};
+const EN={'٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'};
+function ar(v){return String(v).replace(/[0-9]/g,d=>AR[d]).replace(/\./g,',')}
+function en(v){return String(v).replace(/[٠-٩]/g,d=>EN[d]).replace(/,/g,'.')}
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');setProgress(0);window.scrollTo({top:0,behavior:'smooth'})}
+function setProgress(v){document.getElementById('progress').style.width=Math.max(0,Math.min(100,v))+'%'}
+let stars=Number(StudyStore.getItem('math-stars')||0),coins=Number(StudyStore.getItem('math-coins')||0),cups=Number(StudyStore.getItem('math-cups')||0);
+let rewardStreak=0;
+function saveGlobal(){StudyStore.setItem('math-stars',stars);StudyStore.setItem('math-coins',coins);StudyStore.setItem('math-cups',cups);renderGlobal()}
+function resetRewardStreak(){rewardStreak=0}
+function rewardCorrect(){
+  stars+=1;
+  rewardStreak+=1;
+  let coin=false;
+  if(rewardStreak%3===0){coins+=1;coin=true}
+  saveGlobal();
+  return coin
+}
+function rewardWrong(){rewardStreak=0}
+function awardCup(){cups+=1;saveGlobal()}
+function renderGlobal(){document.getElementById('globalStars').textContent=ar(stars);document.getElementById('globalCoins').textContent=ar(coins);document.getElementById('globalCups').textContent=ar(cups)}
+renderGlobal();
+function openPlaces(){show('placesHome')}
+function openMultiplication(){show('multiplication');mulNext()}
+function openDecimals(){show('decimalsHome');paintDecimalControls()}
+function openMental(){show('mentalHome');paintMentalControls()}
+
+/* ---------- place value ---------- */
+const PLACES=[
+  {k:'hundreds',name:'المئات',value:100},
+  {k:'tens',name:'العشرات',value:10},
+  {k:'ones',name:'الآحاد',value:1},
+  {k:'tenths',name:'جزء من عشرة',value:.1},
+  {k:'hundredths',name:'جزء من مئة',value:.01},
+  {k:'thousandths',name:'جزء من ألف',value:.001}
+];
+function placeMap(s){
+  let [i,d='']=String(s).split('.');
+  i=i.padStart(3,'0').slice(-3); d=(d+'000').slice(0,3);
+  return {hundreds:i[0],tens:i[1],ones:i[2],tenths:d[0],hundredths:d[1],thousandths:d[2]}
+}
+function randomPlaceNumber(){
+  let int=ri(0,999),len=ri(1,3),dec='';
+  for(let i=0;i<len;i++) dec+=ri(0,9);
+  if(/^0+$/.test(dec)) dec=dec.slice(0,-1)+'5';
+  return int+'.'+dec
+}
+function displayPlain(s){
+  let [i,d='']=String(s).split('.');
+  return String(Number(i))+'.'+d
+}
+function renderMarkedNumber(s,targetKey){
+  let raw=displayPlain(s),[ip,dp='']=raw.split('.');
+  const offsets={ones:0,tens:1,hundreds:2};
+  const decIdx={tenths:0,hundredths:1,thousandths:2};
+  let out='<span class="markedNumber">';
+  for(let i=0;i<ip.length;i++){
+    let target=targetKey in offsets && i===ip.length-1-offsets[targetKey];
+    out+='<span class="'+(target?'markedDigit':'')+'">'+ar(ip[i])+'</span>'
+  }
+  if(dp.length){
+    out+='<span>,</span>';
+    for(let i=0;i<dp.length;i++){
+      let target=targetKey in decIdx && i===decIdx[targetKey];
+      out+='<span class="'+(target?'markedDigit':'')+'">'+ar(dp[i])+'</span>'
+    }
+  }
+  out+='</span>';return out
+}
+function analytical(s){
+  const m=placeMap(s),parts=[];
+  // REQUIRED ORDER: ones, tens, hundreds, tenths, hundredths, thousandths
+  const order=[
+    ['ones',1],['tens',10],['hundreds',100],
+    ['tenths',.1],['hundredths',.01],['thousandths',.001]
+  ];
+  order.forEach(([k,v])=>{
+    const d=Number(m[k]); if(d!==0) parts.push(String(Number((d*v).toFixed(3))))
+  });
+  return parts.length?parts.join(' + '):'0'
+}
+function showPlaceLesson(){show('placeLesson')}
+
+let placeDragQs=[],placeDragIndex=0,placeDragCorrect=0,placeDigitSelected=false;
+function makePlaceDragQs(n=8){
+  const out=[];
+  while(out.length<n){
+    const num=randomPlaceNumber(),m=placeMap(num),cands=PLACES.filter(p=>m[p.k]!=='0');
+    const p=cands[ri(0,cands.length-1)];
+    out.push({num:displayPlain(num),digit:m[p.k],place:p.name,key:p.k})
+  }
+  return out
+}
+function startPlaceDrag(){placeDragQs=makePlaceDragQs();placeDragIndex=0;placeDragCorrect=0;resetRewardStreak();show('placeDrag');renderPlaceDrag()}
+function renderPlaceDrag(){
+  placeDigitSelected=false;
+  const q=placeDragQs[placeDragIndex];
+  document.getElementById('placeDragBadge').textContent='السؤال '+ar(placeDragIndex+1)+' من '+ar(placeDragQs.length);
+  document.getElementById('placeDragNumber').innerHTML=renderMarkedNumber(q.num,q.key);
+  const d=document.getElementById('placeDragDigit');d.textContent=ar(q.digit);d.classList.remove('selected');
+  d.onclick=()=>{placeDigitSelected=!placeDigitSelected;d.classList.toggle('selected',placeDigitSelected)};
+  const box=document.getElementById('placeTargets');box.innerHTML='';
+  let choices=shuffle([...PLACES]).slice(0,5);
+  if(!choices.some(x=>x.name===q.place)){choices[0]=PLACES.find(x=>x.name===q.place);shuffle(choices)}
+  choices.forEach(p=>{
+    const t=document.createElement('div');t.className='target';t.dataset.place=p.name;
+    t.innerHTML='<b>'+p.name+'</b><small>قيمة المنزلة: '+ar(p.value)+'</small>';
+    t.onclick=()=>{if(placeDigitSelected)checkPlaceDrag(t,p.name)};
+    box.appendChild(t)
+  });
+  document.getElementById('placeDragFb').className='feedback';
+  document.getElementById('placeDragNext').classList.add('hidden');
+  setProgress(placeDragIndex/placeDragQs.length*100)
+}
+function checkPlaceDrag(t,choice){
+  const next=document.getElementById('placeDragNext'); if(!next.classList.contains('hidden')) return;
+  const q=placeDragQs[placeDragIndex],fb=document.getElementById('placeDragFb');
+  studyRecord({module:'math',subject:'الرياضيات',skill:'المنازل',text:'منزلة الرقم '+q.digit+' في العدد '+q.num,selected:choice,correctText:q.place,correct:choice===q.place});
+  document.querySelectorAll('#placeTargets .target').forEach(x=>x.style.pointerEvents='none');
+  if(choice===q.place){
+    t.classList.add('correct');placeDragCorrect++;let gotCoin=rewardCorrect();
+    fb.className='feedback show ok';fb.textContent='✅ صحيح! الرقم المُسطّر في منزلة '+q.place+'.'+(gotCoin?' 🪙 حصلتِ على قرش ذهبي!':'')
+  }else{
+    t.classList.add('wrong');rewardWrong();const r=[...document.querySelectorAll('#placeTargets .target')].find(x=>x.dataset.place===q.place);if(r)r.classList.add('correct');
+    fb.className='feedback show bad';fb.textContent='❌ الصحيح: '+q.place+'.'
+  }
+  saveGlobal();next.classList.remove('hidden')
+}
+function nextPlaceDrag(){
+  placeDragIndex++;
+  if(placeDragIndex>=placeDragQs.length){
+    if(placeDragCorrect===placeDragQs.length)awardCup();
+    saveGlobal();document.getElementById('finishTitle').textContent='أحسنتِ في المنازل!';
+    document.getElementById('finishText').textContent='النتيجة: '+ar(placeDragCorrect)+' من '+ar(placeDragQs.length)+'.';
+    show('finish');setProgress(100)
+  } else renderPlaceDrag()
+}
+
+let analysisQs=[],analysisIndex=0,analysisCorrect=0;
+function makeAnalysisQs(n=7){
+  const a=[];
+  for(let i=0;i<n;i++){
+    let num=displayPlain(randomPlaceNumber()),correct=analytical(num);
+    let vals=correct.split(' + ').map(Number);
+    let wrongs=[];
+    for(let k=0;k<3;k++){
+      let copy=[...vals];
+      let idx=ri(0,copy.length-1);
+      copy[idx]=Number((copy[idx]*(k===0?10:k===1?.1:1)+ (k===2?1:0)).toFixed(3));
+      wrongs.push(copy.join(' + '))
+    }
+    a.push({num,correct,choices:shuffle([...new Set([correct,...wrongs])]).slice(0,4)})
+  }
+  return a
+}
+function startPlaceAnalysis(){analysisQs=makeAnalysisQs();analysisIndex=0;analysisCorrect=0;resetRewardStreak();show('placeAnalysis');renderAnalysis()}
+function renderAnalysis(){
+  const q=analysisQs[analysisIndex];
+  document.getElementById('analysisBadge').textContent='السؤال '+ar(analysisIndex+1)+' من '+ar(analysisQs.length);
+  document.getElementById('analysisNumber').textContent=ar(q.num);
+  const box=document.getElementById('analysisChoices');box.innerHTML='';
+  q.choices.forEach(v=>{
+    const b=document.createElement('button');b.className='choice';b.dataset.v=v;b.textContent=ar(v);
+    b.onclick=()=>answerAnalysis(b,v);box.appendChild(b)
+  });
+  document.getElementById('analysisFb').className='feedback';document.getElementById('analysisNext').classList.add('hidden');
+  setProgress(analysisIndex/analysisQs.length*100)
+}
+function answerAnalysis(btn,v){
+  const q=analysisQs[analysisIndex],next=document.getElementById('analysisNext');if(!next.classList.contains('hidden'))return;
+  studyRecord({module:'math',subject:'الرياضيات',skill:'الصيغة التحليلية',text:q.num,selected:v,correctText:q.correct,correct:v===q.correct});
+  const fb=document.getElementById('analysisFb'),all=[...document.querySelectorAll('#analysisChoices .choice')];all.forEach(b=>b.disabled=true);
+  if(v===q.correct){btn.classList.add('correct');analysisCorrect++;let gotCoin=rewardCorrect();fb.className='feedback show ok';fb.textContent='✅ صحيح!'+(gotCoin?' 🪙 حصلتِ على قرش ذهبي!':'')}
+  else{btn.classList.add('wrong');rewardWrong();let r=all.find(b=>b.dataset.v===q.correct);if(r)r.classList.add('correct');fb.className='feedback show bad';fb.innerHTML='❌ الصحيح:<br><b>'+ar(q.correct)+'</b>'}
+  saveGlobal();next.classList.remove('hidden')
+}
+function nextAnalysis(){
+  analysisIndex++;
+  if(analysisIndex>=analysisQs.length){
+    if(analysisCorrect===analysisQs.length)awardCup();
+    saveGlobal();document.getElementById('finishTitle').textContent='أحسنتِ في الصيغة التحليلية!';
+    document.getElementById('finishText').textContent='النتيجة: '+ar(analysisCorrect)+' من '+ar(analysisQs.length)+'.';
+    show('finish');setProgress(100)
+  } else renderAnalysis()
+}
+
+
+/* ---------- verbal form ---------- */
+const ONES_WORDS=['صفر','واحد','اثنان','ثلاثة','أربعة','خمسة','ستة','سبعة','ثمانية','تسعة'];
+const TEENS_WORDS={
+  10:'عشرة',11:'أحد عشر',12:'اثنا عشر',13:'ثلاثة عشر',14:'أربعة عشر',
+  15:'خمسة عشر',16:'ستة عشر',17:'سبعة عشر',18:'ثمانية عشر',19:'تسعة عشر'
+};
+const TENS_WORDS={20:'عشرون',30:'ثلاثون',40:'أربعون',50:'خمسون',60:'ستون',70:'سبعون',80:'ثمانون',90:'تسعون'};
+const HUNDREDS_WORDS={100:'مئة',200:'مئتان',300:'ثلاثمئة',400:'أربعمئة',500:'خمسمئة',600:'ستمئة',700:'سبعمئة',800:'ثمانمئة',900:'تسعمئة'};
+
+function integerWords(n){
+  n=Number(n);
+  if(n<10)return ONES_WORDS[n];
+  if(n<20)return TEENS_WORDS[n];
+  if(n<100){
+    let t=Math.floor(n/10)*10,o=n%10;
+    return o?ONES_WORDS[o]+' و'+TENS_WORDS[t]:TENS_WORDS[t];
+  }
+  let h=Math.floor(n/100)*100,r=n%100;
+  return r?HUNDREDS_WORDS[h]+' و'+integerWords(r):HUNDREDS_WORDS[h];
+}
+function fractionWords(frac,digits){
+  const den=digits===1?'عشرة':digits===2?'مئة':'ألف';
+  if(frac===1)return 'جزء واحد من '+den;
+  if(frac===2)return 'جزآن من '+den;
+  if(frac>=3 && frac<=10)return integerWords(frac)+' أجزاء من '+den;
+  return integerWords(frac)+' جزءًا من '+den;
+}
+function verbalForm(numStr){
+  let raw=displayPlain(numStr),parts=raw.split('.');
+  let whole=Number(parts[0]||0),dec=parts[1]||'';
+  let frac=Number(dec||0);
+
+  if(!dec.length || frac===0)return integerWords(whole);
+  let f=fractionWords(frac,dec.length);
+  return whole===0?f:integerWords(whole)+' و'+f;
+}
+function normalizeArabicWords(s){
+  return String(s||'')
+    .replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g,'')
+    .replace(/ـ/g,'')
+    .replace(/[أإآٱ]/g,'ا')
+    .replace(/ؤ/g,'و')
+    .replace(/ئ/g,'ي')
+    .replace(/ى/g,'ي')
+    .replace(/مائة/g,'مئة')
+    .replace(/مائتان/g,'مئتان')
+    .replace(/جزءان/g,'جزان')
+    .replace(/جزآن/g,'جزان')
+    .replace(/اثنين/g,'اثنان')
+    .replace(/اثني عشر/g,'اثنا عشر')
+    .replace(/[،,.؛;:!?؟\-_\s]/g,'')
+    .trim();
+}
+function makeWordNumber(){
+  // Harder level: three-digit whole number, and mostly hundredths/thousandths.
+  let whole=ri(100,999),digits=Math.random()<0.7?3:2,max=10**digits-1;
+  let frac=ri(1,max);
+  while(frac%10===0)frac=ri(1,max);
+  let dec=String(frac).padStart(digits,'0');
+  return whole+'.'+dec;
+}
+function nearWordNumbers(num){
+  let [wholeText,dec='']=String(num).split('.');
+  let whole=Number(wholeText),digits=dec.length,scale=10**digits,frac=Number(dec);
+  let candidates=[];
+
+  function add(w,f){
+    if(w<100||w>999||f<0||f>=scale)return;
+    let s=w+'.'+String(f).padStart(digits,'0');
+    if(s!==num && !candidates.includes(s))candidates.push(s);
+  }
+
+  // Very close numerical distractors.
+  add(whole,frac+1);
+  add(whole,frac-1);
+  add(whole+1,frac);
+  add(whole-1,frac);
+  add(whole+10,frac);
+  add(whole-10,frac);
+
+  // Visually close: swap two neighboring decimal digits.
+  if(dec.length>=2){
+    let a=dec.split('');
+    [a[a.length-1],a[a.length-2]]=[a[a.length-2],a[a.length-1]];
+    add(whole,Number(a.join('')));
+  }
+  if(dec.length===3){
+    let a=dec.split('');
+    [a[0],a[1]]=[a[1],a[0]];
+    add(whole,Number(a.join('')));
+  }
+
+  // Same digits, nearby whole-number place change.
+  let h=String(whole).split('');
+  if(h.length===3){
+    let a=[...h];
+    [a[1],a[2]]=[a[2],a[1]];
+    let w=Number(a.join(''));
+    add(w,frac);
+  }
+
+  return shuffle(candidates);
+}
+function makeWordsQuestions(n=8){
+  const out=[];
+  for(let i=0;i<n;i++){
+    let num=makeWordNumber(),answer=verbalForm(num);
+    let type=i%4===3?'write':(i%2===0?'numToWords':'wordsToNum');
+    let close=nearWordNumbers(num);
+    let choices=[];
+
+    if(type==='numToWords'){
+      choices=[answer];
+      for(let near of close){
+        let wrong=verbalForm(near);
+        if(!choices.includes(wrong))choices.push(wrong);
+        if(choices.length===4)break;
+      }
+      while(choices.length<4){
+        let wrong=verbalForm(makeWordNumber());
+        if(!choices.includes(wrong))choices.push(wrong);
+      }
+      shuffle(choices);
+    }else if(type==='wordsToNum'){
+      choices=[num];
+      for(let near of close){
+        if(!choices.includes(near))choices.push(near);
+        if(choices.length===4)break;
+      }
+      while(choices.length<4){
+        let wrong=makeWordNumber();
+        if(!choices.includes(wrong))choices.push(wrong);
+      }
+      shuffle(choices);
+    }
+
+    out.push({num,answer,type,choices});
+  }
+  return out;
+}
+let wordsQs=[],wordsIndex=0,wordsCorrect=0;
+
+function startPlaceWords(){
+  wordsQs=makeWordsQuestions();
+  wordsIndex=0;
+  wordsCorrect=0;
+  resetRewardStreak();
+  show('placeWords');
+  renderWordsQuestion();
+}
+function renderWordsQuestion(){
+  const q=wordsQs[wordsIndex];
+  document.getElementById('wordsBadge').textContent='السؤال '+ar(wordsIndex+1)+' من '+ar(wordsQs.length);
+  document.getElementById('wordsFb').className='feedback';
+  document.getElementById('wordsNext').classList.add('hidden');
+
+  const numEl=document.getElementById('wordsPromptNumber');
+  const textEl=document.getElementById('wordsPromptText');
+  const choiceArea=document.getElementById('wordsChoiceArea');
+  const writeArea=document.getElementById('wordsWriteArea');
+
+  numEl.classList.add('hidden');
+  textEl.classList.add('hidden');
+  choiceArea.classList.add('hidden');
+  writeArea.classList.add('hidden');
+
+  if(q.type==='numToWords'){
+    document.getElementById('wordsQuestion').textContent='اختاري الصيغة اللفظية الصحيحة للعدد';
+    numEl.textContent=ar(q.num);
+    numEl.classList.remove('hidden');
+    choiceArea.classList.remove('hidden');
+    renderWordsChoices(q.choices,'words');
+  }else if(q.type==='wordsToNum'){
+    document.getElementById('wordsQuestion').textContent='اختاري العدد الذي تمثله الصيغة اللفظية';
+    textEl.textContent=q.answer;
+    textEl.classList.remove('hidden');
+    choiceArea.classList.remove('hidden');
+    renderWordsChoices(q.choices,'nums');
+  }else{
+    document.getElementById('wordsQuestion').textContent='اكتبي الصيغة اللفظية للعدد';
+    numEl.textContent=ar(q.num);
+    numEl.classList.remove('hidden');
+    writeArea.classList.remove('hidden');
+    document.getElementById('wordsInput').value='';
+  }
+
+  setProgress(wordsIndex/wordsQs.length*100);
+}
+function renderWordsChoices(choices,mode){
+  const box=document.getElementById('wordsChoices');
+  box.innerHTML='';
+  choices.forEach(v=>{
+    const b=document.createElement('button');
+    b.className='choice';
+    b.dataset.v=v;
+    b.textContent=mode==='nums'?ar(v):v;
+    b.onclick=()=>answerWordsChoice(b,v);
+    box.appendChild(b);
+  });
+}
+function answerWordsChoice(btn,v){
+  const q=wordsQs[wordsIndex],fb=document.getElementById('wordsFb');
+  const all=[...document.querySelectorAll('#wordsChoices .choice')];
+  if(!document.getElementById('wordsNext').classList.contains('hidden'))return;
+
+  let correctValue=q.type==='numToWords'?q.answer:q.num;
+  studyRecord({module:'math',subject:'الرياضيات',skill:'الصيغة اللفظية',text:q.type==='numToWords'?q.num:q.answer,selected:v,correctText:correctValue,correct:v===correctValue});
+  all.forEach(b=>b.disabled=true);
+
+  if(v===correctValue){
+    btn.classList.add('correct');
+    wordsCorrect++;let gotCoin=rewardCorrect();
+    fb.className='feedback show ok';
+    fb.textContent='✅ صحيح! أحسنتِ.'+(gotCoin?' 🪙 حصلتِ على قرش ذهبي!':'');
+  }else{
+    btn.classList.add('wrong');
+    rewardWrong();
+    let right=all.find(b=>b.dataset.v===correctValue);
+    if(right)right.classList.add('correct');
+    fb.className='feedback show bad';
+    fb.innerHTML='❌ الإجابة الصحيحة:<br><b>'+(q.type==='numToWords'?q.answer:ar(q.num))+'</b>';
+  }
+  document.getElementById('wordsNext').classList.remove('hidden');
+}
+function clearWordsInput(){
+  document.getElementById('wordsInput').value='';
+  document.getElementById('wordsInput').focus();
+}
+function revealWordsAnswer(){
+  const q=wordsQs[wordsIndex];
+  const fb=document.getElementById('wordsFb');
+  fb.className='feedback show ok';
+  fb.innerHTML='الصيغة اللفظية:<br><b>'+q.answer+'</b>';
+}
+function checkWordsAnswer(){
+  if(!document.getElementById('wordsNext').classList.contains('hidden'))return;
+  const q=wordsQs[wordsIndex],input=document.getElementById('wordsInput').value,fb=document.getElementById('wordsFb');
+  if(!input.trim()){
+    fb.className='feedback show bad';
+    fb.textContent='اكتبي الصيغة اللفظية أولًا.';
+    return;
+  }
+  studyRecord({module:'math',subject:'الرياضيات',skill:'الصيغة اللفظية',text:q.num,selected:input,correctText:q.answer,correct:normalizeArabicWords(input)===normalizeArabicWords(q.answer)});
+  if(normalizeArabicWords(input)===normalizeArabicWords(q.answer)){
+    wordsCorrect++;let gotCoin=rewardCorrect();
+    fb.className='feedback show ok';
+    fb.textContent='✅ صحيح! أحسنتِ.'+(gotCoin?' 🪙 حصلتِ على قرش ذهبي!':'');
+  }else{
+    rewardWrong();
+    fb.className='feedback show bad';
+    fb.innerHTML='❌ راجعي الصياغة.<br>الإجابة المعتمدة:<br><b>'+q.answer+'</b>';
+  }
+  document.getElementById('wordsNext').classList.remove('hidden');
+}
+function nextWordsQuestion(){
+  wordsIndex++;
+  if(wordsIndex>=wordsQs.length){
+    if(wordsCorrect===wordsQs.length)awardCup();
+    saveGlobal();
+    document.getElementById('finishTitle').textContent='أحسنتِ في الصيغة اللفظية!';
+    document.getElementById('finishText').textContent='النتيجة: '+ar(wordsCorrect)+' من '+ar(wordsQs.length)+'.';
+    show('finish');
+    setProgress(100);
+  }else renderWordsQuestion();
+}
+
+/* ---------- multiplication/division ---------- */
+let mulSelected=new Set(JSON.parse(StudyStore.getItem('mt-selected')||'[2]'));
+let mulOperation=StudyStore.getItem('mt-operation')||'mul',mulMode='quiz',mulQ=null;
+let mulCorrect=0,mulWrong=0,mulStreak=0,mulRoundAnswered=0,mulRoundWrong=0;
+let mulWeak=new Map(JSON.parse(StudyStore.getItem('mt-weak')||'[]'));
+
+(function buildMulTables(){
+  const box=document.getElementById('mulTables');box.innerHTML='';
+  for(let n=2;n<=12;n++){
+    let b=document.createElement('button');b.className='tableBtn';b.dataset.n=n;b.textContent=ar(n);
+    b.onclick=()=>{if(mulSelected.has(n)&&mulSelected.size>1)mulSelected.delete(n);else mulSelected.add(n);saveMul();paintMulTables();mulNext()};
+    box.appendChild(b)
+  }
+  paintMulTables();paintMulOperation();updateMul()
+})();
+function saveMul(){StudyStore.setItem('mt-selected',JSON.stringify([...mulSelected]));StudyStore.setItem('mt-operation',mulOperation);StudyStore.setItem('mt-weak',JSON.stringify([...mulWeak]))}
+function paintMulTables(){[...document.querySelectorAll('#mulTables .tableBtn')].forEach(b=>b.classList.toggle('active',mulSelected.has(+b.dataset.n)))}
+function paintMulOperation(){
+  document.getElementById('mulModeBtn').classList.toggle('active',mulOperation==='mul');
+  document.getElementById('divModeBtn').classList.toggle('active',mulOperation==='div');
+  document.getElementById('mixModeBtn').classList.toggle('active',mulOperation==='mix')
+}
+function setMulOperation(v){mulOperation=v;saveMul();paintMulOperation();mulNext()}
+function mulPool(){
+  let a=[];
+  mulSelected.forEach(x=>{
+    for(let b=1;b<=12;b++){
+      if(mulOperation==='mul'||mulOperation==='mix')a.push({type:'mul',a:x,b,ans:x*b,key:`m:${x}x${b}`});
+      if(mulOperation==='div'||mulOperation==='mix'){
+        a.push({type:'div',a:x*b,b:x,ans:b,key:`d:${x*b}/${x}`});
+        a.push({type:'div',a:x*b,b,ans:x,key:`d:${x*b}/${b}`})
+      }
+    }
+  });return a
+}
+function mulPick(){
+  let p=mulPool(),w=[];
+  p.forEach(x=>{let k=1+(mulWeak.get(x.key)||0)*3;for(let i=0;i<k;i++)w.push(x)});
+  return w[Math.floor(Math.random()*w.length)]
+}
+function mulRenderQ(){if(!mulQ)return;document.getElementById('mulQuestion').textContent=mulQ.type==='mul'?`${ar(mulQ.a)} × ${ar(mulQ.b)} = ؟`:`${ar(mulQ.a)} ÷ ${ar(mulQ.b)} = ؟`}
+function mulNext(){
+  mulQ=mulPick();mulRenderQ();document.getElementById('mulFeedback').className='feedback';
+  if(mulMode==='learn')mulShowLearn();else mulShowQuiz()
+}
+function setMulMode(v){mulMode=v;mulNext()}
+function mulShowLearn(){
+  document.getElementById('mulModeLabel').textContent='تعلّم واحفظ';
+  document.getElementById('mulAnswers').innerHTML='';
+  document.getElementById('mulRevealBtn').classList.remove('hidden');document.getElementById('mulRevealBtn').textContent='إظهار الإجابة'
+}
+function revealMul(){
+  if(!mulQ)return;
+  document.getElementById('mulQuestion').textContent=mulQ.type==='mul'?`${ar(mulQ.a)} × ${ar(mulQ.b)} = ${ar(mulQ.ans)}`:`${ar(mulQ.a)} ÷ ${ar(mulQ.b)} = ${ar(mulQ.ans)}`;
+  document.getElementById('mulRevealBtn').textContent='مسألة أخرى';
+  document.getElementById('mulRevealBtn').onclick=()=>{document.getElementById('mulRevealBtn').onclick=revealMul;mulNext()}
+}
+function mulShowQuiz(){
+  document.getElementById('mulModeLabel').textContent=mulMode==='review'?'مراجعة الأخطاء':'اختبار';
+  document.getElementById('mulRevealBtn').classList.add('hidden');
+  let ans=mulQ.ans,opts=new Set([ans]);
+  while(opts.size<4){opts.add(Math.max(1,ans+Math.floor(Math.random()*9)-4))}
+  const box=document.getElementById('mulAnswers');box.innerHTML='';
+  [...opts].sort(()=>Math.random()-.5).forEach(v=>{let b=document.createElement('button');b.className='ans';b.textContent=ar(v);b.onclick=()=>mulAnswer(v);box.appendChild(b)})
+}
+function mulAnswer(v){
+  if(mulQ.answered)return;mulQ.answered=true;document.querySelectorAll('#mulAnswers button').forEach(b=>b.disabled=true);
+  studyRecord({module:'math',subject:'جدول الضرب',skill:mulQ.type==='mul'?'الضرب':'القسمة',text:`${mulQ.a} ${mulQ.type==='mul'?'×':'÷'} ${mulQ.b} = ؟`,selected:String(v),correctText:String(mulQ.ans),correct:v===mulQ.ans});
+  const fb=document.getElementById('mulFeedback');
+  mulRoundAnswered++;
+  let gotCoin=false;
+
+  if(v===mulQ.ans){
+    mulCorrect++;mulStreak++;gotCoin=rewardCorrect();
+    if(mulWeak.has(mulQ.key)){let x=mulWeak.get(mulQ.key)-1;x<=0?mulWeak.delete(mulQ.key):mulWeak.set(mulQ.key,x)}
+    fb.className='feedback show ok';
+    fb.textContent='إجابة صحيحة ⭐'+(gotCoin?' 🪙 قرش ذهبي!':'');
+  }else{
+    mulWrong++;mulStreak=0;mulRoundWrong++;rewardWrong();
+    mulWeak.set(mulQ.key,(mulWeak.get(mulQ.key)||0)+1);
+    fb.className='feedback show bad';
+    fb.textContent='الإجابة الصحيحة: '+ar(mulQ.ans)+' — سنعيد هذه المسألة.';
+  }
+
+  if(mulRoundAnswered===10){
+    if(mulRoundWrong===0){
+      awardCup();
+      fb.textContent+=' 🏆 أكملتِ جولة من ١٠ أسئلة بلا خطأ!';
+    }
+    mulRoundAnswered=0;
+    mulRoundWrong=0;
+  }
+
+  saveMul();saveGlobal();updateMul();setTimeout(mulNext,800)
+}
+function updateMul(){
+  let t=mulCorrect+mulWrong;
+  document.getElementById('mulCorrect').textContent=ar(mulCorrect);
+  document.getElementById('mulWrong').textContent=ar(mulWrong);
+  document.getElementById('mulWeakCount').textContent='('+ar(mulWeak.size)+')';
+  document.getElementById('mulAccuracy').textContent=t?ar(Math.round(mulCorrect/t*100))+'٪':'—';
+  document.getElementById('mulProgress').style.width=(mulRoundAnswered/10*100)+'%'
+}
+function reviewMulWeak(){
+  if(!mulWeak.size){const fb=document.getElementById('mulFeedback');fb.className='feedback show ok';fb.textContent='لا توجد أخطاء مسجلة بعد 👍';return}
+  mulMode='review';let keys=[...mulWeak.keys()],chosen=keys[Math.floor(Math.random()*keys.length)],all=mulPool();
+  mulQ=all.find(x=>x.key===chosen)||mulPick();mulRenderQ();mulShowQuiz()
+}
+function resetMulSession(){mulCorrect=mulWrong=mulStreak=mulRoundAnswered=mulRoundWrong=0;resetRewardStreak();mulWeak.clear();saveMul();updateMul();mulNext()}
+
+/* ---------- decimal addition/subtraction ---------- */
+let decimalStage=1,decimalOp='add',decimalQs=[],decimalIndex=0,decimalCorrect=0,decimalMistakes=0,decimalCurrent=null;
+let arrangeStep=1;
+const ALIGN_COLS=[
+  {k:'hundreds',label:'المئات'},
+  {k:'tens',label:'العشرات'},
+  {k:'ones',label:'الآحاد'},
+  {k:'comma',label:'الفاصلة'},
+  {k:'tenths',label:'جزء من عشرة'},
+  {k:'hundredths',label:'جزء من مئة'},
+  {k:'thousandths',label:'جزء من ألف'}
+];
+
+function scaledToAscii(n,digits){
+  let scale=10**digits,whole=Math.floor(n/scale),frac=String(n%scale).padStart(digits,'0');
+  return whole+'.'+frac;
+}
+function charsAroundComma(ascii){
+  let [ip,dp='']=ascii.split('.');
+  ip=ip.padStart(3,' ');
+  dp=dp.padEnd(3,' ');
+  return {
+    hundreds:ip[ip.length-3]||' ',
+    tens:ip[ip.length-2]||' ',
+    ones:ip[ip.length-1]||' ',
+    comma:',',
+    tenths:dp[0]||' ',
+    hundredths:dp[1]||' ',
+    thousandths:dp[2]||' '
+  };
+}
+function renderAlignBoard(){
+  const box=document.getElementById('alignGrid');
+  box.innerHTML='';
+
+  ALIGN_COLS.forEach(c=>{
+    let h=document.createElement('div');
+    h.className='alignHead';
+    h.textContent=c.label;
+    box.appendChild(h);
+  });
+
+  for(let row=1;row<=2;row++){
+    ALIGN_COLS.forEach(c=>{
+      let cell=document.createElement('div');
+      cell.className='alignCell'+(c.k==='comma'?' comma':'');
+      cell.dataset.row=row;
+      cell.dataset.col=c.k;
+      if(c.k==='comma' && row===arrangeStep){
+        cell.classList.add('activeTarget');
+      }
+      cell.onclick=()=>handleAlignClick(row,c.k);
+      box.appendChild(cell);
+    });
+  }
+}
+function fillAlignedRow(row){
+  const q=decimalCurrent;
+  const n=row===1?q.A:q.B;
+  const ascii=scaledToAscii(n,q.digits);
+  const vals=charsAroundComma(ascii);
+
+  ALIGN_COLS.forEach(c=>{
+    const cell=document.querySelector(`#alignGrid .alignCell[data-row="${row}"][data-col="${c.k}"]`);
+    if(!cell)return;
+    let v=vals[c.k];
+    cell.textContent=v===' ' ? '' : ar(v);
+    cell.classList.remove('activeTarget');
+    cell.classList.add('filled');
+  });
+}
+function handleAlignClick(row,col){
+  if(arrangeStep>2)return;
+
+  if(row!==arrangeStep || col!=='comma'){
+    const status=document.getElementById('arrangeStatus');
+    status.textContent='ابدئي بالفاصلة: اضغطي خانة الفاصلة الصحيحة في السطر '+ar(arrangeStep)+'.';
+    status.style.color='var(--bad)';
+    return;
+  }
+
+  fillAlignedRow(row);
+
+  if(arrangeStep===1){
+    arrangeStep=2;
+    document.getElementById('arrangeTitle').textContent='الخطوة ٢: ضعي فاصلة العدد الثاني تحت فاصلة العدد الأول';
+    document.getElementById('arrangeStatus').textContent='ممتاز. الآن اضغطي خانة الفاصلة في السطر الثاني.';
+    document.getElementById('arrangeStatus').style.color='var(--good)';
+    renderAlignBoard();
+    fillAlignedRow(1);
+  }else{
+    arrangeStep=3;
+    document.getElementById('arrangeTitle').textContent='أحسنتِ! الفاصلة تحت الفاصلة';
+    document.getElementById('arrangeStatus').textContent='الآن أصبحت العملية مرتبة عموديًا بشكل صحيح. ابدئي الحساب.';
+    document.getElementById('arrangeStatus').style.color='var(--good)';
+    fillAlignedRow(2);
+    document.getElementById('calcArea').classList.remove('locked');
+  }
+}
+
+function paintDecimalControls(){
+  [1,2,3,4].forEach(n=>document.getElementById('stage'+n).classList.toggle('active',decimalStage===n));
+  document.getElementById('addMode').classList.toggle('active',decimalOp==='add');
+  document.getElementById('subMode').classList.toggle('active',decimalOp==='sub');
+  document.getElementById('mixDecimalMode').classList.toggle('active',decimalOp==='mix')
+}
+function setDecimalStage(n){decimalStage=n;paintDecimalControls()}
+function setDecimalOp(v){decimalOp=v;paintDecimalControls()}
+function decDigitsForStage(){
+  if(decimalStage===4)return ri(1,3);
+  return decimalStage
+}
+function makeDecimalQuestion(){
+  let digits=decDigitsForStage(),scale=10**digits;
+  let type=decimalOp==='mix'?(Math.random()<.5?'add':'sub'):decimalOp;
+  let A=ri(0,999*scale),B=ri(0,999*scale);
+  if(type==='sub'&&B>A)[A,B]=[B,A];
+  // avoid all-zero decimal tails too often
+  if(A%scale===0)A+=ri(1,scale-1||1);
+  if(B%scale===0)B+=ri(1,scale-1||1);
+  let ans=type==='add'?A+B:A-B;
+  return {type,digits,scale,A,B,ans}
+}
+function formatScaled(n,digits){
+  let scale=10**digits,whole=Math.floor(n/scale),frac=String(n%scale).padStart(digits,'0');
+  return ar(whole+'.'+frac)
+}
+function buildDecimalKeyboard(){
+  const box=document.getElementById('decimalKeyboard');box.innerHTML='';
+  ['١','٢','٣','٤','٥','٦','٧','٨','٩','٠',','].forEach(k=>{
+    let b=document.createElement('button');b.className='key';b.textContent=k;b.onclick=()=>appendDecimal(k);box.appendChild(b)
+  })
+}
+buildDecimalKeyboard();
+function startDecimalQuiz(){
+  decimalQs=Array.from({length:8},()=>makeDecimalQuestion());decimalIndex=0;decimalCorrect=0;decimalMistakes=0;resetRewardStreak();show('decimalQuiz');renderDecimalQuestion()
+}
+function renderDecimalQuestion(){
+  decimalCurrent=decimalQs[decimalIndex];
+  arrangeStep=1;
+
+  document.getElementById('decimalBadge').textContent='السؤال '+ar(decimalIndex+1)+' من '+ar(decimalQs.length);
+
+  const aTxt=formatScaled(decimalCurrent.A,decimalCurrent.digits);
+  const bTxt=formatScaled(decimalCurrent.B,decimalCurrent.digits);
+  const opTxt=decimalCurrent.type==='add'?'+':'−';
+
+  document.getElementById('horizontalProblem').textContent=aTxt+' '+opTxt+' '+bTxt;
+
+  document.getElementById('decA').textContent=aTxt;
+  document.getElementById('decB').textContent=bTxt;
+  document.getElementById('decOp').textContent=opTxt;
+
+  document.getElementById('decimalInput').value='';
+  document.getElementById('decimalFb').className='feedback';
+  document.getElementById('decimalNext').classList.add('hidden');
+
+  document.getElementById('arrangeTitle').textContent='الخطوة ١: ضعي الفاصلة في العدد الأول';
+  document.getElementById('arrangeStatus').textContent='اضغطي خانة الفاصلة في السطر الأول.';
+  document.getElementById('arrangeStatus').style.color='';
+  document.getElementById('calcArea').classList.add('locked');
+  document.getElementById('decimalTip').innerHTML='<b>بعد الترتيب:</b> الفاصلة يجب أن تكون فوق الفاصلة تمامًا.';
+
+  renderAlignBoard();
+  setProgress(decimalIndex/decimalQs.length*100);
+}
+function appendDecimal(k){
+  let inp=document.getElementById('decimalInput');
+  if(k===','&&inp.value.includes(','))return;
+  inp.value+=k
+}
+function backspaceDecimal(){let i=document.getElementById('decimalInput');i.value=i.value.slice(0,-1)}
+function clearDecimalInput(){document.getElementById('decimalInput').value=''}
+function checkDecimalAnswer(){
+  const inp=document.getElementById('decimalInput'),fb=document.getElementById('decimalFb'),next=document.getElementById('decimalNext');
+  if(!next.classList.contains('hidden'))return;
+  let raw=en(inp.value.trim());
+  if(!raw){fb.className='feedback show bad';fb.textContent='اكتبي الناتج أولًا.';return}
+  let val=Number(raw),correct=decimalCurrent.ans/decimalCurrent.scale;
+  studyRecord({module:'math',subject:'الرياضيات',skill:'جمع وطرح الكسور العشرية',text:document.getElementById('horizontalProblem').textContent,selected:raw,correctText:String(correct),correct:Math.abs(val-correct)<1e-9});
+  if(Math.abs(val-correct)<1e-9){
+    decimalCorrect++;let gotCoin=rewardCorrect();
+    fb.className='feedback show ok';fb.textContent='✅ صحيح! أحسنتِ.'+(gotCoin?' 🪙 حصلتِ على قرش ذهبي!':'');
+    next.classList.remove('hidden')
+  }else{
+    decimalMistakes++;rewardWrong();
+    fb.className='feedback show bad';
+    fb.innerHTML='❌ ليس صحيحًا بعد.<br>الناتج الصحيح لهذه العملية هو <b>'+ar(correct.toFixed(decimalCurrent.digits).replace(/0+$/,'').replace(/\.$/,''))+'</b>.';
+    document.getElementById('decimalTip').innerHTML='<b>راجعي الجمع منزلةً منزلة:</b> ابدئي من أقصى اليمين، ثم تحركي يسارًا، مع بقاء الفاصلة في مكانها.'
+  }
+}
+function nextDecimalQuestion(){
+  decimalIndex++;
+  if(decimalIndex>=decimalQs.length){
+    if(decimalCorrect===decimalQs.length && decimalMistakes===0)awardCup();
+    saveGlobal();document.getElementById('finishTitle').textContent='أحسنتِ في الجمع والطرح!';
+    document.getElementById('finishText').textContent='النتيجة: '+ar(decimalCorrect)+' من '+ar(decimalQs.length)+'.';
+    show('finish');setProgress(100)
+  } else renderDecimalQuestion()
+}
+
+
+/* ---------- mental addition/subtraction ---------- */
+let mentalOpMode=StudyStore.getItem('mental-op-mode')||'mixed';
+let mentalQs=[],mentalIndex=0,mentalCurrent=null,mentalCorrect=0,mentalMistakes=0,mentalPerfect=true;
+let mentalActiveMethod=null,mentalActivePath=null;
+
+const MENTAL_METHODS=[
+  {key:'bothAdd',label:'➕ أضيف العدد نفسه إلى العددين'},
+  {key:'bothSub',label:'➖ أطرح العدد نفسه من العددين'},
+  {key:'opposite',label:'↔️ أجمع في جهة وأطرح في الأخرى'}
+];
+
+function paintMentalControls(){
+  const map=[
+    ['mentalAddBtn',mentalOpMode==='add'],
+    ['mentalSubBtn',mentalOpMode==='sub'],
+    ['mentalMixedOpBtn',mentalOpMode==='mixed']
+  ];
+  map.forEach(([id,on])=>{const el=document.getElementById(id);if(el)el.classList.toggle('active',on)})
+}
+function setMentalOpMode(v){mentalOpMode=v;StudyStore.setItem('mental-op-mode',v);paintMentalControls()}
+
+function mentalDigits(scale){return scale===100?2:scale===10?1:0}
+function mentalFmt(n,scale){
+  if(scale===1)return ar(String(n));
+  return ar((n/scale).toFixed(mentalDigits(scale)));
+}
+function mentalOpSymbol(op){return op==='add'?'+':'−'}
+
+function mentalSpecInfo(spec){
+  if(spec==='int2')return {kind:'int',scale:1,roundStep:10,label:'صحيح من رقمين',rule:'يجب أن يصبح الآحاد صفرًا.',min:11,max:99};
+  if(spec==='int3')return {kind:'int',scale:1,roundStep:100,label:'صحيح من ثلاثة أرقام',rule:'يجب أن تصبح العشرات والآحاد صفرين معًا.',min:101,max:999};
+  if(spec==='dec1')return {kind:'decimal',scale:10,roundStep:10,label:'عشري حتى جزء من عشرة',rule:'يجب أن يصبح جزء العشرة صفرًا.',min:11,max:299};
+  return {kind:'decimal',scale:100,roundStep:100,label:'عشري حتى جزء من مئة',rule:'يجب أن يصبح جزء العشرة وجزء المئة صفرين معًا.',min:101,max:2999};
+}
+function validNumberForSpec(n,spec,info){
+  if(n<info.min||n>info.max)return false;
+  if(n%info.roundStep===0)return false;
+  if(spec==='dec2' && n%10===0)return false; // يظهر جزء المئة فعليًا
+  return true;
+}
+function pickNumber(spec,info){
+  let n;
+  do{n=ri(info.min,info.max)}while(!validNumberForSpec(n,spec,info));
+  return n;
+}
+function roundedDown(n,step){return n-(n%step)}
+function roundedUp(n,step){return n+(step-(n%step))}
+
+function chooseAddOppositePath(a,b,step){
+  const candidates=[];
+  const aDown=a%step,aUp=step-(a%step),bDown=b%step,bUp=step-(b%step);
+
+  if(aDown>0)candidates.push({delta:aDown,newA:a-aDown,newB:b+aDown,roundOriginal:a,roundTarget:a-aDown,roundSide:'الأول',direction:'أطرح من الأول وأضيف إلى الثاني'});
+  if(aUp>0 && b>aUp)candidates.push({delta:aUp,newA:a+aUp,newB:b-aUp,roundOriginal:a,roundTarget:a+aUp,roundSide:'الأول',direction:'أضيف إلى الأول وأطرح من الثاني'});
+  if(bDown>0)candidates.push({delta:bDown,newA:a+bDown,newB:b-bDown,roundOriginal:b,roundTarget:b-bDown,roundSide:'الثاني',direction:'أضيف إلى الأول وأطرح من الثاني'});
+  if(bUp>0 && a>bUp)candidates.push({delta:bUp,newA:a-bUp,newB:b+bUp,roundOriginal:b,roundTarget:b+bUp,roundSide:'الثاني',direction:'أطرح من الأول وأضيف إلى الثاني'});
+
+  candidates.sort((x,y)=>x.delta-y.delta);
+  const bestDelta=candidates[0].delta;
+  const best=candidates.filter(x=>x.delta===bestDelta);
+  return best[ri(0,best.length-1)];
+}
+function chooseSubPath(a,b,step,method){
+  const candidates=[];
+  if(method==='bothAdd'){
+    const aUp=step-(a%step),bUp=step-(b%step);
+    candidates.push({delta:aUp,newA:a+aUp,newB:b+aUp,roundOriginal:a,roundTarget:a+aUp,roundSide:'الأول'});
+    candidates.push({delta:bUp,newA:a+bUp,newB:b+bUp,roundOriginal:b,roundTarget:b+bUp,roundSide:'الثاني'});
+  }else{
+    const aDown=a%step,bDown=b%step;
+    if(aDown>0 && b-aDown>=0)candidates.push({delta:aDown,newA:a-aDown,newB:b-aDown,roundOriginal:a,roundTarget:a-aDown,roundSide:'الأول'});
+    if(bDown>0 && b-bDown>=0)candidates.push({delta:bDown,newA:a-bDown,newB:b-bDown,roundOriginal:b,roundTarget:b-bDown,roundSide:'الثاني'});
+  }
+  candidates.sort((x,y)=>x.delta-y.delta);
+  const bestDelta=candidates[0].delta;
+  const best=candidates.filter(x=>x.delta===bestDelta);
+  return best[ri(0,best.length-1)];
+}
+
+function pickFrom(a){return a[ri(0,a.length-1)]}
+
+function makeEasyAddOperands(spec,info){
+  let targetA,targetB,delta,up;
+
+  if(spec==='int2'){
+    targetA=pickFrom([30,40,50,60,70,80]);
+    targetB=pickFrom([20,30,40,50,60]);
+    while(targetA+targetB>130)targetB=pickFrom([20,30,40]);
+    delta=ri(1,4);up=Math.random()<.5;
+  }else if(spec==='int3'){
+    targetA=pickFrom([200,300,400,500,600]);
+    targetB=pickFrom([100,200,300]);
+    while(targetA+targetB>800)targetB=pickFrom([100,200]);
+    delta=ri(1,9);up=Math.random()<.5;
+  }else if(spec==='dec1'){
+    targetA=pickFrom([30,40,50,60,70,80,90,100,120]);
+    targetB=pickFrom([20,30,40,50,60,70]);
+    while(targetA+targetB>160)targetB=pickFrom([20,30,40]);
+    delta=ri(1,4);up=Math.random()<.5;
+  }else{
+    targetA=pickFrom([300,400,500,600,700,800,900,1000,1200]);
+    targetB=pickFrom([200,300,400,500,600,700]);
+    while(targetA+targetB>1600)targetB=pickFrom([200,300,400]);
+    delta=ri(1,9);up=Math.random()<.5;
+  }
+
+  const a=up?targetA-delta:targetA+delta;
+  const b=up?targetB+delta:targetB-delta;
+  return {a,b};
+}
+
+function makeEasySubOperands(spec,info){
+  if(spec==='int2'){
+    const aT=ri(5,9),bT=ri(1,aT-2);
+    return {a:aT*10+ri(1,4),b:bT*10+ri(6,9)};
+  }
+  if(spec==='int3'){
+    const aH=ri(4,9),bH=ri(1,aH-2);
+    return {a:aH*100+ri(1,9),b:bH*100+ri(91,99)};
+  }
+  if(spec==='dec1'){
+    const aI=ri(5,14),bI=ri(1,aI-2);
+    return {a:aI*10+ri(1,4),b:bI*10+ri(6,9)};
+  }
+  const aI=ri(5,14),bI=ri(1,aI-2);
+  return {a:aI*100+ri(1,9),b:bI*100+ri(91,99)};
+}
+
+function makeMentalQuestion(spec){
+  const info=mentalSpecInfo(spec);
+  const op=mentalOpMode==='mixed'?(Math.random()<.5?'add':'sub'):mentalOpMode;
+  const pair=op==='add'?makeEasyAddOperands(spec,info):makeEasySubOperands(spec,info);
+  const a=pair.a,b=pair.b;
+  const ans=op==='add'?a+b:a-b;
+  const paths={};
+
+  if(op==='add'){
+    paths.opposite=chooseAddOppositePath(a,b,info.roundStep);
+  }else{
+    paths.bothAdd=chooseSubPath(a,b,info.roundStep,'bothAdd');
+    paths.bothSub=chooseSubPath(a,b,info.roundStep,'bothSub');
+  }
+
+  return {spec,...info,op,a,b,ans,paths,completedMethods:[]};
+}
+
+function makeMentalAmountChoices(q,path){
+  const vals=new Set([path.delta]);
+  let offsets=[1,2,3,5,10,20,25,50];
+  if(q.scale===10)offsets=[1,2,3,4,5,6,7,8];
+  if(q.scale===100)offsets=[1,2,5,10,20,25,50,75];
+  for(const off of shuffle([...offsets])){
+    const v=path.delta+(Math.random()<.5?off:-off);
+    if(v>0 && v!==path.delta)vals.add(v);
+    if(vals.size>=4)break;
+  }
+  let guard=1;
+  while(vals.size<4){vals.add(path.delta+guard++);}
+  return shuffle([...vals].slice(0,4));
+}
+function makeMentalResultChoices(q){
+  const vals=new Set([q.ans]);
+  let step=q.scale===1?1:1;
+  const candidates=[q.ans+step,q.ans-step,q.ans+2*step,q.ans-2*step,q.ans+5*step,q.ans-5*step];
+  candidates.forEach(v=>{if(v>=0)vals.add(v)});
+  let guard=1;while(vals.size<4)vals.add(q.ans+guard++*step);
+  return shuffle([...vals].slice(0,4));
+}
+
+function buildMentalRound(){
+  const specs=['int2','int2','int3','int3','dec1','dec1','dec2','dec2'];
+  return shuffle(specs).map(spec=>makeMentalQuestion(spec));
+}
+function startMentalQuiz(){
+  mentalQs=buildMentalRound();
+  mentalIndex=0;mentalCorrect=0;mentalMistakes=0;mentalPerfect=true;resetRewardStreak();
+  show('mentalQuiz');renderMentalQuestion();
+}
+
+function renderMentalMethods(){
+  const q=mentalCurrent,box=document.getElementById('mentalMethods');box.innerHTML='';
+  MENTAL_METHODS.forEach(m=>{
+    const b=document.createElement('button');b.className='mentalChoice';b.textContent=m.label;b.dataset.method=m.key;
+    const done=q.completedMethods.includes(m.key);
+    if(done){b.classList.add('correct');b.textContent='✅ تم: '+m.label;b.disabled=true}
+    b.onclick=()=>tryMentalMethod(b,m.key);box.appendChild(b);
+  });
+}
+function clearMentalStepsForMethod(){
+  mentalActiveMethod=null;mentalActivePath=null;
+  renderMentalMethods();
+  document.getElementById('mentalStep1').classList.remove('done','locked');
+  document.getElementById('mentalStep2').classList.add('locked');document.getElementById('mentalStep2').classList.remove('done');
+  document.getElementById('mentalStep3').classList.add('locked');document.getElementById('mentalStep3').classList.remove('done');
+  document.getElementById('mentalAmounts').innerHTML='';
+  document.getElementById('mentalResults').innerHTML='';
+  document.getElementById('mentalAmountHint').textContent='';
+  document.getElementById('mentalTransform').textContent='';
+  document.getElementById('mentalMethodFb').className='feedback';
+  document.getElementById('mentalAmountFb').className='feedback';
+  document.getElementById('mentalAnswerFb').className='feedback';
+}
+
+function renderMentalQuestion(){
+  mentalCurrent=mentalQs[mentalIndex];
+  const q=mentalCurrent;
+  q.completedMethods=q.completedMethods||[];
+  document.getElementById('mentalBadge').textContent='السؤال '+ar(mentalIndex+1)+' من '+ar(mentalQs.length)+' • '+q.label;
+  document.getElementById('mentalProblem').textContent=mentalFmt(q.a,q.scale)+' '+mentalOpSymbol(q.op)+' '+mentalFmt(q.b,q.scale)+' = ؟';
+  document.getElementById('mentalRoundRule').innerHTML='<b>مستوى خامس ابتدائي:</b> '+q.rule+' وبعد التعويض ستصبح العملية أبسط بوضوح.';
+  document.getElementById('mentalNext').classList.add('hidden');
+  clearMentalStepsForMethod();
+  document.getElementById('mentalStatus').textContent=q.op==='sub'
+    ?'في الطرح: حلي المسألة بالطريقتين. يمكنك البدء بالإضافة للعددين أو الطرح من العددين.'
+    :'في الجمع: يجب أن يكون التعويض في اتجاهين متعاكسين.';
+  setProgress(mentalIndex/mentalQs.length*100);
+}
+
+function mentalWrong(btn,fb,msg){
+  studyRecord({module:'math',subject:'الرياضيات',skill:'الحساب الذهني — '+(fb.id==='mentalMethodFb'?'الطريقة':fb.id==='mentalAmountFb'?'مقدار التعويض':'الناتج'),text:document.getElementById('mentalProblem').textContent,selected:btn.textContent,correctText:fb.id==='mentalMethodFb'?(mentalCurrent.op==='add'?'نضيف لعدد ونطرح من الآخر':'نضيف للعددين أو نطرح منهما'):fb.id==='mentalAmountFb'?mentalFmt(mentalActivePath.delta,mentalCurrent.scale):mentalFmt(mentalCurrent.ans,mentalCurrent.scale),explanation:msg,correct:false});
+  mentalMistakes++;mentalPerfect=false;rewardWrong();
+  btn.classList.add('wrong');
+  fb.className='feedback show bad';fb.textContent='❌ '+msg+' حاولي مرة أخرى.';
+  setTimeout(()=>btn.classList.remove('wrong'),650);
+}
+function methodIsAllowed(q,key){
+  if(q.op==='add')return key==='opposite';
+  return key==='bothAdd'||key==='bothSub';
+}
+
+function prepareMentalAmountStep(){
+  const q=mentalCurrent,path=mentalActivePath;
+  const amountBox=document.getElementById('mentalAmounts');amountBox.innerHTML='';
+  makeMentalAmountChoices(q,path).forEach(v=>{
+    const b=document.createElement('button');b.className='mentalChoice';b.textContent=mentalFmt(v,q.scale);
+    b.onclick=()=>tryMentalAmount(b,v);amountBox.appendChild(b);
+  });
+  document.getElementById('mentalAmountHint').innerHTML=
+    'سنحوّل العدد <b>'+mentalFmt(path.roundOriginal,q.scale)+'</b> إلى <b>'+mentalFmt(path.roundTarget,q.scale)+'</b>. ما مقدار التعويض؟';
+}
+
+function tryMentalMethod(btn,key){
+  const q=mentalCurrent,fb=document.getElementById('mentalMethodFb');
+  if(document.getElementById('mentalStep1').classList.contains('done'))return;
+  if(q.completedMethods.includes(key))return;
+  if(!methodIsAllowed(q,key)){
+    mentalWrong(btn,fb,q.op==='add'?'في الجمع نحافظ على المجموع بجمع في جهة وطرح في الأخرى':'في الطرح يجب أن يكون التغيير في العددين بالاتجاه نفسه');
+    return;
+  }
+  mentalActiveMethod=key;mentalActivePath=q.paths[key];
+  btn.classList.add('correct');
+  fb.className='feedback show ok';
+  fb.textContent='✅ طريقة صحيحة. الآن اختاري مقدار التعويض الذي يحقق التصفير المطلوب.';
+  document.getElementById('mentalStep1').classList.add('done');
+  document.getElementById('mentalStep2').classList.remove('locked');
+  prepareMentalAmountStep();
+}
+
+function tryMentalAmount(btn,v){
+  const q=mentalCurrent,path=mentalActivePath,fb=document.getElementById('mentalAmountFb');
+  if(document.getElementById('mentalStep2').classList.contains('done'))return;
+  if(v!==path.delta){
+    mentalWrong(btn,fb,'هذا المقدار لا يحوّل '+mentalFmt(path.roundOriginal,q.scale)+' إلى '+mentalFmt(path.roundTarget,q.scale));
+    return;
+  }
+  btn.classList.add('correct');
+  let action='';
+  if(q.op==='add'){
+    action=path.direction+' بالمقدار '+mentalFmt(path.delta,q.scale)+'.';
+  }else if(mentalActiveMethod==='bothAdd'){
+    action='نضيف '+mentalFmt(path.delta,q.scale)+' إلى العددين معًا.';
+  }else{
+    action='نطرح '+mentalFmt(path.delta,q.scale)+' من العددين معًا.';
+  }
+  fb.className='feedback show ok';fb.textContent='✅ ممتاز. '+action;
+  document.getElementById('mentalStep2').classList.add('done');
+  document.getElementById('mentalStep3').classList.remove('locked');
+  document.getElementById('mentalTransform').textContent=
+    mentalFmt(path.newA,q.scale)+' '+mentalOpSymbol(q.op)+' '+mentalFmt(path.newB,q.scale)+' = ؟';
+
+  const resultBox=document.getElementById('mentalResults');resultBox.innerHTML='';
+  makeMentalResultChoices(q).forEach(vv=>{
+    const b=document.createElement('button');b.className='mentalChoice';b.textContent=mentalFmt(vv,q.scale);
+    b.onclick=()=>tryMentalAnswer(b,vv);resultBox.appendChild(b);
+  });
+}
+
+function completeMentalQuestion(){
+  studyRecord({module:'math',subject:'الرياضيات',skill:'الحساب الذهني',text:document.getElementById('mentalProblem').textContent,selected:mentalFmt(mentalCurrent.ans,mentalCurrent.scale),correctText:mentalFmt(mentalCurrent.ans,mentalCurrent.scale),correct:true});
+  const q=mentalCurrent;
+  mentalCorrect++;const gotCoin=rewardCorrect();
+  const fb=document.getElementById('mentalAnswerFb');
+  fb.className='feedback show ok';
+  fb.textContent='✅ أحسنتِ! الناتج '+mentalFmt(q.ans,q.scale)+'.'+(gotCoin?' 🪙 حصلتِ على قرش ذهبي!':'');
+  document.getElementById('mentalStep3').classList.add('done');
+  document.getElementById('mentalNext').classList.remove('hidden');
+  document.getElementById('mentalStatus').textContent='اكتمل هذا السؤال. انتقلي للسؤال التالي.';
+}
+
+function tryMentalAnswer(btn,v){
+  const q=mentalCurrent,fb=document.getElementById('mentalAnswerFb');
+  if(!document.getElementById('mentalNext').classList.contains('hidden'))return;
+  if(v!==q.ans){mentalWrong(btn,fb,'الناتج غير صحيح بعد');return}
+  btn.classList.add('correct');
+  document.getElementById('mentalStep3').classList.add('done');
+
+  if(q.op==='sub'){
+    if(!q.completedMethods.includes(mentalActiveMethod))q.completedMethods.push(mentalActiveMethod);
+    if(q.completedMethods.length<2){
+      fb.className='feedback show ok';
+      fb.textContent='✅ صحيح بالطريقة الأولى. الآن حلي نفس المسألة بالطريقة الأخرى.';
+      const doneName=mentalActiveMethod==='bothAdd'?'الإضافة للعددين':'الطرح من العددين';
+      document.getElementById('mentalStatus').textContent='أنهيتِ '+doneName+'. بقيت الطريقة الأخرى قبل الانتقال.';
+      setTimeout(()=>clearMentalStepsForMethod(),450);
+      return;
+    }
+  }
+  completeMentalQuestion();
+}
+
+function nextMentalQuestion(){
+  mentalIndex++;
+  if(mentalIndex>=mentalQs.length){
+    if(mentalPerfect)awardCup();
+    saveGlobal();
+    document.getElementById('finishTitle').textContent='أحسنتِ في الحساب الذهني!';
+    document.getElementById('finishText').textContent='أكملتِ '+ar(mentalCorrect)+' من '+ar(mentalQs.length)+' مسائل. عدد المحاولات الخاطئة: '+ar(mentalMistakes)+'.';
+    show('finish');setProgress(100);
+  }else renderMentalQuestion();
+}
+paintMentalControls();
+
+/* ---------- PWA ---------- */
+
+
+// Respect the student's shared curriculum gate in all lesson entry points.
+const mathMode=new URLSearchParams(location.search).get('mode');
+const mathLimit=Number(STUDY_CONTEXT.scope['الرياضيات']||0);
+const originalShow=show;
+show=function(id){if(id==='home'&&mathMode==='multiply'){studyHome();return}originalShow(id)};
+function scopedEntry(fn,min){return function(){if(STUDY_CONTEXT.pid!=='p3'||mathLimit<min){alert('هذا التدريب يأتي بعد موضعك الحالي في المنهج. حدّثي موضعك من «أين وصلتِ؟» عندما تدرسينه.');return}fn()}}
+openPlaces=scopedEntry(openPlaces,1001005);
+openDecimals=scopedEntry(openDecimals,1002005);
+openMental=scopedEntry(openMental,1002007);
+for(const [fn,min] of [['openPlaces',1001005],['openDecimals',1002005],['openMental',1002007]]){
+ document.querySelectorAll('[onclick="'+fn+'()"] ').forEach(el=>{if(STUDY_CONTEXT.pid!=='p3'||mathLimit<min){el.style.opacity='.45';el.title='لم تصلي لهذا الدرس بعد'}})
+}
+if(mathMode==='multiply'){
+ document.querySelector('.footer').style.display='none';
+ openMultiplication();
+}
+</script>
+</body>
+</html>
