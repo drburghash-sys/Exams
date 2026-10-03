@@ -1,7 +1,7 @@
 "use strict";
 (function(){
 const KEY="girls_study_v1";
-const APP_VERSION="11.2";
+const APP_VERSION="11.3";
 const BANK=window.ALL_BANK||[];
 const CURRICULUM=window.CURRICULUM_CATALOG||[];
 const $=id=>document.getElementById(id);
@@ -146,7 +146,28 @@ function mastery(pid,t,s){return stats(pid,t).find(x=>x.skill===s)?.mastery??50}
 function trackMastery(pid,t,subject=null){const a=stats(pid,t,subject);return a.length?Math.round(a.reduce((z,x)=>z+x.mastery,0)/a.length):50}
 function used(pid){const m={};state.history.filter(h=>h.profileId===pid).forEach(h=>(h.answers||[]).forEach(a=>m[a.qid]=(m[a.qid]||0)+1));return m}
 function rnd(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
-function weightedSelect(pid,t,n,mode,b){if(!b.length)return[];const skills=[...new Set(b.map(q=>q.skill))],sm={};skills.forEach(s=>sm[s]=mastery(pid,t,s));if(mode==="speed")b=b.filter(q=>(sm[q.skill]??50)>=80);const u=used(pid),r=rnd((Date.now()+n+b.length)&0xffffffff);let a=b.map(q=>{const m=sm[q.skill]??50;let w=m<65?6:m<82?3.2:1.2;if(!u[q.id])w*=2.8;else w/=1+Math.min(4,u[q.id]*.75);const wanted=m<60?2:m<80?3:4;w*=1/(1+Math.abs((q.difficulty||2)-wanted)*.35);return {q,w,k:Math.pow(r(),1/Math.max(.1,w))}}).sort((x,y)=>y.k-x.k),out=[],fam={};for(const x of a){const f=x.q.family||x.q.skill,cap=Math.max(2,Math.ceil(n*.3));if((fam[f]||0)>=cap)continue;out.push(x.q);fam[f]=(fam[f]||0)+1;if(out.length>=n)break}if(out.length<n)for(const x of a){if(!out.includes(x.q)){out.push(x.q);if(out.length>=n)break}}return out}
+function weightedSelect(pid,t,n,mode,b){
+ if(!b.length)return[];
+ const skills=[...new Set(b.map(q=>q.skill))],sm={};skills.forEach(s=>sm[s]=mastery(pid,t,s));
+ if(mode==="speed")b=b.filter(q=>(sm[q.skill]??50)>=80);
+ const u=used(pid),r=rnd((Date.now()+n+b.length)&0xffffffff);
+ let a=b.map(q=>{const m=sm[q.skill]??50;let w=m<65?6:m<82?3.2:1.2;if(!u[q.id])w*=2.8;else w/=1+Math.min(4,u[q.id]*.75);const wanted=m<60?2:m<80?3:4;w*=1/(1+Math.abs((q.difficulty||2)-wanted)*.35);return {q,w,k:Math.pow(r(),1/Math.max(.1,w))}}).sort((x,y)=>y.k-x.k);
+ const out=[],fam={},baseSeen=new Set();
+ for(const x of a){
+  const base=x.q.variantOf||x.q.id;
+  if(baseSeen.has(base))continue;
+  const f=x.q.family||x.q.skill,cap=Math.max(2,Math.ceil(n*.3));
+  if((fam[f]||0)>=cap)continue;
+  out.push(x.q);baseSeen.add(base);fam[f]=(fam[f]||0)+1;
+  if(out.length>=n)break
+ }
+ if(out.length<n)for(const x of a){
+  const base=x.q.variantOf||x.q.id;
+  if(baseSeen.has(base))continue;
+  if(!out.includes(x.q)){out.push(x.q);baseSeen.add(base);if(out.length>=n)break}
+ }
+ return out
+}
 function selectSchool(pid,t,n,mode,subject=null){if(subject)return schoolSubjectSelect(pid,t,subject,n,mode);const subs=T[t].subjects,base=Math.floor(n/subs.length),rem=n%subs.length,out=[];subs.forEach((s,i)=>out.push(...schoolSubjectSelect(pid,t,s,base+(i<rem?1:0),mode)));return out.sort(()=>Math.random()-.5)}
 function randomizeQuestionOptions(q){
  if(q?.track!=="m3"||!Array.isArray(q.options)||q.options.length<2||!Number.isInteger(q.answer))return q;
