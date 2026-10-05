@@ -94,7 +94,7 @@ function finalize(placed,cells){
 }
 function render(){
  const p=puzzle,w=p.maxX-p.minX+1,h=p.maxY-p.minY+1;
- let board='';for(let y=p.minY;y<=p.maxY;y++)for(let x=p.minX;x<=p.maxX;x++){const c=p.cells.get(key(x,y));if(!c){board+='<div class="cell empty"></div>';continue}const start=p.placed.find(z=>z.x===x&&z.y===y);const reveal=c.owners.every(i=>p.solved.has(i));board+=`<div class="cell ${reveal?'solved':''}">${start?'<span class="num">'+start.no+'</span>':''}${reveal?esc(c.ch):''}</div>`}
+ let board='';for(let y=p.minY;y<=p.maxY;y++)for(let x=p.minX;x<=p.maxX;x++){const c=p.cells.get(key(x,y));if(!c){board+='<div class="cell empty"></div>';continue}const start=p.placed.find(z=>z.x===x&&z.y===y);const reveal=c.owners.some(i=>p.solved.has(i));board+=`<div class="cell ${reveal?'solved':''}">${start?'<span class="num">'+start.no+'</span>':''}${reveal?esc(c.ch):''}</div>`}
  const modeTitle=lang==='ar'?'العربية — مرادفات وأضداد':'English — Synonyms & Antonyms';
  app.innerHTML=`<div class="top"><div><h1>الكلمات المتقاطعة</h1><div class="sub">لعبة مشتركة • ${modeTitle}</div></div><button class="light" onclick="studyHome()">ملفي</button></div>
  <div class="card"><div class="row tabs"><button class="${lang==='ar'?'on':''}" onclick="switchLang('ar')">العربية</button><button class="${lang==='en'?'on':''}" onclick="switchLang('en')">English</button></div></div>
