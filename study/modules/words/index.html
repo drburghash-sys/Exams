@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>تحدي الكلمات</title>
+<style>
+:root{--bg:#f7faf9;--card:#fff;--ink:#17352f;--muted:#6b7d78;--line:#dfe8e5;--green:#2f6d61;--blue:#315f9a;--gold:#b78934;--ok:#dff5e7;--bad:#fff0ed;--shadow:0 8px 24px rgba(25,60,50,.07)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}
+button,input{font:inherit}button{border:0;border-radius:13px;padding:10px 14px;font-weight:800;cursor:pointer;background:var(--green);color:#fff}
+button.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}button.blue{background:var(--blue)}
+main{max-width:900px;margin:auto;padding:12px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.brand{font-weight:900;font-size:22px}.muted{font-size:12px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:12px;box-shadow:var(--shadow)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tabs button{width:100%}.tabs .active{outline:3px solid rgba(183,137,52,.24)}
+.hero{border:2px solid #d8e8e2}.pill{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef5f2;font-size:12px;font-weight:800}
+.layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(260px,.9fr);gap:12px;align-items:start}
+.boardWrap{overflow:auto;padding:4px}.board{display:grid;gap:2px;justify-content:center;direction:ltr;min-width:max-content}
+.cell{width:38px;height:38px;position:relative}.cell input{width:100%;height:100%;padding:0;text-align:center;border:1px solid #aebfba;border-radius:7px;background:#fff;font-size:20px;font-weight:900;text-transform:uppercase;outline:none}
+.cell input:focus,.cell.active input{outline:2px solid var(--gold);border-color:var(--gold)}.cell.ok input{background:var(--ok);border-color:#7bb28f}.cell.bad input{background:var(--bad);border-color:#d28d7e}
+.cell .num{position:absolute;left:3px;top:1px;font-size:8px;font-weight:900;color:#7b6a47;pointer-events:none}
+.blank{width:38px;height:38px}
+.clue{border:1px solid var(--line);border-radius:12px;padding:9px;margin-bottom:7px;cursor:pointer;background:#fff}.clue.active{border-color:var(--gold);box-shadow:0 0 0 2px rgba(183,137,52,.12)}
+.clue b{display:inline-block;min-width:26px}.clue .dir{font-size:11px;color:var(--muted)}
+.stats{display:flex;gap:8px;flex-wrap:wrap}.stat{border:1px solid var(--line);border-radius:12px;padding:8px 10px;min-width:105px}.stat b{display:block;font-size:20px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{flex:1;min-width:130px}.feedback{padding:11px;border-radius:12px;margin-top:10px}.feedback.ok{background:var(--ok)}.feedback.bad{background:var(--bad)}
+@media(max-width:720px){.layout{grid-template-columns:1fr}.cell,.blank{width:34px;height:34px}.cell input{font-size:18px}.brand{font-size:20px}}
+</style>
+</head>
+<body><main id="app"></main>
+<script src="../bridge.js"></script>
+<script>
+"use strict";
+const app=document.getElementById('app');
+const ALL=(STUDY_CONTEXT.sharedWords||[]);
+const KEY='shared_word_crossword_v1';
+let state={best:{ar:0,en:0},played:{ar:0,en:0}}, mode=new URLSearchParams(location.search).get('mode')==='en'?'en':'ar', puzzle=null, recorded=false, activeWord=null;
+try{state={...state,...JSON.parse(StudyStore.getItem(KEY)||'{}'),best:{ar:0,en:0,...JSON.parse(StudyStore.getItem(KEY)||'{}').best},played:{ar:0,en:0,...JSON.parse(StudyStore.getItem(KEY)||'{}').played}}}catch{}
+const save=()=>StudyStore.setItem(KEY,JSON.stringify(state));
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+function cleanAr(s){return String(s||'').normalize('NFKC').replace(/[ًٌٍَُِّْـ]/g,'').replace(/[^ء-ي]/g,'')}
+function cleanEn(s){return String(s||'').toLowerCase().replace(/[^a-z]/g,'')}
+function normalizeWord(s,lang){return lang==='ar'?cleanAr(s):cleanEn(s)}
+function clueText(q,lang){
+ if(lang==='ar'){
+  const m=String(q.text||'').match(/«([^»]+)»/), w=m?.[1]||q.text;
+  return q.skill==='الأضداد'?'ضد «'+w+'»':'مرادف «'+w+'»';
+ }
+ const m=String(q.text||'').match(/[“"]([^”"]+)[”"]/),w=m?.[1]||q.text;
+ return q.skill==='Antonyms'?'Antonym of “'+w+'”':'Synonym of “'+w+'”';
+}
+function pool(lang){
+ const good=ALL.filter(q=>lang==='ar'
+  ? q.track==='verbal'&&['المفردات في السياق','الأضداد'].includes(q.skill)
+  : q.track==='step'&&['Synonyms','Antonyms'].includes(q.skill));
+ const seen=new Set(),out=[];
+ for(const q of good){
+  const raw=q.options?.[q.answer], ans=normalizeWord(raw,lang);
+  if(!ans||ans.length<3||ans.length>10||seen.has(ans))continue;
+  seen.add(ans);out.push({id:q.id,answer:ans,display:String(raw),clue:clueText(q,lang),skill:q.skill,source:q});
+ }
+ return out;
+}
+function shuffle(a){const x=a.slice();for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
+const key=(x,y)=>x+','+y;
+function charAt(word,i){return [...word][i]}
+function positions(pl){return [...pl.answer].map((ch,i)=>({x:pl.x+pl.dx*i,y:pl.y+pl.dy*i,ch}))}
+function canPlace(cand,x,y,dx,dy,board,needCross){
+ let crosses=0;const pos=[...cand.answer].map((ch,i)=>({x:x+dx*i,y:y+dy*i,ch}));
+ for(const p of pos){if(p.x<0||p.y<0||p.x>=15||p.y>=15)return false;const c=board.get(key(p.x,p.y));if(c){if(c.ch!==p.ch||c.dirs.has(dx+','+dy))return false;crosses++}else{const px=dy?1:0,py=dx?1:0;if(board.has(key(p.x+px,p.y+py))||board.has(key(p.x-px,p.y-py)))return false}}
+ const before={x:x-dx,y:y-dy},after={x:x+dx*cand.answer.length,y:y+dy*cand.answer.length};
+ if(board.has(key(before.x,before.y))||board.has(key(after.x,after.y)))return false;
+ return needCross?crosses===1:true;
+}
+function addPlacement(pl,board){
+ for(const p of positions(pl)){const k=key(p.x,p.y),c=board.get(k)||{ch:p.ch,dirs:new Set()};c.dirs.add(pl.dx+','+pl.dy);board.set(k,c)}
+}
+function tryAdd(cand,placements,board,lang){
+ const occ=[...board.entries()].map(([k,c])=>{const [x,y]=k.split(',').map(Number);return{x,y,...c}});
+ const dirs=shuffle(lang==='ar'?[[-1,0],[0,1]]:[[1,0],[0,1]]);
+ const letters=[...cand.answer];
+ for(const d of dirs){
+  for(let wi=0;wi<letters.length;wi++){
+   for(const cell of shuffle(occ.filter(c=>c.ch===letters[wi]))){
+    const x=cell.x-d[0]*wi,y=cell.y-d[1]*wi;
+    if(canPlace(cand,x,y,d[0],d[1],board,true)){const pl={...cand,x,y,dx:d[0],dy:d[1]};placements.push(pl);addPlacement(pl,board);return true}
+   }
+  }
+ }
+ return false;
+}
+function generate(lang){
+ const candidates=pool(lang);
+ let best=null;
+ for(let attempt=0;attempt<120;attempt++){
+  const list=shuffle(candidates).slice(0,36),board=new Map(),placements=[];
+  const first=list.shift();if(!first)break;
+  const dx=lang==='ar'?-1:1, x=lang==='ar'?9:5,y=7;
+  const p0={...first,x,y,dx,dy:0};placements.push(p0);addPlacement(p0,board);
+  for(const c of list){if(placements.length>=5)break;tryAdd(c,placements,board,lang)}
+  if(!best||placements.length>best.placements.length)best={placements,board};
+  if(placements.length>=5)break;
+ }
+ if(!best||best.placements.length<3)return null;
+ const starts=new Map(),sorted=best.placements.slice().sort((a,b)=>a.y-b.y||a.x-b.x);
+ let n=1;for(const p of sorted){const k=key(p.x,p.y);if(!starts.has(k))starts.set(k,n++);p.num=starts.get(k)}
+ return {...best,starts,lang};
+}
+function bounds(p){
+ const pts=[...p.board.keys()].map(k=>k.split(',').map(Number));
+ const xs=pts.map(v=>v[0]),ys=pts.map(v=>v[1]);
+ return {minX:Math.max(0,Math.min(...xs)-1),maxX:Math.min(14,Math.max(...xs)+1),minY:Math.max(0,Math.min(...ys)-1),maxY:Math.min(14,Math.max(...ys)+1)}
+}
+function wordKeys(pl){return positions(pl).map(p=>key(p.x,p.y))}
+function render(){
+ if(!puzzle)puzzle=generate(mode);
+ if(!puzzle){app.innerHTML='<div class="card">تعذر إنشاء شبكة مناسبة. <button onclick="newPuzzle()">حاولي مرة أخرى</button></div>';return}
+ const b=bounds(puzzle),cols=b.maxX-b.minX+1, cells=[];
+ for(let y=b.minY;y<=b.maxY;y++)for(let x=b.minX;x<=b.maxX;x++){
+  const c=puzzle.board.get(key(x,y));
+  if(!c){cells.push('<div class="blank"></div>');continue}
+  const num=puzzle.starts.get(key(x,y));
+  cells.push('<div class="cell" data-key="'+key(x,y)+'">'+(num?'<span class="num">'+num+'</span>':'')+'<input maxlength="1" autocomplete="off" autocapitalize="characters" data-x="'+x+'" data-y="'+y+'" aria-label="حرف"></div>');
+ }
+ const clues=puzzle.placements.slice().sort((a,b)=>a.num-b.num).map((p,i)=>'<div class="clue" data-word="'+i+'" onclick="focusWord('+i+')"><b>'+p.num+'</b> '+esc(p.clue)+' <span class="dir">'+(mode==='ar'?(p.dy?'رأسي':'أفقي'):(p.dy?'Down':'Across'))+'</span></div>').join('');
+ const title=mode==='ar'?'الكلمات المتقاطعة العربية':'English Mini Crossword';
+ const subtitle=mode==='ar'?'مرادفات وأضداد من بنك جنى اللفظي':'Synonyms & Antonyms from Jana’s STEP bank';
+ app.innerHTML='<div class="top"><div><div class="brand">'+title+'</div><div class="muted">'+subtitle+'</div></div><button class="secondary" onclick="studyHome()">ملفي</button></div>'+
+ '<div class="card hero"><div class="tabs"><button class="'+(mode==='ar'?'active':'blue')+'" onclick="switchMode(\'ar\')">العربية</button><button class="'+(mode==='en'?'active blue':'secondary')+'" onclick="switchMode(\'en\')">English</button></div><div class="stats" style="margin-top:10px"><div class="stat"><span class="muted">الكلمات</span><b>'+puzzle.placements.length+'</b></div><div class="stat"><span class="muted">أفضل نتيجة</span><b>'+(state.best?.[mode]||0)+'٪</b></div><div class="stat"><span class="muted">مرات اللعب</span><b>'+(state.played?.[mode]||0)+'</b></div></div></div>'+
+ '<div class="layout"><div class="card"><div class="boardWrap"><div class="board" style="grid-template-columns:repeat('+cols+',38px)">'+cells.join('')+'</div></div><div id="feedback"></div><div class="actions"><button onclick="checkPuzzle()">تحقق</button><button class="secondary" onclick="newPuzzle()">لعبة جديدة</button></div></div><div class="card"><h3 style="margin-top:0">'+(mode==='ar'?'التلميحات':'Clues')+'</h3>'+clues+'<div class="muted">'+(mode==='ar'?'اكتبي حرفًا واحدًا في كل مربع. اضغطي على التلميح لتحديد الكلمة.':'Enter one letter per square. Tap a clue to highlight its word.')+'</div></div></div>';
+ bindInputs();focusWord(0);
+}
+function bindInputs(){
+ document.querySelectorAll('.cell input').forEach(inp=>inp.addEventListener('input',e=>{let v=e.target.value;v=mode==='ar'?cleanAr(v):cleanEn(v).toUpperCase();e.target.value=[...v].slice(-1)[0]||''}));
+}
+window.focusWord=function(i){
+ activeWord=i;document.querySelectorAll('.clue').forEach((x,j)=>x.classList.toggle('active',j===i));document.querySelectorAll('.cell').forEach(x=>x.classList.remove('active'));
+ const pl=puzzle.placements[i];for(const k of wordKeys(pl))document.querySelector('.cell[data-key="'+k+'"]')?.classList.add('active');
+ const first=wordKeys(pl).map(k=>document.querySelector('.cell[data-key="'+k+'"] input')).find(x=>x&&!x.value);first?.focus();
+};
+function readWord(pl){return positions(pl).map(p=>document.querySelector('.cell[data-key="'+key(p.x,p.y)+'"] input')?.value||'').join('')}
+window.checkPuzzle=function(){
+ let correct=0;
+ puzzle.placements.forEach((pl,i)=>{
+  const typed=normalizeWord(readWord(pl),mode),ok=typed===pl.answer;if(ok)correct++;
+  for(const k of wordKeys(pl)){const el=document.querySelector('.cell[data-key="'+k+'"]');if(el){el.classList.remove('ok','bad');el.classList.add(ok?'ok':'bad')}}
+  if(!recorded)studyRecord({module:'words',subject:mode==='ar'?'العربية':'English',skill:pl.skill,text:pl.clue,selected:typed||'—',correctText:pl.display,correct:ok,explanation:mode==='ar'?'من بنك جنى اللفظي':'From Jana STEP vocabulary bank'});
+ });
+ const pct=Math.round(100*correct/puzzle.placements.length);
+ if(!recorded){state.played[mode]=(state.played[mode]||0)+1;state.best[mode]=Math.max(state.best[mode]||0,pct);save();recorded=true}
+ const fb=document.getElementById('feedback');fb.className='feedback '+(pct===100?'ok':'bad');fb.innerHTML='<b>'+pct+'٪</b> — '+correct+' / '+puzzle.placements.length+(pct===100?' ✓':' • صححي المربعات المظللة ثم تحققي مرة أخرى.');
+};
+window.newPuzzle=function(){puzzle=generate(mode);recorded=false;activeWord=null;render()};
+window.switchMode=function(m){mode=m;puzzle=generate(mode);recorded=false;activeWord=null;render()};
+puzzle=generate(mode);render();
+</script>
+</body></html>
