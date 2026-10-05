@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>الكلمات المتقاطعة</title>
+<style>
+:root{--bg:#f6f8f4;--card:#fff;--ink:#18362f;--muted:#71817d;--line:#dfe7e3;--green:#2f6d61;--gold:#b58b3a;--ok:#eaf7ee;--bad:#fff0ed}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}
+main{max-width:760px;margin:auto;padding:12px}.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+h1{font-size:21px;margin:0}.sub{font-size:12px;color:var(--muted)}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 7px 22px rgba(25,55,47,.06)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}
+button,input{font:inherit}button{border:0;border-radius:12px;padding:10px 13px;background:var(--green);color:#fff;font-weight:800}.light{background:#fff;color:var(--ink);border:1px solid var(--line)}.gold{background:var(--gold)}
+.tabs button{flex:1}.tabs .on{outline:3px solid #cfe0da}.board-wrap{overflow:auto;padding:5px}
+.board{display:grid;gap:2px;justify-content:center;direction:ltr;min-width:max-content}
+.cell{width:38px;height:38px;border:1px solid #aebdb8;border-radius:5px;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;position:relative;text-transform:uppercase}
+.cell.empty{border:0;background:transparent}.cell.solved{background:#edf7f1}.num{position:absolute;left:2px;top:1px;font-size:8px;color:#6d7c78;font-weight:800}
+.clues{display:grid;gap:7px}.clue{width:100%;text-align:start;background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:700}.clue.active{border-color:var(--gold);box-shadow:0 0 0 2px #f2e7ca}.clue.done{background:var(--ok)}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef4f1;font-size:11px;font-weight:800}.entry{display:grid;grid-template-columns:1fr auto;gap:7px;margin-top:10px}
+.entry input{width:100%;border:1px solid #b9c7c2;border-radius:12px;padding:11px;background:#fff;font-size:18px;font-weight:800}
+.feed{padding:9px 11px;border-radius:11px;margin-top:8px}.ok{background:var(--ok)}.bad{background:var(--bad)}
+.finish{text-align:center}.finish .big{font-size:38px;font-weight:900;color:var(--gold)}
+@media(max-width:520px){.cell{width:32px;height:32px;font-size:17px}.entry{grid-template-columns:1fr}.entry button{width:100%}}
+</style>
+<script src="../bridge.js"></script>
+</head><body><main id="app"></main>
+<script>
+"use strict";
+const app=document.getElementById('app'), ALL=Array.isArray(STUDY_CONTEXT.sharedVocab)?STUDY_CONTEXT.sharedVocab:[];
+let lang=new URLSearchParams(location.search).get('mode')==='en'?'en':'ar', puzzle=null, active=0, mistakes=0;
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const arNorm=s=>String(s||'').replace(/[إأآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/[^ء-ي]/g,'');
+const enNorm=s=>String(s||'').toLowerCase().replace(/[^a-z]/g,'');
+function entryFromQ(q){
+ const m=String(q.text||'').match(/[«“"]([^»”"]+)[»”"]/); if(!m)return null;
+ const ans=String(q.options?.[q.answer]??'').trim(); if(!ans)return null;
+ if(q.track==='verbal'&&['المفردات في السياق','الأضداد'].includes(q.skill)){
+  const clean=arNorm(ans); if(clean.length<3||clean.length>10)return null;
+  return {id:q.id,word:clean,shown:ans,clue:(q.skill==='الأضداد'?'ضد':'مرادف')+' «'+m[1]+'»',kind:q.skill};
+ }
+ if(q.track==='step'&&q.subject==='Vocabulary'&&['Synonyms','Antonyms'].includes(q.skill)){
+  const clean=enNorm(ans); if(clean.length<3||clean.length>10)return null;
+  return {id:q.id,word:clean,shown:ans,clue:(q.skill==='Antonyms'?'Opposite of ':'Synonym of ')+m[1],kind:q.skill};
+ }
+ return null
+}
+function pool(){
+ const seen=new Set(),out=[];
+ for(const q of ALL){const e=entryFromQ(q);if(!e)continue;const key=e.clue+'|'+e.word;if(seen.has(key))continue;seen.add(key);if((lang==='ar'&&q.track==='verbal')||(lang==='en'&&q.track==='step'))out.push(e)}
+ return out
+}
+function shuffle(a){const x=a.slice();for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
+function key(x,y){return x+','+y}
+function canPlace(word,x,y,dir,cells){
+ let crossings=0;
+ for(let i=0;i<word.length;i++){
+  const cx=x+(dir==='h'?i:0),cy=y+(dir==='v'?i:0),k=key(cx,cy),c=cells.get(k);
+  if(c&&c.ch!==word[i])return -1;
+  if(c&&c.ch===word[i])crossings++;
+ }
+ return crossings
+}
+function makePuzzle(){
+ const candidates=shuffle(pool());
+ for(let attempt=0;attempt<80;attempt++){
+  const cells=new Map(),placed=[],list=shuffle(candidates).slice(0,28);
+  const first=list.shift();if(!first)break;
+  placed.push({...first,x:0,y:0,dir:'h'});for(let i=0;i<first.word.length;i++)cells.set(key(i,0),{ch:first.word[i],owners:[0]});
+  for(const e of list){
+   if(placed.length>=5)break;
+   const spots=[];
+   for(let pi=0;pi<placed.length;pi++){
+    const p=placed[pi],ndir=p.dir==='h'?'v':'h';
+    for(let i=0;i<e.word.length;i++)for(let j=0;j<p.word.length;j++){
+     if(e.word[i]!==p.word[j])continue;
+     const px=p.x+(p.dir==='h'?j:0),py=p.y+(p.dir==='v'?j:0);
+     const x=px-(ndir==='h'?i:0),y=py-(ndir==='v'?i:0);
+     const cross=canPlace(e.word,x,y,ndir,cells);if(cross>0)spots.push({x,y,dir:ndir,cross});
+    }
+   }
+   if(!spots.length)continue;spots.sort((a,b)=>b.cross-a.cross);const sp=spots[Math.floor(Math.random()*Math.min(3,spots.length))];
+   const idx=placed.length;placed.push({...e,...sp});
+   for(let i=0;i<e.word.length;i++){const cx=sp.x+(sp.dir==='h'?i:0),cy=sp.y+(sp.dir==='v'?i:0),k=key(cx,cy),old=cells.get(k);cells.set(k,{ch:e.word[i],owners:[...(old?.owners||[]),idx]})}
+  }
+  if(placed.length>=5)return finalize(placed,cells)
+ }
+ return fallback(candidates.slice(0,5))
+}
+function fallback(es){
+ const cells=new Map(),placed=[];es.forEach((e,i)=>{placed.push({...e,x:0,y:i*2,dir:'h'});for(let j=0;j<e.word.length;j++)cells.set(key(j,i*2),{ch:e.word[j],owners:[i]})});return finalize(placed,cells)
+}
+function finalize(placed,cells){
+ let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;for(const k of cells.keys()){const [x,y]=k.split(',').map(Number);minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y)}
+ placed.forEach((p,i)=>p.no=i+1);return{placed,cells,minX,maxX,minY,maxY,solved:new Set()}
+}
+function render(){
+ const p=puzzle,w=p.maxX-p.minX+1,h=p.maxY-p.minY+1;
+ let board='';for(let y=p.minY;y<=p.maxY;y++)for(let x=p.minX;x<=p.maxX;x++){const c=p.cells.get(key(x,y));if(!c){board+='<div class="cell empty"></div>';continue}const start=p.placed.find(z=>z.x===x&&z.y===y);const reveal=c.owners.every(i=>p.solved.has(i));board+=`<div class="cell ${reveal?'solved':''}">${start?'<span class="num">'+start.no+'</span>':''}${reveal?esc(c.ch):''}</div>`}
+ const modeTitle=lang==='ar'?'العربية — مرادفات وأضداد':'English — Synonyms & Antonyms';
+ app.innerHTML=`<div class="top"><div><h1>الكلمات المتقاطعة</h1><div class="sub">لعبة مشتركة • ${modeTitle}</div></div><button class="light" onclick="studyHome()">ملفي</button></div>
+ <div class="card"><div class="row tabs"><button class="${lang==='ar'?'on':''}" onclick="switchLang('ar')">العربية</button><button class="${lang==='en'?'on':''}" onclick="switchLang('en')">English</button></div></div>
+ <div class="card board-wrap"><div class="board" style="grid-template-columns:repeat(${w},auto)">${board}</div></div>
+ <div class="card"><div class="row between"><b>${lang==='ar'?'التلميحات':'Clues'}</b><span class="badge">${p.solved.size}/${p.placed.length}</span></div><div class="clues">${p.placed.map((e,i)=>`<button class="clue ${active===i?'active':''} ${p.solved.has(i)?'done':''}" onclick="pickClue(${i})"><b>${e.no}.</b> ${esc(e.clue)} <span class="badge">${e.dir==='h'?(lang==='ar'?'أفقي':'Across'):(lang==='ar'?'رأسي':'Down')}</span></button>`).join('')}</div>
+ ${p.solved.size<p.placed.length?`<div class="entry"><input id="guess" autocomplete="off" autocapitalize="none" placeholder="${lang==='ar'?'اكتبي الكلمة':'Type the word'}" dir="${lang==='ar'?'rtl':'ltr'}"><button onclick="check()">تحقق</button></div><div id="feed"></div>`:`<div class="finish"><div class="big">✓</div><h2>${lang==='ar'?'أحسنتِ! اكتملت الكلمات':'Great! Puzzle complete'}</h2><p>${lang==='ar'?'الأخطاء المسجلة: ':'Mistakes: '}${mistakes}</p><button class="gold" onclick="newGame()">جولة جديدة</button></div>`}
+ </div>`;
+ const g=document.getElementById('guess');if(g)g.addEventListener('keydown',e=>{if(e.key==='Enter')check()})
+}
+window.pickClue=i=>{if(!puzzle.solved.has(i)){active=i;render();setTimeout(()=>document.getElementById('guess')?.focus(),50)}};
+window.check=function(){
+ const e=puzzle.placed[active],raw=document.getElementById('guess')?.value||'',norm=lang==='ar'?arNorm(raw):enNorm(raw),ok=norm===e.word;
+ studyRecord({module:'crossword',subject:lang==='ar'?'العربية':'English',skill:e.kind,text:e.clue,selected:raw,correctText:e.shown,correct:ok,explanation:lang==='ar'?'من بنك القدرات اللفظي':'From STEP vocabulary'});
+ if(ok){puzzle.solved.add(active);const next=puzzle.placed.findIndex((_,i)=>!puzzle.solved.has(i));if(next>=0)active=next;render()}
+ else{mistakes++;const f=document.getElementById('feed');if(f)f.innerHTML=`<div class="feed bad">${lang==='ar'?'ليست الإجابة المطلوبة، حاولي مرة أخرى.':'Not quite. Try again.'}</div>`;document.getElementById('guess')?.select()}
+};
+window.switchLang=l=>{lang=l;newGame()};
+window.newGame=function(){mistakes=0;active=0;puzzle=makePuzzle();render()};
+newGame();
+</script></body></html>
