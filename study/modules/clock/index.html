@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#102d3e">
+<title>الفصل: حساب الزمن بالعقارب | دراستنا</title>
+<style>
+:root{--ink:#102d3e;--teal:#087f79;--light:#edf8f6;--gold:#e4b36b;--muted:#55717c;--line:#d9e6e9;--good:#147d56;--bad:#a54635}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(155deg,#edf7f7,#fff9f1 80%);font-family:system-ui,Tahoma,sans-serif;color:var(--ink)}button{cursor:pointer;font:inherit}button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}button:disabled{opacity:.55;cursor:default}
+.wrap{max-width:900px;margin:auto;padding:12px 12px 32px}h1{font-size:24px;margin:5px 0}h2{font-size:18px;margin:0 0 10px}p{line-height:1.8}.head{border-radius:21px;background:#102d3e;color:white;padding:17px 20px;margin-bottom:12px}.head small{color:#aee4d8}.head p{font-size:13px;color:#d0e5e8;margin:4px 0}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}.tab{border:1px solid var(--line);background:white;border-radius:12px;min-height:48px;padding:8px 5px;font-size:13px;font-weight:800;color:#385665}.tab.active{background:var(--teal);color:#fff}.card{background:#fff;border:1px solid var(--line);border-radius:19px;box-shadow:0 4px 18px #082b3110;padding:15px;margin:0 0 12px}.prompt{font-size:18px;font-weight:750;line-height:1.85;margin:9px 0}.pill{background:#fff0d9;color:#885917;border-radius:50px;padding:5px 11px;font-size:12px;font-weight:800;display:inline-block}.workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:12px}.dial{text-align:center}.dial svg{display:block;width:min(100%,280px);height:auto;margin:8px auto}.clocktime{font-size:26px;font-weight:900;margin:1px auto 5px;direction:rtl}.muted{color:var(--muted);font-size:13px}.rule{font-size:13px;display:inline-block;background:var(--light);border-radius:12px;padding:9px 12px;color:#155f59;font-weight:750}.panel{min-height:365px}.hint{background:#edf7f6;border-radius:13px;padding:12px;line-height:1.85;margin:10px 0;font-weight:650}.steps{padding:0;list-style:none}.steps li{padding:10px 12px;background:#f4f7f8;border-radius:10px;margin:8px 0;line-height:1.7;font-size:14px}.steps li.done{background:#dff5ec;color:#136046;font-weight:750}.btnrow{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.btn{flex:1;min-width:85px;border:1px solid var(--line);border-radius:11px;padding:12px 9px;background:white;font-weight:800;font-size:13px;color:var(--ink)}.btn.primary{background:var(--teal);color:#fff;border-color:var(--teal)}.btn.gold{background:#fff0dc;border-color:#e8d5b8;color:#855c21}.adjust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:9px 0 13px}.adjust .btn{min-width:0;padding:10px 4px}.label{font-size:13px;font-weight:800;margin-top:13px;color:#476371}.feedback{padding:12px;border-radius:12px;background:#edf3f6;line-height:1.8;font-size:14px;margin-top:12px}.feedback.good{background:#e6f7ee;color:#166b47}.feedback.bad{background:#fff0e6;color:#90472c}.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}.choices button{min-height:55px;border:1px solid #d1e0e3;background:#fff;border-radius:12px;font-weight:850;color:#294e5b}.choices button.correct{background:#dff5e8;border-color:#289765;color:#155e43}.choices button.wrong{background:#ffe9e9;border-color:#bc6258;color:#9b3c33}.progress{font-weight:800;color:#2a6e66;font-size:14px;margin:8px 0}.footer{text-align:center;font-size:12px;color:#647b85;padding:7px}.complete{font-size:19px;font-weight:900;color:var(--good)}[hidden]{display:none!important}
+@media(max-width:650px){.wrap{padding:8px 8px 20px}.head{padding:14px}.workspace{grid-template-columns:1fr}.dial svg{width:min(72vw,248px)}.card{padding:12px}.panel{min-height:0}.prompt{font-size:16px}.tab{font-size:12px}.btn{font-size:12px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="head"><small>دراستنا • فصل مستقل • رياضيات الصف الخامس</small><h1>🕰️ رحلة مع الساعة</h1><p>تعلّمي وقت البداية والنهاية باستخدام العقارب والحل خطوة بخطوة.</p></header>
+<nav class="tabs" aria-label="طرق التعلّم">
+<button class="tab active" data-tab="learn" type="button">💡 افهمي الفكرة</button>
+<button class="tab" data-tab="train" type="button">🕰️ حرّكي العقارب</button>
+<button class="tab" data-tab="quiz" type="button">⭐ اختبري نفسك</button>
+</nav>
+<section class="card">
+<div class="pill" id="mode"></div><p id="question" class="prompt" aria-live="polite"></p>
+<div class="muted" id="activities"></div>
+</section>
+<div class="workspace">
+<section class="card dial">
+<strong id="dialTitle">الوقت المعطى</strong>
+<svg id="dial" viewBox="0 0 260 260" role="img" aria-label="ساعة ذات عقارب متحركة">
+<circle cx="130" cy="130" r="123" fill="#dee9e9"/>
+<circle cx="130" cy="130" r="117" stroke="#fff" stroke-width="4" fill="#fbffff"/>
+<g id="ticks"></g><g id="nums"></g>
+<line id="hour" x1="130" y1="145" x2="130" y2="78" stroke="#102d3e" stroke-width="8" stroke-linecap="round"/>
+<line id="minute" x1="130" y1="149" x2="130" y2="39" stroke="#087f79" stroke-width="5" stroke-linecap="round"/>
+<circle cx="130" cy="130" r="7" stroke="#fff" stroke-width="2" fill="#e3ae62"/>
+</svg>
+<div class="clocktime" id="time" aria-live="polite"></div>
+<div class="muted">العقرب القصير للساعات • الطويل للدقائق</div>
+<div class="rule" id="rule"></div>
+</section>
+<section class="card panel" id="panel" aria-live="polite"></section>
+</div><div class="footer">تُحفظ نتائج الاختبار في دفتر الطالبة داخل «دراستنا» وتُضم إلى نسختها الاحتياطية.</div>
+</div>
+<script src="../bridge.js"></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id)};
+var digits='٠١٢٣٤٥٦٧٨٩';
+var ar=function(x){return String(x).replace(/[0-9]/g,function(d){return digits[+d]})};
+var norm=function(x){return (x%1440+1440)%1440};
+var fmt=function(x){var n=norm(Math.round(x)),h=Math.floor(n/60),m=n%60;return ar((h%12)||12)+':'+ar(('0'+m).slice(-2))+(h<12?' صباحًا':' مساءً')};
+var qbank=[
+['مروان','النادي',1275,'الجري',30,'السباحة',15,'start'],
+['سعد','التدريب',1030,'الإحماء',20,'اللعب',35,'end'],
+['ريان','المكتبة',985,'القراءة',25,'حل الواجب',20,'start'],
+['يزيد','النادي',1100,'الإحماء',15,'كرة القدم',40,'end'],
+['عمر','المذاكرة',520,'الرياضيات',35,'العلوم',15,'end'],
+['خالد','الحديقة',935,'المشي',30,'اللعب',25,'start'],
+['ناصر','المكتبة',615,'القراءة',25,'البحث',30,'start'],
+['فهد','التمرين',1250,'المشي',20,'الجري',20,'end'],
+['بدر','النادي',1035,'كرة القدم',40,'التمدد',15,'start'],
+['عادل','النادي',490,'اللعب',45,'الاستراحة',15,'end'],
+['أنس','الملعب',1005,'الإحماء',15,'المباراة',50,'end'],
+['وليد','المكتبة',665,'القراءة',35,'المراجعة',20,'start']
+];
+function duration(q){return q[4]+q[6]}
+function finish(q){return norm(q[2]+duration(q))}
+function known(q){return q[7]==='start'?finish(q):q[2]}
+function answer(q){return q[7]==='start'?q[2]:finish(q)}
+function wording(q){var a=q[3]+' '+ar(q[4])+' دقيقة و'+q[5]+' '+ar(q[6])+' دقيقة';return (q[7]==='start'?'انتهى '+q[0]+' من '+q[1]+' الساعة '+fmt(finish(q)):'بدأ '+q[0]+' في '+q[1]+' الساعة '+fmt(q[2]))+'، وقضى في '+a+'. متى '+(q[7]==='start'?'بدأ':'انتهى')+'؟'}
+function steps(q){var v=known(q),back=q[7]==='start',a=back?[[q[5],q[6]],[q[3],q[4]]]:[[q[3],q[4]],[q[5],q[6]]];var s=[{t:v,txt:'نبدأ من الوقت المعلوم: '+fmt(v)+'. '+(back?'نرجع للخلف بالطرح لأن المطلوب البداية.':'نتقدم للأمام بالجمع لأن المطلوب النهاية.')}];a.forEach(function(p){var prev=v;v=norm(v+(back?-p[1]:p[1]));s.push({t:v,txt:(back?'نطرح ':'نجمع ')+ar(p[1])+' دقيقة ('+p[0]+'): '+fmt(prev)+(back?' − ':' + ')+ar(p[1])+' دقيقة = '+fmt(v)});});return s}
+var NS='http://www.w3.org/2000/svg';function svg(tag,attrs,parent){var o=document.createElementNS(NS,tag);Object.keys(attrs).forEach(function(k){o.setAttribute(k,attrs[k])});parent.appendChild(o);return o}
+for(var n=0;n<60;n++){var angle=n*Math.PI/30,b=n%5===0;svg('line',{x1:130+Math.sin(angle)*(b?105:111),y1:130-Math.cos(angle)*(b?105:111),x2:130+Math.sin(angle)*115,y2:130-Math.cos(angle)*115,stroke:b?'#8aa1aa':'#d0dedf','stroke-width':b?2.5:1.2},$('ticks'))}
+for(var n=1;n<=12;n++){var a=n*Math.PI/6,t=svg('text',{x:130+Math.sin(a)*88,y:136-Math.cos(a)*88,'text-anchor':'middle','font-size':'20','font-weight':'850',fill:'#244757','font-family':'Tahoma,system-ui'},$('nums'));t.textContent=ar(n)}
+var tab='learn',li=0,ls=0,ti=0,tt=0,qi=0,qcorrect=0,qanswered=false,qchoice=[],qorder=[],chosen=null,display=1320,animation=0,history=[];
+try{history=JSON.parse(StudyStore.getItem('clock-results')||'[]');if(!Array.isArray(history))history=[]}catch(e){history=[]}
+function hand(t){$('hour').setAttribute('transform','rotate('+(t*.5)+' 130 130)');$('minute').setAttribute('transform','rotate('+(t*6)+' 130 130)');$('time').textContent=fmt(t);$('dial').setAttribute('aria-label','الساعة تشير إلى '+fmt(t))}
+function setTime(t,animate){cancelAnimationFrame(animation);var from=display;display=t;if(!animate||window.matchMedia('(prefers-reduced-motion: reduce)').matches){hand(t);return}var start=performance.now(),length=Math.min(1200,450+Math.abs(t-from)*7);function frame(now){var f=Math.min(1,(now-start)/length),e=f*f*(3-2*f);hand(from+(t-from)*e);if(f<1)animation=requestAnimationFrame(frame);else hand(t)}animation=requestAnimationFrame(frame)}
+function question(q){$('question').textContent=wording(q);$('mode').textContent=q[7]==='start'?'↶ احسبي وقت البداية':'↷ احسبي وقت النهاية';$('activities').textContent='المدة الكلية: '+ar(duration(q))+' دقيقة • '+q[3]+' ثم '+q[5];$('rule').textContent=q[7]==='start'?'وقت البداية = وقت النهاية − المدة':'وقت النهاية = وقت البداية + المدة'}
+function setTab(t){tab=t;document.querySelectorAll('[data-tab]').forEach(function(b){b.classList.toggle('active',b.dataset.tab===t)});render()}
+document.querySelectorAll('[data-tab]').forEach(function(b){b.addEventListener('click',function(){setTab(b.dataset.tab)})});
+function renderLearn(move){var q=qbank[li],s=steps(q);question(q);$('dialTitle').textContent=ls?'الوقت بعد تحريك العقارب':'الوقت المعطى';setTime(s[ls].t,move);var html='<h2>شاهدِي الحل خطوة بخطوة</h2><div class="hint">'+(ls===2?'أحسنتِ! الحل '+fmt(answer(q)):s[ls].txt)+'</div><ol class="steps">';s.forEach(function(o,i){html+='<li class="'+(i<=ls?'done':'')+'">'+ar(i+1)+' ـ '+o.txt+'</li>'});html+='</ol><div class="btnrow"><button class="btn primary" data-action="learnNext" '+(ls===2?'disabled':'')+'>'+(ls===2?'تم الحل ✓':'الخطوة التالية ←')+'</button><button class="btn" data-action="learnReset">إعادة</button></div><button class="btn" data-action="learnOther" style="width:100%">مثال آخر ⇄</button><p class="muted">عند حساب البداية، نطرح مدة آخر نشاط أولًا.</p>';$('panel').innerHTML=html}
+function renderTrain(move){var q=qbank[ti];question(q);$('dialTitle').textContent='حرّكي العقارب بنفسك';setTime(tt,move);$('panel').innerHTML='<h2>أنتِ تحرّكين العقارب</h2><div class="hint">المطلوب وقت '+(q[7]==='start'?'البداية':'النهاية')+'. المدة الإجمالية '+ar(duration(q))+' دقيقة. ابدئي من الوقت المعطى وحرّكي العقارب.</div><div class="label">الرجوع للخلف (طرح)</div><div class="adjust"><button class="btn gold" data-shift="-30">− ٣٠</button><button class="btn gold" data-shift="-15">− ١٥</button><button class="btn gold" data-shift="-5">− ٥</button></div><div class="label">التقدم للأمام (جمع)</div><div class="adjust"><button class="btn" data-shift="30">+ ٣٠</button><button class="btn" data-shift="15">+ ١٥</button><button class="btn" data-shift="5">+ ٥</button></div><div id="trainFb" class="feedback">عند الوصول إلى الإجابة اضغطي «تحقّقي».</div><div class="btnrow"><button class="btn primary" data-action="trainCheck">تحقّقي ✓</button><button class="btn" data-action="trainReset">أعيدي الساعة</button></div><div class="btnrow"><button class="btn" data-action="trainSolution">اعرضي الحل</button><button class="btn" data-action="trainOther">مسألة أخرى</button></div>'}
+function trainReset(next){if(next)ti=(ti+1)%qbank.length;tt=known(qbank[ti]);renderTrain(false)}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),v=a[i];a[i]=a[j];a[j]=v}return a}
+function alternatives(q){var right=answer(q),seen=new Set([right]);shuffle([-60,-45,-30,-20,-15,-10,-5,5,10,15,20,30,45,60]).forEach(function(x){if(seen.size<4)seen.add(norm(right+x))});return shuffle(Array.from(seen))}
+function currentQuiz(){return qbank[qorder[qi]]}
+function newQuiz(){qorder=shuffle(qbank.map(function(_,i){return i})).slice(0,10);qi=0;qcorrect=0;qanswered=false;chosen=null;qchoice=alternatives(currentQuiz());renderQuiz(false)}
+function renderQuiz(move){if(qi>=10){renderDone();return}var q=currentQuiz();question(q);$('dialTitle').textContent='الوقت المعطى في السؤال';setTime(known(q),move);var html='<h2>تحدّي الوقت</h2><div class="progress">السؤال '+ar(qi+1)+' من ١٠ • الصحيح '+ar(qcorrect)+'</div><div class="hint">اختاري وقت '+(q[7]==='start'?'البداية':'النهاية')+' الصحيح.</div><div class="choices">';qchoice.forEach(function(v){html+='<button data-choice="'+v+'" '+(qanswered?'disabled':'')+' class="'+(qanswered&&v===answer(q)?'correct':qanswered&&v===chosen?'wrong':'')+'">'+fmt(v)+'</button>'});html+='</div><div id="quizFb" class="feedback '+(qanswered?(chosen===answer(q)?'good':'bad'):'')+'">'+(qanswered?(chosen===answer(q)?'إجابة صحيحة!':'الإجابة الصحيحة: '+fmt(answer(q)))+' • '+(q[7]==='start'?'نطرح':'نجمع')+' '+ar(duration(q))+' دقيقة.':'تأمّلي العقارب واحسبي قبل الاختيار.')+'</div><button class="btn primary" data-action="quizNext" '+(!qanswered?'disabled':'')+' style="width:100%;margin-top:10px">'+(qi===9?'عرض النتيجة':'السؤال التالي')+' ←</button>';$('panel').innerHTML=html}
+function renderDone(){var q=qbank[qorder[9]];question(q);$('dialTitle').textContent='أكملتِ اختبارك';setTime(answer(q),false);var best=Math.max.apply(null,[qcorrect].concat(history.map(function(x){return x.score||0})));$('panel').innerHTML='<h2>النتيجة النهائية</h2><div class="complete">'+ar(qcorrect)+' من ١٠</div><div class="hint">'+(qcorrect>=8?'ممتاز! أتقنتِ حساب البداية والنهاية.':'أعيدي الشرح وحركة العقارب ثم جرّبي مرة أخرى.')+'</div><p class="muted">أفضل نتيجة مسجلة لكِ: '+ar(best)+' من ١٠</p><button class="btn primary" data-action="newQuiz" style="width:100%">اختبار جديد ↺</button>';if(!history.length||history[history.length-1].run!==runId){history.push({run:runId,score:qcorrect,at:Date.now()});try{StudyStore.setItem('clock-results',JSON.stringify(history.slice(-50)))}catch(e){}}}
+var runId=0;function startQuiz(){runId=Date.now()+'-'+Math.random().toString(36).slice(2);newQuiz()}
+function submitChoice(choice){if(qanswered)return;var q=currentQuiz();chosen=choice;qanswered=true;var ok=choice===answer(q);if(ok)qcorrect++;try{studyRecord({module:'clock',track:'g5',subject:'الرياضيات',skill:'حساب الزمن: وقت البداية والنهاية',text:wording(q),selected:fmt(choice),correctText:fmt(answer(q)),correct:ok,explanation:steps(q).slice(1).map(function(x){return x.txt}).join(' ثم ')})}catch(e){}renderQuiz(false)}
+function render(){if(tab==='learn')renderLearn(false);else if(tab==='train')renderTrain(false);else renderQuiz(false)}
+$('panel').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;if(b.hasAttribute('data-shift')){tt=norm(tt+Number(b.dataset.shift));renderTrain(true);return}if(b.hasAttribute('data-choice')){submitChoice(Number(b.dataset.choice));return}switch(b.dataset.action){
+case 'learnNext':if(ls<2){ls++;renderLearn(true)}break;
+case 'learnReset':ls=0;renderLearn(false);break;
+case 'learnOther':li=(li+1)%qbank.length;ls=0;renderLearn(false);break;
+case 'trainCheck':var q=qbank[ti],ok=tt===answer(q);$('trainFb').className='feedback '+(ok?'good':'bad');$('trainFb').textContent=ok?'صحيح! الإجابة '+fmt(answer(q)):'حاولي ثانية: '+(q[7]==='start'?'اطرحي':'اجمعي')+' '+ar(duration(q))+' دقيقة.';break;
+case 'trainReset':trainReset(false);break;
+case 'trainOther':trainReset(true);break;
+case 'trainSolution':var s=steps(qbank[ti]);tt=answer(qbank[ti]);renderTrain(true);$('trainFb').className='feedback good';$('trainFb').textContent=s.slice(1).map(function(x){return x.txt}).join(' ثم ');break;
+case 'quizNext':if(!qanswered)return;qi++;qanswered=false;chosen=null;if(qi<10)qchoice=alternatives(currentQuiz());renderQuiz(false);break;
+case 'newQuiz':startQuiz();break;
+}});
+tt=known(qbank[0]);startQuiz();setTab('learn');
+})();
+</script>
+</body></html>
