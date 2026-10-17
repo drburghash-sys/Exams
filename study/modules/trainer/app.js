@@ -463,6 +463,6 @@
   $('englishRulesTab').addEventListener('click',()=>{activeRuleGroup='english';renderRules();});
   $('quantRulesTab').addEventListener('click',()=>{activeRuleGroup='quant';renderRules();});
   $('resetBtn').hidden=true;
-  ensureDaily(); ensureStudyBatch(); saveState(); updateHeader(); renderWeakness(); renderWordBank(); renderStudy(); showView('home');
+  ensureDaily(); ensureStudyBatch(); saveState(); updateHeader(); renderWeakness(); renderWordBank(); renderStudy(); const entryMode=new URLSearchParams(location.search).get('mode'); showView(['study','words','rules'].includes(entryMode)?entryMode:'home');
   
 })();
