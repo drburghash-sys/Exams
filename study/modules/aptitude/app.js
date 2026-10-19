@@ -119,11 +119,11 @@ if(seen.has(sig)||new Set(q.options.map(String)).size!==4)return false;seen.add(
 });
 }
 function chooseQuiz(t){
-const all=allPool(t),rec=new Set(persist.recent[t.id]||[]);
-const unseen=all.filter(q=>!rec.has(q.id)),repeat=all.filter(q=>rec.has(q.id));
+const all=allPool(t),rec=new Set(persist.recent[t.id]||[]),signature=q=>q.text.trim().replace(/\s+/g," ")+"|"+q.options[q.answer];
+const unseen=all.filter(q=>!rec.has(signature(q))),repeat=all.filter(q=>rec.has(signature(q)));
 const selected=shuffle(unseen).concat(shuffle(repeat)).slice(0,20);
 if(selected.length<20)return {error:"لم يكتمل لهذا الموضوع إلا "+selected.length+" سؤالًا غير مكرر. لن أكرر السؤال لأعرض اختبارًا وهميًا من ٢٠ سؤالًا."};
-persist.recent[t.id]=selected.map(x=>x.id);save();
+persist.recent[t.id]=selected.map(signature);save();
 return {questions:selected,at:0,correct:0,answered:false,answers:[]};
 }
 window.aptStartQuiz=function(){if(!data.topic)return;data.quiz=chooseQuiz(data.topic);renderQuiz()};
