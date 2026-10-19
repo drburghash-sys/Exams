@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f5f0"><title>جنى | المفردات والدروس</title>
+<style>
+:root{--green:#24695f;--purple:#705291;--ink:#193f3b;--paper:#f4f5f0;--line:#dce4dd}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.8 system-ui,Tahoma,Arial,sans-serif}
+button,select,input{font:inherit}button{cursor:pointer;border:0;border-radius:13px;padding:11px 15px;background:var(--green);color:white;font-weight:800;min-height:45px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #d2aaff;outline-offset:2px}
+button.light{background:white;color:var(--ink);border:1px solid var(--line)}button.purple{background:var(--purple)}
+button:disabled{opacity:.5;cursor:default}
+main{max-width:890px;margin:auto;padding:14px 16px 50px}
+.hero{background:linear-gradient(125deg,#e4eee6,#fafdf9);border:1px solid #d4e3d8;border-radius:24px;padding:20px;margin-bottom:14px}
+h1{font-size:27px;margin:0 0 4px;line-height:1.4}h2{font-size:20px;margin:0 0 10px}h3{font-size:17px;margin:0 0 8px}p{margin:5px 0 12px}
+.muted{color:#657a71;font-size:14px}.bar,.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.chips button{min-height:36px;padding:5px 12px}.selected{outline:2px solid #bca4d3;outline-offset:2px}
+.card{background:#fff;border:1px solid var(--line);border-radius:21px;padding:18px;margin-bottom:13px;box-shadow:0 5px 16px #214e3e09}
+.word{display:grid;grid-template-columns:minmax(110px,1.2fr) repeat(2,minmax(100px,1fr));gap:10px;padding:13px 0;border-bottom:1px solid var(--line);align-items:center}
+.word:last-child{border:0}.word b{font-size:19px}.word small{display:block;color:#6a7c74}.tag{color:#426054;font-size:12px;display:block}
+.actions{display:flex;gap:10px;flex-wrap:wrap}.actions button{flex:1}
+.rail{display:flex;gap:8px;overflow-x:auto;padding:5px 1px 12px;scrollbar-width:thin}.rail button{white-space:nowrap}
+.board-wrap{overflow:auto;max-width:100%}.board{display:grid;gap:2px;justify-content:center;direction:ltr;min-width:max-content;padding:7px}
+.cell{width:clamp(22px,6vw,34px);height:clamp(22px,6vw,34px);border:1px solid #aebdb8;background:#fff;border-radius:3px;text-align:center;position:relative;font-weight:900;font-size:17px;line-height:1}
+.cell.off{border:0;background:transparent}.cell.solved{background:#dcf4e7}.cell.highlight{background:#fff1cf}
+.cell .num{position:absolute;top:-1px;left:2px;font:9px Arial;color:#576c68}
+.clue{width:100%;text-align:right;margin:5px 0;background:#fff;color:var(--ink);border:1px solid var(--line)}.clue.active{border-color:var(--purple);background:#f7f2fa}.clue.solved{color:#147046}
+input{width:100%;border:1px solid #bdcec5;background:white;border-radius:13px;padding:12px;color:#153c37}
+.answer-line{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}
+.notice{padding:13px 15px;border-radius:12px;background:#e8f3ed;margin:10px 0}.warning{background:#fff3df;color:#754b13}.good{background:#d8f4e4;color:#145939}
+body.dark{--paper:#07131e;--ink:#f4f7fa;--line:#2b4257;background:linear-gradient(180deg,#07131e,#0b1824);color:#f4f7fa}
+body.dark .hero{background:#102538;border-color:#28465d}body.dark .card{background:#102538;border-color:#284156;box-shadow:none}
+body.dark .muted{color:#b0c0cd}body.dark .light{color:#f4f7fa;background:#1a3043;border-color:#38546d}
+body.dark .rail button.light{background:#183449}
+body.dark .notice{background:#153b38;color:#d3f9e5}body.dark .notice.warning{background:#483821;color:#ffe4ab}
+body.dark input{background:#0a1927;color:white;border-color:#45627a}
+.lesson-step{border-right:4px solid #64bcaf;padding:3px 13px;margin:14px 0;line-height:2}
+.options{display:grid;gap:9px}.option{background:#183247;border:1px solid #385269;text-align:right;color:#fff}
+.option.correct{background:#15523a;border-color:#4de1a0}.option.wrong{background:#6c2830;border-color:#ff7580}
+.topic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.topic-grid button{background:#132b3e;border:1px solid #31485d;text-align:right;min-height:85px}
+.topic-grid small{display:block;color:#a1b6c3;font-weight:400}
+.kpi{font-size:30px;font-weight:900;color:#83e2bd}
+.progress{height:8px;border-radius:99px;background:#273e51;overflow:hidden;margin:12px 0}.progress span{height:100%;background:#4ac9a7;display:block}
+@media(max-width:560px){main{padding:10px 9px 40px}.hero,.card{padding:14px;border-radius:17px}h1{font-size:23px}.word{grid-template-columns:1fr 1fr;gap:7px}.word>div:first-child{grid-column:1/-1}.answer-line{grid-template-columns:1fr}.topic-grid{grid-template-columns:1fr}.actions button{flex:auto}}
+</style>
+</head>
+<body><main id="root"></main><script src="../bridge.js"></script><script src="../trainer/data.js"></script><script src="content.js?v=12.0"></script><script src="extra.js?v=12.0"></script><script src="app.js?v=12.0"></script></body></html>

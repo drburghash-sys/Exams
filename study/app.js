@@ -1,7 +1,7 @@
 "use strict";
 (function(){
 const KEY="girls_study_v1";
-const APP_VERSION="11.7";
+const APP_VERSION="12.0";
 const BANK=window.ALL_BANK||[];
 const CURRICULUM=window.CURRICULUM_CATALOG||[];
 const $=id=>document.getElementById(id);
@@ -234,11 +234,12 @@ function migrateUnified(){
 }
 function today(){return new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Riyadh'})}
 window.home=function(){clearTimer();activePid=null;page(`${warn()}<header class="welcome"><span class="eyebrow">مساحة واحدة للتعلّم</span><h1>دراستنا<span>خطوة صغيرة، كل يوم.</span></h1><p>اختاري اسمك، حددي أين وصلتِ، ثم ابدئي.</p></header><div class="profile-grid">${state.profiles.map((p,i)=>`<button class="profile-card tone${i}" onclick="enterProfile('${p.id}')"><span class="avatar">${['ج','ج','ح'][i]}</span><span class="profile-name">${esc(p.name)}</span><span class="profile-description">${['القدرات • STEP • جدول الضرب','ثالث متوسط • الاختبارات المركزية','خامس • رياضيات وإنجليزي • جدول الضرب'][i]}</span><span class="profile-arrow">دخول ←</span></button>`).join('')}</div><div class="footer-note">السجلات محفوظة على هذا الجهاز. لمراجعة الأخطاء افتح ملف الطالبة.</div><div class="row"><button class="btn light sm" onclick="dataCenter()">نسخة احتياطية واستيراد</button></div>`)};
-window.enterProfile=function(pid){if(state.currentExam){state.pendingExams=state.pendingExams||{};state.pendingExams[state.currentExam.profileId]=state.currentExam}activePid=pid;state.currentExam=state.pendingExams?.[pid]||null;confirmed.delete(pid);entryGate(pid)};
+window.enterProfile=function(pid){if(state.currentExam){state.pendingExams=state.pendingExams||{};state.pendingExams[state.currentExam.profileId]=state.currentExam}activePid=pid;state.currentExam=state.pendingExams?.[pid]||null;confirmed.delete(pid);if(pid==='p1'){confirmed.add(pid);studentHome(pid)}else entryGate(pid)};
 window.accountHome=function(){if(activePid)studentHome(activePid);else home()};
 function gateHead(pid){return `${top('أين وصلتِ يا '+LABELS[pid]+'؟','home()')}<div class="card hero"><div class="title">قبل أن تبدئي</div><p>حددي آخر درس درستِه في كل مادة. في الزيارة التالية يمكنك تأكيد نفس الموضع أو تحديثه.</p><div class="sub">تغيير موضع المنهج لا يمسح نتائجك أو أخطاءك.</div></div>`}
 window.entryGate=function(pid){
  activePid=pid;const p=profile(pid);
+ if(pid==='p1'){confirmed.add(pid);studentHome(pid);return;}
  if(p.kind==='aptitude'){
   const old=state.aptitudeScope||{};
   page(gateHead(pid)+`<form onsubmit="confirmAptitude(event)"><div class="card"><p>القدرات وSTEP مهارات تدريبية؛ حددي موضعك في المذاكرة لكل مسار.</p>${p.tracks.map(t=>`<div class="field"><label for="apt_${t}">${name(t)}</label><select id="apt_${t}" required><option value="">اختاري آخر مهارة وصلتِ إليها</option><option value="begin" ${old[t]==='begin'?'selected':''}>أبدأ من الأساسيات</option>${[...new Set(allBank().filter(q=>q.track===t).map(q=>q.skill))].map(s=>`<option value="${esc(s)}" ${old[t]===s?'selected':''}>${esc(s)}</option>`).join('')}<option value="review" ${old[t]==='review'?'selected':''}>مراجعة شاملة</option></select></div>`).join('')}<div class="sub">اختيار المهارة يحدد تدريبك المقترح، ويمكنك الانتقال لبقية مهارات القدرات.</div></div><button class="btn blue" type="submit">تأكيد والبدء</button></form>`);return;
@@ -252,6 +253,7 @@ function summary(pid){const rows=journal.filter(x=>x.pid===pid),graded=rows.filt
 function coverage(t,s){const cur=state.scope[t][s],pool=eligible(t,s),exact=pool.filter(q=>academicOrder(q)===cur);return !cur?'لم تبدأ المادة بعد':!pool.length?'لا توجد أسئلة في النطاق المحدد بعد':!exact.length?'لا توجد أسئلة للدرس المحدد في بنك التدريب؛ المتاح مراجعة لما سبق':`${pool.length.toLocaleString('ar-SA')} سؤال في نطاقك • ${exact.length.toLocaleString('ar-SA')} للدرس الحالي`}
 window.studentHome=function(pid){
  activePid=pid;if(!guard(pid))return;clearTimer();const p=profile(pid);
+ if(pid==='p1'){page(top('جنى • المفردات والتأسيس','home()')+'<iframe id="moduleFrame" title="مفردات جنى ودروس القدرات وSTEP" style="height:calc(100dvh - 95px);min-height:570px" src="modules/aptitude/index.html?pid=p1"></iframe>');return;}
  let h=`${top('مرحبًا '+p.name,'home()')}<div class="nav"><button class="btn orange sm" onclick="entryGate('${pid}')">أين وصلتِ؟</button><button class="btn light sm" onclick="profileErrors()">أخطائي ونتائجي</button><button class="btn light sm" onclick="dataCenter()">الحفظ والاستيراد</button></div>${summary(pid)}`;
  if(state.currentExam?.profileId===pid)h+=`<div class="card success"><b>لديك تدريب غير مكتمل</b><button class="btn green" onclick="resumeExam()">متابعة التدريب</button></div>`;
  h+=studentRemedialCard(pid);
@@ -284,7 +286,7 @@ window.openModule=function(kind,mode=''){
  if(!guard())return;if(kind==='trainer'&&activePid!=='p1')return;if(kind==='book'&&activePid!=='p3')return;if(kind==='book3'&&activePid!=='p2')return;if(kind==='math'&&!['p1','p3'].includes(activePid))return;if(kind==='crossword'&&!['p1','p2','p3'].includes(activePid))return;if(kind==='clock'&&activePid!=='p3')return;
  page(`${top(LABELS[activePid]+' • '+({trainer:'المدرّب',math:mode==='multiply'?'جدول الضرب':'شرح الرياضيات',book:'أسئلة الكتاب',book3:'أسئلة الكتاب',clock:'حساب الزمن بالعقارب',crossword:mode==='en'?'English Crossword':'الكلمات المتقاطعة العربية'}[kind]),(activePid==='p1'?'foundationHome()':'accountHome()'))}<iframe id="moduleFrame" title="مساحة التدريب" src="modules/${kind}/index.html?pid=${activePid}&mode=${encodeURIComponent(mode)}"></iframe>`)
 };
-window.studyModuleContext=function(win){const f=$('moduleFrame');if(!f||f.contentWindow!==win||!confirmed.has(activePid))return null;return {pid:activePid,scope:profile(activePid).kind==='school'?state.scope[profile(activePid).tracks[0]]:{},catalog:CURRICULUM,order:academicOrder,bank:allBank().filter(q=>q.track===profile(activePid).tracks[0]),sharedVocab:allBank().filter(q=>(q.variantNo===1||!q.variantNo)&&((q.track==='verbal'&&['المفردات في السياق','الأضداد'].includes(q.skill))||(q.track==='step'&&q.subject==='Vocabulary'&&['Synonyms','Antonyms'].includes(q.skill))))}}
+window.studyModuleContext=function(win){const f=$('moduleFrame');if(!f||f.contentWindow!==win||!confirmed.has(activePid))return null;return {pid:activePid,scope:profile(activePid).kind==='school'?state.scope[profile(activePid).tracks[0]]:{},catalog:CURRICULUM,order:academicOrder,bank:allBank().filter(q=>activePid==='p1'?['quant','verbal','step'].includes(q.track):q.track===profile(activePid).tracks[0]),sharedVocab:allBank().filter(q=>(q.variantNo===1||!q.variantNo)&&((q.track==='verbal'&&['المفردات في السياق','الأضداد'].includes(q.skill))||(q.track==='step'&&q.subject==='Vocabulary'&&['Synonyms','Antonyms'].includes(q.skill))))}}
 window.studyModuleRecord=function(win,row){if(!studyModuleContext(win))return;recordUnified(row)};
 window.dataCenter=function(){page(`${top('الحفظ والاستيراد',activePid?'accountHome()':'home()')}<div class="card"><h2>نسخة لجميع الطالبات</h2><p>تتضمن التقدم والأخطاء وسجلات المدرّب والألعاب. لا توجد مزامنة تلقائية بين الأجهزة.</p><button class="btn green" onclick="exportAll()">تنزيل نسخة احتياطية</button><label class="field">استيراد نسخة سابقة<input type="file" accept=".json" onchange="importAll(event)"></label><p class="small">يمكن استيراد نسخة Exams السابقة أيضًا. الاستيراد يضيف السجلات دون حذف السجل الحالي.</p></div>${activePid?`<div class="card"><h2>إضافة محتوى</h2><div class="row"><button class="btn light" onclick="updatesCenter()">استيراد أسئلة جديدة</button><button class="btn light" onclick="remedialCenter()">استيراد خطة علاجية</button></div></div>`:''}<div class="card"><h2>جدول الضرب القديم</h2><p>إذا استُخدم التطبيق القديم على هذا الجهاز، اختاري صاحبة سجل الضرب القديم لنقله مرة واحدة.</p><button class="btn light" onclick="importOldMath('p1')">السجل لجنى</button> <button class="btn light" onclick="importOldMath('p3')">السجل لحكمة</button></div>`)};
 window.settings=window.dataCenter;
