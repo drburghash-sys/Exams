@@ -12,7 +12,7 @@ const banks={ar:WORDS.arabicWords.filter(w=>w.word&&w.synonym&&w.antonym),en:WOR
 const shuffle=a=>{const b=a.slice();for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;};
 const normalize=(s,lang)=>String(s||"").normalize("NFKC").toLowerCase().replace(/[\u064B-\u065F\u0670]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(lang==="ar"?/[^ء-ي]/g:/[^a-z]/g,"");
 function words(){return banks[data.lang].slice(data.wordGroup*5,data.wordGroup*5+5);}
-function countGroups(){return Math.ceil(banks[data.lang].length/5);}
+function countGroups(){return Math.floor(banks[data.lang].length/5);}
 function sharedNav(){return '<div class="bar"><button class="'+(data.view==="words"||data.view==="cross"?"purple":"light")+'" onclick="aptWords()">المفردات والمتقاطعة</button><button class="'+(["courses","topic","quiz","results"].includes(data.view)?"":"light")+'" onclick="aptCourses()">الدروس والاختبارات</button></div>';}
 function setView(view){data.view=view;document.body.classList.toggle("dark",!["words","cross"].includes(view));window.scrollTo(0,0);}
 function renderWords(){
@@ -101,6 +101,7 @@ setView("courses");const list=TOPICS.filter(t=>t.track===data.course);
 app.innerHTML=sharedNav()+'<header class="hero"><h1>اشرحي ثم تدربي: '+TITLES[data.course]+'</h1><p class="muted">لا توجد أسئلة مختلطة: افتحي الموضوع، راجعي الحالات المختلفة، ثم اختبري نفسك في ٢٠ سؤالًا جديد الترتيب.</p>'+courseButtons()+'</header><div class="topic-grid">'+list.map(t=>'<button onclick="aptTopic(\''+t.id+'\')"><strong>'+esc(t.title)+'</strong><small>شرح • صور السؤال المختلفة • اختبار ٢٠ سؤالًا</small></button>').join("")+'</div><div class="card" style="margin-top:12px"><p>البنك العام يحتوي أكثر من ١٠٠٠ سؤال محفوظ مع إضافة مسائل مولّدة بقيم وحالات متغيرة. في المسائل الحسابية تتبدل المعطيات، وليس ترتيب الخيارات فقط.</p></div>';
 }
 window.aptCourses=function(){renderCourses()};
+window.aptErrors=function(){window.parent.profileErrors()};
 window.aptCourse=function(t){data.course=t;renderCourses()};
 window.aptTopic=function(id){const t=TOPICS.find(t=>t.id===id&&t.track===data.course);if(!t)return;data.topic=t;renderTopic()};
 function renderTopic(){
