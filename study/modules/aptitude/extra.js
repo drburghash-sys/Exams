@@ -131,17 +131,50 @@ const relatives=[
 ["student","helped us yesterday","who"],["teacher","explained the lesson","who"],["doctor","treated the patient","who"],["writer","won the award","who"],["boy","lives next door","who"],["girl","called me","who"],["engineer","designed the bridge","who"],["artist","painted the mural","who"],["nurse","works at the hospital","who"],["driver","stopped the bus","who"],["scientist","found the answer","who"],["player","scored the goal","who"],
 ["book","has a blue cover","which"],["phone","is on the table","which"],["car","needs repair","which"],["camera","belongs to Sara","which"],["lamp","lights this room","which"],["painting","hangs in the hall","which"],["chair","stands by the window","which"],["bag","contains my books","which"],["computer","starts quickly","which"],["window","faces the garden","which"],["clock","shows the time","which"],["key","opens the front door","which"],["door","leads to the kitchen","which"],["road","connects two towns","which"],["machine","prints labels","which"],["apple","is on the plate","which"],["screen","shows the answer","which"],["bicycle","has a red frame","which"]
 ];
+const logicCases=[
+["كل موظفي المختبر يلبسون القفازات، وناصر موظف بالمختبر.","ناصر يلبس القفازات"],
+["كل الأطباء تلقوا تدريبًا طبيًا، وليلى طبيبة.","ليلى تلقت تدريبًا طبيًا"],
+["جميع القطط حيوانات، وسوسو قطة.","سوسو حيوان"],
+["كل أعضاء النادي مسجلون، وأحمد عضو في النادي.","أحمد مسجل"],
+["كل الطلاب في الصف حضروا، وسارة طالبة في الصف.","سارة حضرت"],
+["كل المهندسين يدرسون الرياضيات، وخالد مهندس.","خالد يدرس الرياضيات"],
+["كل الطيور المذكورة في القائمة لها أجنحة، والعصفور من طيور القائمة.","العصفور له أجنحة"],
+["كل الكتب في الصندوق جديدة، والكتاب الأحمر في الصندوق.","الكتاب الأحمر جديد"],
+["كل الحافلات في المحطة متوقفة، والحافلة الزرقاء في المحطة.","الحافلة الزرقاء متوقفة"],
+["كل أوراق الملف مرقمة، والورقة الأولى في الملف.","الورقة الأولى مرقمة"],
+["جميع أعضاء الفريق يرتدون الزي نفسه، وفهد عضو في الفريق.","فهد يرتدي زي الفريق"],
+["كل التذاكر الإلكترونية تحمل رمزًا، وهذه التذكرة إلكترونية.","هذه التذكرة تحمل رمزًا"],
+["كل سيارات الشركة مؤمنة، وهذه السيارة ملك الشركة.","هذه السيارة مؤمنة"],
+["كل أجهزة المختبر مفحوصة، وهذا الجهاز من أجهزة المختبر.","هذا الجهاز مفحوص"],
+["كل المكاتب في الطابق مضاءة، وهذا المكتب في الطابق.","هذا المكتب مضاء"],
+["جميع ثمار الصندوق برتقال، وهذه الثمرة من الصندوق.","هذه الثمرة برتقال"],
+["كل المواعيد المحجوزة مؤكدة، وموعد سامي محجوز.","موعد سامي مؤكد"],
+["كل طلاب المجموعة أنهوا التدريب، وعلي في المجموعة.","علي أنهى التدريب"],
+["كل شوارع الحي لها أسماء، وهذا الشارع في الحي.","هذا الشارع له اسم"],
+["كل الملفات في المجلد صور، والملف الأخير في المجلد.","الملف الأخير صورة"],
+["كل المشاركين في الندوة مسجلون، وريم مشاركة في الندوة.","ريم مسجلة"],
+["كل الكتب المستعارة في السجل مؤرخة، وكتاب نورة مسجل.","كتاب نورة مؤرخ"],
+["جميع أقلام العلبة زرقاء، وهذا القلم من العلبة.","هذا القلم أزرق"],
+["كل زهور الحديقة سُقيت اليوم، وهذه الوردة في الحديقة.","هذه الوردة سُقيت اليوم"],
+["كل دفاتر الفصل عليها اسم الطالب، ودفتر هند من الفصل.","دفتر هند يحمل اسمها"],
+["كل المباريات في البطولة محلية، وهذه المباراة من البطولة.","هذه المباراة محلية"],
+["كل التذاكر المباعة تحمل رقم مقعد، وهذه التذكرة مباعة.","هذه التذكرة تحمل رقم مقعد"],
+["كل المصابيح في الغرفة تعمل، وهذا المصباح في الغرفة.","هذا المصباح يعمل"],
+["كل أدوية الخزانة مرتبة، وهذا الدواء في الخزانة.","هذا الدواء مرتب"],
+["جميع متطوعي اليوم حضروا الاجتماع، وهالة متطوعة اليوم.","هالة حضرت الاجتماع"]
+];
 const passives=[
 ["The hospital","built","in 2004"],["The school","opened","in 2014"],["The bridge","repaired","last year"],["The museum","renovated","in 2018"],["The car","washed","yesterday"],["The classroom","cleaned","this morning"],["The book","published","in 2020"],["The road","completed","in 2011"],["The letter","delivered","yesterday"],["The window","fixed","last week"],["The school wall","painted","last summer"],["The report","written","yesterday"],["The park","opened","last spring"],["The cake","baked","this morning"],["The email","sent","an hour ago"],["The road sign","installed","last month"],["The poster","printed","yesterday"],["The computer","repaired","last Tuesday"],["The room","decorated","in June"],["The match","played","last night"],["The test","marked","last week"],["The package","delivered","last Friday"],["The house","sold","last winter"],["The song","recorded","in 2016"],["The building","designed","in 2019"],["The document","signed","yesterday"],["The tickets","sold","last night"],["The chairs","arranged","this morning"],["The rooms","cleaned","yesterday"],["The cars","washed","last weekend"],["The apples","picked","in autumn"],["The students","invited","last month"]
 ];
 window.APT_GENERATE=function(t,i){
 const id=t.id;
+if(id==="logic"){const x=logicCases[i%logicCases.length];return mc("verbal",id,i,x[0]+" ما العبارة اللازمة منطقيًا؟",x[1],["لا يمكن الجزم بأي معلومة","كل الأشخاص الآخرين مثل المذكور","عكس المقدمة هو الصحيح"],"المعلومة تنتج مباشرة من قاعدة كلية وتطبيقها على المثال.");}
 if(id==="analogy"){const x=pairs[i%pairs.length];return mc("verbal",id,i,"أكمل العلاقة: "+x[0],x[1],x.slice(2),"نبحث عن العلاقة بين الكلمتين لا عن تشابه شكلي.");}
 if(id==="completion"){const x=completions[i%completions.length];return mc("verbal",id,i,"اختر الكلمة الأنسب: "+x[0],x[1],x.slice(2),"الاختيار يحافظ على ترابط المعنى وأداة الربط.");}
 if(id==="reading"||id==="readingstep")return reading(t.track,id,i);
-if(id==="conditional"){const x=conditions[i%conditions.length],v=x[1];return mc("step",id,i,"If "+x[0]+" tomorrow, we ____ ("+v.replace("will ","")+").",v,["would "+v.replace("will ",""),"have "+v.replace("will ",""),"are "+v.replace("will ","")],"First Conditional: If + present, will + base verb.");}
+if(id==="conditional"){const k=i%conditions.length,x=conditions[k],v=x[1],subjects=["we","we","Sara","we","the ice","we","he","I","I","the students","I","we","the machine","we","we","we","the team","I","we","we","you","I","we","we","we","we","we","he","they","the plant"];return mc("step",id,i,"If "+x[0]+", "+subjects[k]+" ____.",v,["would "+v.replace("will ",""),"have "+v.replace("will ",""),"are "+v.replace("will ","")],"First Conditional: If + present, will + base verb.");}
 if(id==="comparison"){const x=comparisons[i%comparisons.length],v=x[2];return mc("step",id,i,"In general, "+x[0]+" is ____ than "+x[1]+".",v,["most "+v,"very "+v,"as "+v],"Use a comparative adjective with than.");}
-if(id==="modals"){const x=requirements[i%requirements.length];const pref=x[1]==="must"?"This is an official rule: ":x[1]==="should"?"This is good advice (not a legal requirement): ":"This person has the ability to ";
+if(id==="modals"){const x=requirements[i%requirements.length];const pref=x[1]==="must"?"This is an official rule: ":x[1]==="should"?"This is good advice (not a legal requirement): ":"This skill has been demonstrated: ";
 const end=x[1]==="can"?"They ____ "+x[0]+".":"You ____ "+x[0]+".";
 return mc("step",id,i,pref+end,x[1],["might","can","should","must"].filter(y=>y!==x[1]).slice(0,3),"Must = obligation; should = advice; can = ability.");}
 if(id==="relative"){const x=relatives[i%relatives.length];return mc("step",id,i,"The "+x[0]+" ____ "+x[1]+" is important in this story.",x[2],["when","where",x[2]==="who"?"which":"who"],"Who refers to a person; which refers to a thing.");}
