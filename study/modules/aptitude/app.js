@@ -113,13 +113,13 @@ let base=STUDY_CONTEXT.bank.filter(q=>q.track===t.track&&t.skills.includes(q.ski
 if(["square","rectangle","triangle","order","logic","context"].includes(t.id))base=base.filter(q=>t.track==="verbal");
 const generated=[];
 for(let i=0;i<620;i++){const q=window.APT_GENERATE(t,i);if(q&&Array.isArray(q.options)&&q.options.length===4)generated.push(q)}
-const seen=new Set();return shuffle(base.concat(generated)).filter(q=>{
-const sig=q.text.trim().replace(/\s+/g," ")+"|"+q.options[q.answer];
+const seen=new Set();return shuffle(generated.concat(base).filter(q=>{
+const sig=q.text.trim().replace(/\s+/g," ");
 if(seen.has(sig)||new Set(q.options.map(String)).size!==4)return false;seen.add(sig);return true;
-});
+}));
 }
 function chooseQuiz(t){
-const all=allPool(t),rec=new Set(persist.recent[t.id]||[]),signature=q=>q.text.trim().replace(/\s+/g," ")+"|"+q.options[q.answer];
+const all=allPool(t),rec=new Set(persist.recent[t.id]||[]),signature=q=>q.text.trim().replace(/\s+/g," ");
 const unseen=all.filter(q=>!rec.has(signature(q))),repeat=all.filter(q=>rec.has(signature(q)));
 const selected=shuffle(unseen).concat(shuffle(repeat)).slice(0,20);
 if(selected.length<20)return {error:"لم يكتمل لهذا الموضوع إلا "+selected.length+" سؤالًا غير مكرر. لن أكرر السؤال لأعرض اختبارًا وهميًا من ٢٠ سؤالًا."};
