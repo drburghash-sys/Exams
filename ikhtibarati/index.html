@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101e38">
+  <meta name="description" content="اختباراتي: جدول اختباراتك والعد التنازلي لأقرب اختبار مع تصدير التذكيرات للتقويم.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="اختباراتي">
+  <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAEP0lEQVR4nO3coY4bRxzH8b2qD3AtjXQtCwsIuoKoqI9UhQSGRH2XvkBhQFlAWIJaENq+QoGlyrJj39o/78z8dz8feLJuRjPfG6+9Pt/dPzxOcK1vek+A2gREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARL7tPYHr/fv3nwc/+e6Hn7rM5AqlJ7+v6gl0vAGnfjig0pM/UDKgM2s9/jaUnvyxegE9ucojb0PpyX9VvYAYioCICIiIgIgIiMgQbyS++OPXwX9hSxdN/uMvvy03kzk6B1R6p0ewW8COGXULSDo31DGjPtdA6llCl1XtEJB6ltN+bVsHpJ6lNV7hpgGpp42W6+x9ICLtAnL8tNRstZ1ARBoF5Phpr82aO4GICIhIi4Bue5b+/Pn38AEdlZ78V5U8gc6s8vgbUHryx0oGNJ1Y6yobUHryB4b4PNB1iq74TunJ76t6AjEIAREREBEBEREQEQERERARAREREBEBEREQkbv7h8cGw3z59L7BKBx49vzV0kM4gYgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIiU+c/Uj3/9M+dhL378vu6IFdU4gWbu5UWPHG3EogoEdOkO5TvafsS6CgTEyAREREBEBEREQEQERERARAREREBEBEREQEQKBHTp7e789nj7EesqENB0yQ7dai/bj1hUmc8Dtd+njZcxU40TiGEJiIiAiAiog5fv3vSews0IqLVdPatpSEBN7XezjoYE1M5xMStoSECdVW9IQI2cCuXD67eNZ3JbAmphrfVMAmpgxfVMAlpa9UucJwloQWfqWcfxMxW6G1/uuzK2UM9U5QRa03dlrKmeqURAFb8rY90XzvsKBDSUORfF26lnEtBF5twH3VQ9k4Dmm3MfdPUv2o8JaJY590E38rLrgICeNue82WY9k4DmOFPAy3dvzj9trbueSUAzne9gaxfO+wQ016U1bKGeSUAX+fD67cwsNlLPJKArbCeOOQR0jfMNbaqwAgGN+V0ZpyrZVD1TiYCmUb8r47iVrdUzTdPd/cNjg2G+fHrfYJQudq/hx0zn2fNXSw9R5gNlwxoznWYaPYU1+FPgQJs1r3ENxLAEtE7Njvx2AXkWW6WmJ5CG2mi5zp7CiLQOyCG0tMYr3OEE0tBy2q9tn6cwDS2hy6p2uwbS0G31Ws9G98JOWfE9smb6/il2DmhHRtcZ4RQfIqD/KWmmEdLZGSsgyvFGIhEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERCR/wBXVQInQtkzOAAAAABJRU5ErkJggg==">
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAEP0lEQVR4nO3coY4bRxzH8b2qD3AtjXQtCwsIuoKoqI9UhQSGRH2XvkBhQFlAWIJaENq+QoGlyrJj39o/78z8dz8feLJuRjPfG6+9Pt/dPzxOcK1vek+A2gREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARL7tPYHr/fv3nwc/+e6Hn7rM5AqlJ7+v6gl0vAGnfjig0pM/UDKgM2s9/jaUnvyxegE9ucojb0PpyX9VvYAYioCICIiIgIgIiMgQbyS++OPXwX9hSxdN/uMvvy03kzk6B1R6p0ewW8COGXULSDo31DGjPtdA6llCl1XtEJB6ltN+bVsHpJ6lNV7hpgGpp42W6+x9ICLtAnL8tNRstZ1ARBoF5Phpr82aO4GICIhIi4Bue5b+/Pn38AEdlZ78V5U8gc6s8vgbUHryx0oGNJ1Y6yobUHryB4b4PNB1iq74TunJ76t6AjEIAREREBEBEREQEQERERARAREREBEBEREQkbv7h8cGw3z59L7BKBx49vzV0kM4gYgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIiU+c/Uj3/9M+dhL378vu6IFdU4gWbu5UWPHG3EogoEdOkO5TvafsS6CgTEyAREREBEBEREQEQERERARAREREBEBEREQEQKBHTp7e789nj7EesqENB0yQ7dai/bj1hUmc8Dtd+njZcxU40TiGEJiIiAiAiog5fv3vSews0IqLVdPatpSEBN7XezjoYE1M5xMStoSECdVW9IQI2cCuXD67eNZ3JbAmphrfVMAmpgxfVMAlpa9UucJwloQWfqWcfxMxW6G1/uuzK2UM9U5QRa03dlrKmeqURAFb8rY90XzvsKBDSUORfF26lnEtBF5twH3VQ9k4Dmm3MfdPUv2o8JaJY590E38rLrgICeNue82WY9k4DmOFPAy3dvzj9trbueSUAzne9gaxfO+wQ016U1bKGeSUAX+fD67cwsNlLPJKArbCeOOQR0jfMNbaqwAgGN+V0ZpyrZVD1TiYCmUb8r47iVrdUzTdPd/cNjg2G+fHrfYJQudq/hx0zn2fNXSw9R5gNlwxoznWYaPYU1+FPgQJs1r3ENxLAEtE7Njvx2AXkWW6WmJ5CG2mi5zp7CiLQOyCG0tMYr3OEE0tBy2q9tn6cwDS2hy6p2uwbS0G31Ws9G98JOWfE9smb6/il2DmhHRtcZ4RQfIqD/KWmmEdLZGSsgyvFGIhEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERCR/wBXVQInQtkzOAAAAABJRU5ErkJggg==">
+  <style>
+:root{--navy:#101e38;--navy2:#172b4e;--cream:#f5f7fb;--card:#ffffff;--text:#182641;--muted:#738099;--mint:#3ed9ad;--blue:#4d74eb;--stroke:#e7ebf2;--shadow:0 10px 28px rgba(22,38,73,.055)}
+*{box-sizing:border-box}html{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;background:var(--cream);color:var(--text)}body{margin:0;min-height:100vh}button,input,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #66a4ff;outline-offset:2px}.page-shell{width:min(960px,calc(100% - 32px));margin:0 auto;padding:26px 0 70px}.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}.brand{display:flex;align-items:center;gap:12px}.logo{height:46px;width:46px;border-radius:15px;background:var(--navy);display:grid;place-items:center;color:var(--mint);font-size:28px;box-shadow:0 5px 10px rgba(16,30,56,.14)}.brand-title{font-size:25px;letter-spacing:-.8px;font-weight:850}.brand-subtitle{font-size:11px;color:var(--muted);margin-top:4px}.icon-button{background:#fff;color:var(--navy);border:1px solid var(--stroke);border-radius:14px;width:44px;height:44px;font-size:22px;display:grid;place-items:center}.hero{background:linear-gradient(120deg,#10203d,#213a61);color:white;min-height:248px;border-radius:26px;padding:26px 32px 24px;position:relative;overflow:hidden;box-shadow:0 15px 35px rgba(25,51,91,.13)}.hero:after{content:"";position:absolute;left:-125px;top:-175px;height:350px;width:350px;border-radius:50%;background:radial-gradient(circle,rgba(75,128,205,.24),transparent 70%);pointer-events:none}.hero-heading{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}.eyebrow{font-size:12px;color:var(--mint);font-weight:800;letter-spacing:.2px}.eyebrow.dark{color:#477dbb}.hero-status{background:rgba(255,255,255,.12);font-size:11px;padding:7px 12px;border-radius:100px;color:#dce6f6}.hero-content{position:relative;z-index:1}.hero-empty{text-align:center;padding:13px 0 9px}.empty-illustration{font-size:35px}.hero h1{margin:8px 0 4px;font-size:29px;letter-spacing:-.5px}.hero p{color:#c3cfe1;margin:5px 0;font-size:14px}.hero-next{display:flex;justify-content:space-between;align-items:center;gap:18px;margin:12px 0 20px}.hero-label{font-size:13px;color:#b9c8dc}.hero-exam-title{font-size:clamp(23px,4vw,33px);font-weight:850;letter-spacing:-.4px;margin:6px 0}.hero-exam-date{font-size:14px;color:#d3e0ef}.countdown{text-align:center;flex-shrink:0;min-width:135px;border:1px solid rgba(255,255,255,.17);background:rgba(255,255,255,.07);padding:17px 18px;border-radius:22px}.count-number{font-size:34px;color:var(--mint);font-weight:900;font-variant-numeric:tabular-nums}.count-unit{font-size:12px;color:#d9e4f4;margin-top:3px}.hero-progress{background:rgba(255,255,255,.14);height:6px;border-radius:20px;overflow:hidden;position:relative;z-index:1}.hero-progress-fill{height:100%;width:0%;background:var(--mint);border-radius:20px;transition:width .4s}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0 35px}.stat{background:white;border-radius:19px;border:1px solid var(--stroke);box-shadow:var(--shadow);padding:20px 21px}.stat-icon{font-size:19px}.stat-num{font-size:28px;font-weight:850;margin:8px 0 2px}.stat-label{color:var(--muted);font-size:12px}.section-header{display:flex;justify-content:space-between;align-items:end;gap:12px}.section-header h2{font-size:24px;letter-spacing:-.6px;margin:6px 0 0}.button{border-radius:12px;border:1px solid transparent;min-height:44px;padding:11px 17px;font-weight:800;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}.button.primary{background:var(--blue);color:white}.button.primary:hover{background:#365ed8}.button.light{background:#f1f4f9;color:var(--navy)}.button.soft{background:#eff3ff;color:#3554ac}.button.outline-light{background:rgba(255,255,255,.12);color:white;border-color:rgba(255,255,255,.24);white-space:nowrap}.button.block{width:100%;margin-top:13px}.filter-list{display:flex;gap:9px;margin:20px 0 15px}.filter{border:1px solid #e0e5ef;background:#fff;color:#78859b;padding:10px 20px;border-radius:11px;font-size:13px;font-weight:800}.filter.active{background:var(--navy);border-color:var(--navy);color:white}.exam-list{display:flex;flex-direction:column;gap:12px;min-height:125px}.exam-card{background:white;border:1px solid var(--stroke);border-radius:20px;display:flex;gap:18px;align-items:center;padding:17px 20px;box-shadow:var(--shadow)}.date-tile{flex:0 0 72px;background:#eff4ff;border-radius:14px;text-align:center;padding:12px 6px;color:#284687}.date-tile .date-day{font-size:25px;font-weight:900;display:block;line-height:1.15}.date-tile .date-month{font-size:12px;font-weight:700;display:block;margin-top:3px}.exam-info{flex:1;min-width:0}.exam-name{margin:0 0 6px;font-size:18px;font-weight:850;overflow-wrap:anywhere}.exam-details{display:flex;gap:8px 16px;align-items:center;flex-wrap:wrap;color:#7b879d;font-size:12px}.exam-note{font-size:12px;color:#5d708c;margin:8px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}.exam-left{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.time-pill{color:#3556ab;background:#eff3ff;padding:7px 11px;border-radius:100px;font-size:11px;font-weight:850;white-space:nowrap}.time-pill.urgent{color:#b54744;background:#fff0ec}.time-pill.past{background:#f0f1f3;color:#6a7384}.small-icon{border:1px solid var(--stroke);border-radius:10px;width:36px;height:36px;background:#fff;color:#50617a;font-size:17px}.small-icon:hover{background:#f4f7fd}.exam-card.past-card{opacity:.72}.exam-card.past-card .date-tile{background:#edf0f3;color:#7a8493}.empty-list{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:208px;border:1.5px dashed #d9e0ea;border-radius:20px;background:rgba(255,255,255,.65);color:#70809b;text-align:center;padding:28px}.empty-list .emoji{font-size:30px}.empty-list h3{font-size:17px;color:#2c3c58;margin:9px 0 4px}.empty-list p{font-size:13px;margin:3px 0 0}.calendar-panel{display:flex;align-items:center;gap:16px;border-radius:22px;background:#1a3b5b;color:#fff;padding:23px 26px;margin-top:28px}.calendar-illustration{font-size:34px}.calendar-copy{flex:1}.calendar-copy h3{font-size:16px;margin:0 0 7px}.calendar-copy p{margin:0;color:#cfdbed;font-size:12px;line-height:1.7}.footer-note{text-align:center;font-size:11px;color:#8793a8;margin:20px 0 0}.floating-add{position:fixed;bottom:calc(23px + env(safe-area-inset-bottom));left:23px;z-index:5;border:0;background:var(--blue);color:white;width:57px;height:57px;border-radius:19px;font-size:36px;display:grid;place-items:center;box-shadow:0 6px 25px rgba(58,88,200,.3)}.dialog{width:min(490px,calc(100% - 26px));max-height:min(92dvh,900px);border:0;background:transparent;padding:0;border-radius:22px;overflow-y:auto}.dialog::backdrop{background:rgba(9,19,36,.58);backdrop-filter:blur(4px)}.modal-card{padding:25px 25px 21px;border-radius:22px;background:white}.dialog-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:17px}.dialog-title h2{font-size:23px;margin:5px 0 0}.modal-card label:not(.check-grid label){display:block;font-size:13px;font-weight:800;color:#35465d;margin:15px 0 8px}.modal-card input:not([type="checkbox"]):not([type="file"]),.modal-card textarea{border:1px solid #dfe5ee;background:#fbfcff;border-radius:12px;padding:12px 13px;width:100%;color:#1f2c43;font-size:15px;min-height:45px;resize:vertical}.two-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}.required{color:#dc6573}.optional{font-size:11px;color:#9ca7b5}.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}.settings-card{padding-bottom:24px}.setting-section{padding:15px 0 18px;border-bottom:1px solid var(--stroke)}.setting-section h3{font-size:15px;margin:0 0 7px}.setting-section p{font-size:12px;color:#77859b;line-height:1.8;margin:0 0 8px}.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.check-grid label{font-size:12px;color:#304057;background:#f7f9fe;border-radius:9px;padding:11px 8px;display:flex;align-items:center;gap:6px}.check-grid input{accent-color:#496de8}.warning-section{border-bottom:0}.warning-section p{color:#6b6d81}.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:#1b2941;color:#fff;border-radius:12px;padding:12px 18px;font-size:13px;max-width:calc(100vw - 35px);text-align:center;opacity:0;pointer-events:none;transition:.2s;z-index:200}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:650px){.page-shell{width:calc(100% - 28px);padding-top:19px}.hero{padding:21px 20px 22px;min-height:230px}.hero-next{align-items:stretch}.hero-exam-title{font-size:25px}.countdown{min-width:100px;padding:14px 11px}.count-number{font-size:27px}.stats{gap:8px;margin-bottom:31px}.stat{padding:14px 12px;border-radius:15px}.stat-num{font-size:23px}.stat-label{font-size:10px}.section-header h2{font-size:21px}.add-btn{font-size:12px;padding:9px 12px}.exam-card{align-items:flex-start;gap:11px;padding:13px}.date-tile{flex-basis:58px;padding:10px 4px}.date-tile .date-day{font-size:21px}.exam-name{font-size:16px}.exam-details{gap:6px;font-size:11px}.exam-left{flex:0 0 100%;justify-content:flex-start;margin-top:6px;margin-right:69px}.exam-card{flex-wrap:wrap}.calendar-panel{align-items:flex-start;flex-wrap:wrap;gap:10px;padding:18px 17px}.calendar-panel .button{width:100%}.calendar-illustration{font-size:25px}.brand-title{font-size:22px}.brand-subtitle{font-size:10px}.modal-card{padding:20px 17px}}
+@media(max-width:360px){.two-cols{grid-template-columns:1fr}.countdown{min-width:94px}.hero-exam-title{font-size:21px}.hero{padding:19px 15px}}
+
+.daily-pref{margin-top:16px;padding:13px 12px;border:1px solid #e8edf6;background:#f9fbfe;border-radius:12px;display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}.daily-pref .daily-switch{display:flex!important;align-items:center;gap:7px;margin:0!important}.daily-pref label[for="daily-time"]{margin:0!important;font-size:11px!important;color:#718098!important}.daily-pref input[type="time"]{width:120px!important;min-height:37px!important;padding:7px!important}.daily-pref input[type="checkbox"]{accent-color:#496de8}.daily-pref strong{font-size:12px}
+/* V1.1: Make per-subject editing obvious and usable on a phone. */
+.exam-help{font-size:12px;line-height:1.8;color:#5c6f8d;margin:0 0 14px;padding:10px 13px;border-radius:12px;background:#eaf0fc}
+.exam-help strong{color:#274b9a}
+.form-help{background:#f2f6ff;border:1px solid #e5edfc;border-radius:12px;color:#526783;font-size:13px;line-height:1.65;margin:2px 0 16px;padding:11px 12px}
+.field-help{color:#76859d;font-size:11px;line-height:1.7;margin:9px 0 3px}
+.exam-details span{line-height:1.6}
+.edit-exam{border:1px solid #bad0ff;border-radius:10px;background:#ecf2ff;color:#2b51b0;min-height:39px;padding:8px 12px;white-space:nowrap;font-size:12px;font-weight:800}
+.edit-exam:hover{background:#e1eafe}
+.edit-exam:focus-visible{outline:3px solid #66a4ff;outline-offset:2px}
+@media(max-width:650px){.exam-left{margin-right:0;width:100%;flex-basis:100%;justify-content:flex-start}.exam-left .time-pill{margin-left:auto}.edit-exam{flex:1;min-width:150px}.modal-card input[type=date],.modal-card input[type=time]{min-width:0;direction:ltr;text-align:center}}
+
+</style>
+  <title>اختباراتي | جدول اختباراتك</title>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">✦</div>
+        <div><div class="brand-title">اختباراتي</div><div class="brand-subtitle">كل موعد واضح، وكل اختبار في وقته</div></div>
+      </div>
+      <button id="open-settings" class="icon-button" aria-label="الإعدادات والنسخ الاحتياطية" title="الإعدادات">⚙</button>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-heading"><span class="eyebrow">الاختبار القادم</span><span id="hero-status" class="hero-status">الجدول جاهز</span></div>
+        <div class="hero-content" id="hero-content">
+          <div class="hero-empty"><div class="empty-illustration">📚</div><h1 id="hero-title">خلّنا نرتب اختباراتك</h1><p>أضف أول اختبار عشان يبدأ العد التنازلي.</p></div>
+        </div>
+        <div id="hero-progress" class="hero-progress" aria-hidden="true"><div id="hero-progress-bar" class="hero-progress-fill"></div></div>
+      </section>
+
+      <section class="stats" aria-label="ملخص اختباراتك">
+        <div class="stat"><span class="stat-icon" aria-hidden="true">🗓</span><div class="stat-num" id="upcoming-count">٠</div><div class="stat-label">اختبارات قادمة</div></div>
+        <div class="stat"><span class="stat-icon" aria-hidden="true">✅</span><div class="stat-num" id="completed-count">٠</div><div class="stat-label">اختبارات منتهية</div></div>
+        <div class="stat"><span class="stat-icon" aria-hidden="true">⏰</span><div class="stat-num" id="this-week-count">٠</div><div class="stat-label">خلال ٧ أيام</div></div>
+      </section>
+
+      <section class="section" aria-label="جدول الاختبارات">
+        <div class="section-header"><div><span class="eyebrow dark">خطتك الدراسية</span><h2>جدول الاختبارات</h2></div><button id="add-exam-top" class="button primary add-btn"><span aria-hidden="true">＋</span> اختبار جديد</button></div>
+        <div class="filter-list" role="group" aria-label="فلترة الاختبارات">
+          <button class="filter active" data-filter="upcoming" aria-pressed="true">القادمة</button>
+          <button class="filter" data-filter="all" aria-pressed="false">الكل</button>
+          <button class="filter" data-filter="past" aria-pressed="false">المنتهية</button>
+        </div>
+        <p class="exam-help">كل مادة لها تاريخ ووقت خاصان بها. لتغيير أي موعد لاحقًا، اضغط <strong>تعديل المادة والموعد</strong> تحت الاختبار.</p>
+        <div id="exam-list" class="exam-list" aria-live="polite"></div>
+      </section>
+
+      <section class="calendar-panel">
+        <div class="calendar-illustration" aria-hidden="true">🔔</div>
+        <div class="calendar-copy"><h3>لا يفوتك موعد اختبار</h3><p>صدّر اختباراتك إلى التقويم لتستفيد من التذكيرات حتى عند إغلاق التطبيق. يمكنك أيضًا إضافة تذكير يومي بأقرب اختبار في الساعة التي تختارها. بعد تغيير المواعيد، يجب تحديث التقويم يدويًا.</p></div>
+        <button id="export-calendar" class="button outline-light">تصدير للتقويم ↗</button>
+      </section>
+      <p class="footer-note">🔒 الاختبارات محفوظة على هذا الجهاز فقط. من الإعدادات تقدر تحفظ نسخة احتياطية.</p>
+    </main>
+  </div>
+
+  <button id="floating-add" class="floating-add" aria-label="إضافة اختبار">＋</button>
+
+  <dialog id="exam-dialog" class="dialog" aria-labelledby="exam-dialog-title">
+    <form id="exam-form" class="modal-card">
+      <div class="dialog-title"><div><span class="eyebrow dark">موعد مهم</span><h2 id="exam-dialog-title">إضافة اختبار</h2></div><button type="button" class="icon-button close-modal" aria-label="إغلاق">✕</button></div>
+      <p class="form-help">سجّل اسم المادة وحدد يوم وساعة اختبارها، ويمكنك تغييرها متى أردت.</p>
+      <input type="hidden" id="exam-id">
+      <label for="subject">اسم المادة <span class="required">*</span></label>
+      <input id="subject" name="subject" type="text" placeholder="مثلاً: الرياضيات" maxlength="70" required>
+      <div class="two-cols">
+        <div><label for="exam-date">تاريخ الاختبار <span class="required">*</span></label><input id="exam-date" name="date" type="date" required></div>
+        <div><label for="exam-time">الوقت <span class="required">*</span></label><input id="exam-time" name="time" type="time" value="08:00" required></div>
+      </div>
+      <p class="field-help">التاريخ والوقت المحددان هنا يخصّان هذه المادة فقط.</p>
+      <label for="exam-location">القاعة / المكان <span class="optional">اختياري</span></label><input id="exam-location" name="location" type="text" maxlength="90" placeholder="مثلاً: القاعة ١٠٢">
+      <label for="exam-notes">ملاحظات للمراجعة <span class="optional">اختياري</span></label><textarea id="exam-notes" name="notes" rows="3" maxlength="500" placeholder="مثلاً: من الفصل ١ إلى الفصل ٤"></textarea>
+      <p class="field-help">إذا سبق أن أضفت الاختبار إلى التقويم، فستحتاج لتحديث موعده في التقويم بعد أي تعديل.</p>
+      <div class="modal-actions"><button type="button" class="button light close-modal">إلغاء</button><button type="submit" class="button primary" id="save-exam">حفظ الاختبار</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="settings-dialog" class="dialog" aria-labelledby="settings-title">
+    <div class="modal-card settings-card">
+      <div class="dialog-title"><div><span class="eyebrow dark">تحكم بجدولك</span><h2 id="settings-title">الإعدادات</h2></div><button type="button" class="icon-button close-modal" aria-label="إغلاق">✕</button></div>
+      <div class="setting-section"><h3>تنبيهات التقويم</h3><p>اختر متى ترغب في تذكيرك قبل كل اختبار. تعتمد التنبيهات على تطبيق التقويم بعد استيراد الملف، وليس على فتح موقع اختباراتي.</p>
+        <div id="alarm-options" class="check-grid">
+          <label><input type="checkbox" value="-P7D"> قبل أسبوع</label>
+          <label><input type="checkbox" value="-P3D"> قبل ٣ أيام</label>
+          <label><input type="checkbox" value="-P1D"> قبل يوم</label>
+          <label><input type="checkbox" value="-PT3H"> قبل ٣ ساعات</label>
+          <label><input type="checkbox" value="-PT1H"> قبل ساعة</label>
+        </div>
+        <div class="daily-pref"><label class="daily-switch"><input type="checkbox" id="daily-enabled" checked> <strong>تذكير يومي بأقرب اختبار</strong></label><label for="daily-time">وقت التنبيه اليومي</label><input id="daily-time" type="time" value="20:00"></div>
+        <button id="save-reminders" class="button soft block">حفظ أوقات التذكير</button>
+      </div>
+      <div class="setting-section"><h3>النسخة الاحتياطية</h3><p>احفظ نسخة JSON إذا بدّلت جهازك أو حذفت بيانات المتصفح.</p>
+        <div class="two-cols"><button id="backup-data" class="button soft" type="button">⬇ تنزيل نسخة</button><button id="restore-data" class="button soft" type="button">⬆ استعادة نسخة</button></div>
+        <input id="import-file" type="file" accept=".json,application/json" hidden>
+      </div>
+      <div class="setting-section warning-section"><h3>مهم بخصوص الإشعارات</h3><p>هذه النسخة لا ترسل إشعارات تلقائية من نفسها عندما يكون التطبيق مغلقًا. يمكنك تصدير المواعيد والتذكيرات إلى التقويم، مع الاحتفاظ ببيانات التطبيق على جهازك فقط.</p></div>
+      <div class="modal-actions"><button type="button" class="button primary close-modal">تم</button></div>
+    </div>
+  </dialog>
+
+  <div id="toast" role="status" class="toast" aria-live="polite"></div>
+  <script>
+/* اختباراتي — Local-first exam planner; no external analytics or server. */
+(() => {
+  'use strict';
+  const storage = (() => {
+    try { const s = window.localStorage, k = '__ikhtibarati_probe'; s.setItem(k, '1'); s.removeItem(k); return s; }
+    catch { const memory = new Map(); return {getItem:k=>memory.get(k)??null,setItem:(k,v)=>memory.set(k,String(v)),removeItem:k=>memory.delete(k)}; }
+  })();
+  const STORAGE = 'ikhtibarati-v1-exams';
+  const REMINDERS = 'ikhtibarati-v1-reminders';
+  const DAILY_ENABLED = 'ikhtibarati-v1-daily';
+  const DAILY_TIME = 'ikhtibarati-v1-daily-time';
+  const DEFAULT_ALARMS = ['-P3D', '-P1D', '-PT3H'];
+  const ALL_ALARMS = ['-P7D', '-P3D', '-P1D', '-PT3H', '-PT1H'];
+  const $ = (id) => document.getElementById(id);
+  const number = new Intl.NumberFormat('ar-SA-u-nu-arab', {useGrouping:false});
+  const dateFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-gregory', {weekday:'long',day:'numeric',month:'long'});
+  const monthFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-gregory', {month:'short'});
+  const timeFormatter = new Intl.DateTimeFormat('ar-SA-u-nu-arab', {hour:'numeric',minute:'2-digit',hour12:true});
+  const el = (tag, className, text) => {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  };
+  const safeJSON = (s, fallback) => { try {return JSON.parse(s)} catch {return fallback} };
+  function validExam(x) {
+    return x && typeof x.id==='string' && x.id.length<140 && typeof x.subject==='string' && x.subject.trim() && x.subject.length<=70 &&
+      /^\d{4}-\d{2}-\d{2}$/.test(x.date) && /^\d{2}:\d{2}$/.test(x.time) &&
+      !Number.isNaN(new Date(`${x.date}T${x.time}:00`).getTime()) && typeof (x.location??'')==='string' &&
+      typeof (x.notes??'')==='string' && (x.location??'').length<=90 && (x.notes??'').length<=500;
+  }
+  let exams = safeJSON(storage.getItem(STORAGE), []);
+  if (!Array.isArray(exams)) exams=[];
+  exams=exams.filter(validExam).map(x=>({...x,completed:Boolean(x.completed)}));
+  let alarms = safeJSON(storage.getItem(REMINDERS), DEFAULT_ALARMS);
+  if(!Array.isArray(alarms)) alarms=DEFAULT_ALARMS;
+  alarms = ALL_ALARMS.filter(x=>alarms.includes(x));
+  let dailyEnabled = storage.getItem(DAILY_ENABLED) !== 'false';
+  let dailyTime = storage.getItem(DAILY_TIME) || '20:00';
+  if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(dailyTime)) dailyTime='20:00';
+  let filter = 'upcoming';
+  let toastTimer;
+  const when = x => new Date(`${x.date}T${x.time}:00`);
+  const future = (x, n=Date.now()) => !x.completed && when(x).getTime()>n;
+  const chronological = (a,b) => when(a)-when(b);
+  const esc = (value) => String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function persist(){storage.setItem(STORAGE,JSON.stringify(exams));render()}
+  function notify(message){const toast=$('toast');toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),3300)}
+  const digits = n => number.format(Math.max(0,Math.floor(n)));
+  function timeLeft(d) {
+    const ms = d.getTime()-Date.now();
+    if(ms<=0) return {value:'٠',unit:'انتهى موعده',label:'انتهى الموعد'};
+    const days=Math.floor(ms/86400000), hours=Math.floor((ms%86400000)/3600000);
+    const mins=Math.ceil((ms%3600000)/60000);
+    if(days>=1) return {value:digits(days),unit:days===1?'يوم متبقٍ':`يوم متبقٍ • ${digits(hours)} ساعة`,label:`متبقي ${digits(days)} يوم`};
+    if(hours>=1) return {value:digits(hours),unit:`ساعة متبقية • ${digits(mins%60)} دقيقة`,label:`خلال ${digits(hours)} ساعة`};
+    return {value:digits(Math.ceil(ms/60000)),unit:'دقيقة متبقية',label:'قريب جدًا'};
+  }
+  function renderHero(next, count) {
+    $('hero-status').textContent=next?'شدّ حيلك!':'الجدول جاهز';
+    const wrap=$('hero-content');
+    if(!next){wrap.innerHTML='<div class="hero-empty"><div class="empty-illustration">📚</div><h1 id="hero-title">خلّنا نرتب اختباراتك</h1><p>أضف أول اختبار عشان يبدأ العد التنازلي.</p></div>';$('hero-progress-bar').style.width='0%';return}
+    const remaining=timeLeft(when(next));
+    wrap.innerHTML=`<div class="hero-next"><div><div class="hero-label">جهّز نفسك لمادة</div><h1 class="hero-exam-title" id="hero-title">${esc(next.subject)}</h1><div class="hero-exam-date">${esc(dateFormatter.format(when(next)))} • ${esc(timeFormatter.format(when(next)))}</div></div><div class="countdown"><div class="count-number">${remaining.value}</div><div class="count-unit">${remaining.unit}</div></div></div>`;
+    const daysUntil=(when(next).getTime()-Date.now())/86400000;
+    $('hero-progress-bar').style.width=`${Math.min(100,Math.max(5,100*(1-Math.min(daysUntil,14)/14)))}%`;
+  }
+  function render() {
+    const now=Date.now();
+    const upcoming=exams.filter(x=>future(x,now)).sort(chronological);
+    const past=exams.filter(x=>!future(x,now)).sort((a,b)=>chronological(b,a));
+    $('upcoming-count').textContent=digits(upcoming.length);
+    $('completed-count').textContent=digits(past.length);
+    $('this-week-count').textContent=digits(upcoming.filter(x=>when(x).getTime()-now <= 7*86400000).length);
+    renderHero(upcoming[0],upcoming.length);
+    const active=filter==='upcoming'?upcoming:filter==='past'?past:[...upcoming,...past];
+    const list=$('exam-list');list.replaceChildren();
+    if(!active.length){
+      const no=el('div','empty-list');
+      no.innerHTML=`<div class="emoji">${filter==='upcoming'?'🗒️':'✨'}</div><h3>${filter==='upcoming'?'ما عندك اختبارات قادمة':'ما فيه اختبارات هنا'}</h3><p>${filter==='upcoming'?'اضغط اختبار جديد وأضف موعدك الأول.':'اختر تبويبًا آخر أو أضف اختبارًا.'}</p>`;
+      list.appendChild(no);return;
+    }
+    active.forEach(x=>{
+      const isFuture=future(x,now), dt=when(x), left=timeLeft(dt);
+      const card=el('article','exam-card'+(isFuture?'':' past-card'));
+      const tile=el('div','date-tile');tile.innerHTML=`<span class="date-day">${digits(dt.getDate())}</span><span class="date-month">${esc(monthFormatter.format(dt))}</span>`;
+      const info=el('div','exam-info');
+      info.innerHTML=`<h3 class="exam-name">${esc(x.subject)}</h3><div class="exam-details"><span>📅 ${esc(dateFormatter.format(dt))} ${digits(dt.getFullYear())}</span><span>🕒 ${esc(timeFormatter.format(dt))}</span>${x.location?`<span>📍 ${esc(x.location)}</span>`:''}</div>${x.notes?`<p class="exam-note">${esc(x.notes)}</p>`:''}`;
+      const actions=el('div','exam-left');
+      const badge=el('span','time-pill'+(!isFuture?' past':when(x).getTime()-now<86400000?' urgent':''),isFuture?left.label:x.completed?'✓ تم الاختبار':'انتهى الموعد');
+      actions.appendChild(badge);
+      const cal=el('button','small-icon','🗓');cal.type='button';cal.title='إضافة هذا الاختبار إلى تقويم Google';cal.setAttribute('aria-label',`إضافة ${x.subject} إلى تقويم Google`);cal.onclick=()=>openGoogleCalendar(x);actions.appendChild(cal);
+      const edit=el('button','edit-exam','✎ تعديل المادة والموعد');edit.type='button';edit.title='تعديل اسم المادة أو التاريخ أو الوقت';edit.setAttribute('aria-label',`تعديل اسم ${x.subject} وتاريخ الاختبار ووقته`);edit.onclick=()=>openExamDialog(x);actions.appendChild(edit);
+      const complete=el('button','small-icon',x.completed?'↶':'✓');complete.type='button';complete.title=x.completed?'إلغاء تم':'تحديد كمكتمل';complete.setAttribute('aria-label',x.completed?'إلغاء تحديد كمكتمل':'تحديد كمكتمل');complete.onclick=()=>{x.completed=!x.completed;persist();notify(x.completed?'تم تحديد الاختبار كمكتمل':'أُعيد الاختبار إلى الجدول')};actions.appendChild(complete);
+      const del=el('button','small-icon','×');del.type='button';del.title='حذف';del.setAttribute('aria-label',`حذف ${x.subject}`);del.onclick=()=>{if(confirm(`هل تريد حذف اختبار «${x.subject}»؟\nلن يُحذف من التقويم إذا سبق تصديره.`)){exams=exams.filter(a=>a.id!==x.id);persist();notify('حُذف الاختبار')}};actions.appendChild(del);
+      card.append(tile,info,actions);list.appendChild(card);
+    });
+    if('setAppBadge' in navigator){navigator.setAppBadge(upcoming.length).catch(()=>{})}
+  }
+  function openExamDialog(x) {
+    $('exam-form').reset();$('exam-id').value=x?.id??'';
+    $('exam-dialog-title').textContent=x?'تعديل المادة والموعد':'إضافة اختبار';
+    $('save-exam').textContent=x?'حفظ التعديلات':'حفظ الاختبار';
+    if(x){$('subject').value=x.subject;$('exam-date').value=x.date;$('exam-time').value=x.time;$('exam-location').value=x.location??'';$('exam-notes').value=x.notes??''}
+    else {const now=new Date(), dd=new Date(now.getTime()-now.getTimezoneOffset()*60000);$('exam-date').value=dd.toISOString().slice(0,10);$('exam-time').value='08:00'}
+    $('exam-dialog').showModal();setTimeout(()=>$('subject').focus(),50);
+  }
+  function isoNow(){return new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'')}
+  const icsEscape=str=>String(str??'').replace(/\\/g,'\\\\').replace(/\r?\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
+  const utc = date => date.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+  function folded(s){let lines=[];let running='',size=0;for (const cp of s){const bytes=new TextEncoder().encode(cp).length;if(size+bytes>73){lines.push(running);running=' '+cp;size=1+bytes}else{running+=cp;size+=bytes}}lines.push(running);return lines.join('\r\n')}
+  // Each consecutive block of daily reminders is one recurring calendar event.
+  // The subject changes automatically in the exported calendar as exams pass.
+  function buildDailySeries(items){
+    if(!items.length)return [];
+    const ordered=[...items].sort(chronological);
+    const now=Date.now(), last=Math.max(...ordered.map(x=>when(x).getTime()));
+    const [hour,minute]=dailyTime.split(':').map(Number);
+    const start=new Date();start.setHours(0,0,0,0);
+    const groups=[];
+    for(let d=0;d<366;d++){
+      const at=new Date(start);at.setDate(start.getDate()+d);at.setHours(hour,minute,0,0);
+      if(at.getTime()<=now || at.getTime()>=last)continue;
+      const next=ordered.find(x=>when(x).getTime()>at.getTime());
+      if(!next)continue;
+      const prior=groups[groups.length-1];
+      if(prior&&prior.exam.id===next.id){prior.count+=1}
+      else groups.push({exam:next,from:at,count:1});
+    }
+    return groups;
+  }
+  function calendarText(items){
+    const rows=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Ikhtibarati//Exam Planner//AR','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:اختباراتي'];
+    items.forEach(x=>{
+      const from=when(x), to=new Date(from.getTime()+90*60000);
+      rows.push('BEGIN:VEVENT',`UID:ikhtibarati-${x.id}@local.exam`, `DTSTAMP:${isoNow()}`,`DTSTART:${utc(from)}`,`DTEND:${utc(to)}`,`SUMMARY:${icsEscape('اختبار '+x.subject)}`,`DESCRIPTION:${icsEscape(x.notes??'')}`,`LOCATION:${icsEscape(x.location??'')}`);
+      alarms.forEach(a=>rows.push('BEGIN:VALARM',`TRIGGER:${a}`,'ACTION:DISPLAY',`DESCRIPTION:${icsEscape('تذكير باختبار '+x.subject)}`,'END:VALARM'));
+      rows.push('END:VEVENT');
+    });
+    if(dailyEnabled) {
+      const groups = buildDailySeries(items);
+      groups.forEach(group => {
+        const from = group.from;
+        rows.push('BEGIN:VEVENT', `UID:ikhtibarati-daily-${group.exam.id}-${from.getFullYear()}${String(from.getMonth()+1).padStart(2,'0')}${String(from.getDate()).padStart(2,'0')}@local.exam`,
+          `DTSTAMP:${isoNow()}`, `DTSTART:${utc(from)}`, `DTEND:${utc(new Date(from.getTime()+10*60000))}`,
+          `RRULE:FREQ=DAILY;COUNT=${group.count}`, `SUMMARY:${icsEscape('تذكير يومي — أقرب اختبار: '+group.exam.subject)}`,
+          `DESCRIPTION:${icsEscape('الاختبار القادم: '+group.exam.subject+' • '+dateFormatter.format(when(group.exam))+' • '+timeFormatter.format(when(group.exam)))}`,
+          'BEGIN:VALARM','TRIGGER:PT0S','ACTION:DISPLAY',
+          `DESCRIPTION:${icsEscape('أقرب اختبار: '+group.exam.subject)}`,'END:VALARM','END:VEVENT');
+      });
+    }
+    rows.push('END:VCALENDAR');return rows.map(folded).join('\r\n')+'\r\n';
+  }
+  function download(name,content,mime){const blob=new Blob([content],{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000)}
+  function exportCalendar(){const now=Date.now(), items=exams.filter(x=>future(x,now)).sort(chronological);
+    if(!items.length){notify('أضف اختبارًا قادمًا أولًا');return}
+    download('ikhtibarati-calendar.ics',calendarText(items),'text/calendar;charset=utf-8');
+    notify(`تم تجهيز تقويم ${digits(items.length)} اختبار. استورده في تطبيق التقويم.`);
+  }
+  function openGoogleCalendar(x){const start=utc(when(x)),end=utc(new Date(when(x).getTime()+90*60000));const url=new URL('https://calendar.google.com/calendar/render');url.searchParams.set('action','TEMPLATE');url.searchParams.set('text','اختبار '+x.subject);url.searchParams.set('dates',start+'/'+end);url.searchParams.set('details',x.notes??'');url.searchParams.set('location',x.location??'');window.open(url.toString(),'_blank','noopener,noreferrer')}
+  function closeModal(e){e.closest('dialog').close()}
+  $('exam-form').addEventListener('submit',e=>{
+    e.preventDefault();const subject=$('subject').value.trim(), date=$('exam-date').value, time=$('exam-time').value;
+    const target=new Date(`${date}T${time}:00`);
+    if(!subject||Number.isNaN(target.getTime())){notify('تأكد من اسم المادة والتاريخ والوقت');return}
+    const id=$('exam-id').value;
+    const data={id:id||('e'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)),subject,date,time,location:$('exam-location').value.trim(),notes:$('exam-notes').value.trim(),completed:false};
+    if(id){const old=exams.find(x=>x.id===id);if(old){data.completed=old.completed;Object.assign(old,data)}}else exams.push(data);
+    persist();$('exam-dialog').close();notify(id?'حُفظ الاسم والتاريخ والوقت. حدّث التقويم إذا سبق تصديره.':'أُضيف الاختبار بموعده المحدد');
+  });
+  $('add-exam-top').addEventListener('click',()=>openExamDialog());
+  $('floating-add').addEventListener('click',()=>openExamDialog());
+  $('open-settings').addEventListener('click',()=>{$$('#alarm-options input').forEach(x=>x.checked=alarms.includes(x.value));$('daily-enabled').checked=dailyEnabled;$('daily-time').value=dailyTime;$('settings-dialog').showModal()});
+  function $$(selector){return Array.from(document.querySelectorAll(selector))}
+  $$('.close-modal').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn)));
+  $$('.dialog').forEach(d=>d.addEventListener('click',(e)=>{if(e.target===d)d.close()}));
+  $$('.filter').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;$$('.filter').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',x===b?'true':'false')});render()}));
+  $('export-calendar').addEventListener('click',exportCalendar);
+  $('save-reminders').addEventListener('click',()=>{alarms=$$('#alarm-options input:checked').map(x=>x.value);dailyEnabled=$('daily-enabled').checked;dailyTime=$('daily-time').value||'20:00';storage.setItem(REMINDERS,JSON.stringify(alarms));storage.setItem(DAILY_ENABLED,String(dailyEnabled));storage.setItem(DAILY_TIME,dailyTime);notify('حُفظت الأوقات. أعد تصدير التقويم لتطبيقها.')});
+  $('backup-data').addEventListener('click',()=>{const d=new Date().toISOString().slice(0,10);download(`ikhtibarati-backup-${d}.json`,JSON.stringify({app:'ikhtibarati',version:1,createdAt:new Date().toISOString(),exams,alarms,dailyEnabled,dailyTime},null,2),'application/json');notify('تم تنزيل النسخة الاحتياطية')});
+  $('restore-data').addEventListener('click',()=>$('import-file').click());
+  $('import-file').addEventListener('change',async e=>{
+    const file=e.target.files?.[0];if(!file)return;
+    try{if(file.size>2*1024*1024)throw new Error('الملف كبير جدًا');const data=JSON.parse(await file.text());
+      if(data.app!=='ikhtibarati'||!Array.isArray(data.exams)||data.exams.length>3000||!data.exams.every(validExam))throw new Error('صيغة النسخة غير صالحة');
+      if(!confirm(`استعادة ${data.exams.length} اختبار؟ سيُستبدل الجدول الحالي كاملًا.`))return;
+      exams=data.exams.map(x=>({...x,completed:Boolean(x.completed)}));alarms=Array.isArray(data.alarms)?ALL_ALARMS.filter(x=>data.alarms.includes(x)):DEFAULT_ALARMS;
+      dailyEnabled=data.dailyEnabled!==false;dailyTime=/^([01]\d|2[0-3]):[0-5]\d$/.test(data.dailyTime)?data.dailyTime:'20:00';
+      storage.setItem(REMINDERS,JSON.stringify(alarms));storage.setItem(DAILY_ENABLED,String(dailyEnabled));storage.setItem(DAILY_TIME,dailyTime);persist();$('settings-dialog').close();notify('تمت استعادة البيانات بنجاح');
+    }catch(err){notify('تعذرت الاستعادة: '+err.message)}finally{e.target.value=''}
+  });
+  render();setInterval(render,60000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)render()});
+})();
+
+</script>
+</body>
+</html>
